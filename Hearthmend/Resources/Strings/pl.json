@@ -174,5 +174,9 @@
   "shot.event.title": "Festyny w weekendy",
   "shot.event.sub": "Spełnij życzenie i zdobądź unikalną ozdobę",
   "shot.postcard.title": "Zbieraj pocztówki",
-  "shot.postcard.sub": "Każde zamówienie to jeden kawałek"
+  "shot.postcard.sub": "Każde zamówienie to jeden kawałek",
+  "shop.stamps": "Karta pieczątek",
+  "shop.stamps_hint": "Każdy zakup to pieczątka. Za %d: 💎 %d i rzadka ozdoba",
+  "shop.stamps_done": "Karta pieczątek pełna!",
+  "shop.stamp_added": "Pieczątka %d z %d"
 }

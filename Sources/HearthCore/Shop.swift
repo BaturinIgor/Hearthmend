@@ -136,6 +136,7 @@ extension Game {
             let until = expires ?? base.addingTimeInterval(Double(reward.vipDays) * 86400)
             state.vipUntil = max(state.vipUntil ?? until, until)
         }
+        lastStamp = addStamp()
         return true
     }
 

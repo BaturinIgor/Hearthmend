@@ -20,6 +20,7 @@ struct ShopView: View {
                     offers
                     if !store.game.isVIP { vipCard } else { vipActive }
                     if !store.game.hasBought(Products.starter) { starterCard }
+                    StampCard()
                     section(L10n.t("shop.gems")) {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                             gemPack(Products.gemsSmall, icon: "💎")
@@ -498,5 +499,48 @@ struct DailyRewardView: View {
         if r.gems > 0 { parts.append("💎\(r.gems)") }
         if r.coins > 0 { parts.append("🪙\(r.coins)") }
         return parts.joined(separator: " ")
+    }
+}
+
+/// Карточка штампов: каждая покупка ставит штамп, за полную карточку кристаллы и украшение.
+struct StampCard: View {
+    @EnvironmentObject private var store: GameStore
+
+    var body: some View {
+        let b = store.balance
+        let have = store.state.stamps
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text(L10n.t("shop.stamps")).font(.system(size: 17, weight: .heavy, design: .rounded))
+                Spacer()
+                Text("\(have)/\(b.stampsPerCard)").font(.system(size: 14, weight: .heavy, design: .rounded)).opacity(0.7)
+            }
+            HStack(spacing: 6) {
+                ForEach(0..<b.stampsPerCard, id: \.self) { i in
+                    let last = i == b.stampsPerCard - 1
+                    ZStack {
+                        Circle()
+                            .strokeBorder(Theme.wood.opacity(i < have ? 0.9 : 0.35), style: StrokeStyle(lineWidth: 2, dash: i < have ? [] : [4, 3]))
+                            .background(Circle().fill(i < have ? Color(red: 0.98, green: 0.84, blue: 0.55) : Color.white.opacity(0.5)))
+                        if i < have {
+                            Text("🏵️").font(.system(size: 22)).transition(.scale(scale: 2.2).combined(with: .opacity))
+                        } else if last {
+                            Text("🎁").font(.system(size: 20)).opacity(0.8)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .aspectRatio(1, contentMode: .fit)
+                    .rotationEffect(.degrees(i < have ? Double((i * 37) % 17) - 8 : 0))
+                }
+            }
+            .animation(.spring(response: 0.4, dampingFraction: 0.55), value: have)
+            Text(String(format: L10n.t("shop.stamps_hint"), b.stampsPerCard, b.stampCardGems))
+                .font(.system(size: 12, design: .rounded)).opacity(0.75)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .foregroundColor(Theme.text)
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.wood.opacity(0.3), lineWidth: 1.5))
     }
 }

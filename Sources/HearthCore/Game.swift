@@ -18,6 +18,8 @@ public final class Game {
     var lastSale: (index: Int, item: Item, coins: Int)?
     /// Открытки, собранные последним заказом (для интерфейса).
     public internal(set) var lastPostcard: PostcardReward?
+    /// Штамп последней покупки: магазин показывает его и праздник за полную карточку.
+    public internal(set) var lastStamp: StampReward?
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,

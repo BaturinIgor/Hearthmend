@@ -255,7 +255,13 @@ final class GameStore: ObservableObject {
     func grantPurchase(productId: String, transactionId: String, expires: Date?) {
         guard game.grantPurchase(productId: productId, transactionId: transactionId, expires: expires) else { return }
         Haptics.success()
-        show(L10n.t("shop.thanks"))
+        if let stamp = game.lastStamp, stamp.completed {
+            celebrate(Celebration(icon: "🏵️", title: L10n.t("shop.stamps_done"), subtitle: "💎 \(stamp.gems)   🪴"))
+        } else if let stamp = game.lastStamp {
+            show(L10n.t("shop.thanks") + "\n" + String(format: L10n.t("shop.stamp_added"), stamp.stamps, stamp.of))
+        } else {
+            show(L10n.t("shop.thanks"))
+        }
         commit()
     }
 

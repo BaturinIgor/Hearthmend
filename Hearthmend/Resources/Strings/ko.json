@@ -174,5 +174,9 @@
   "shot.event.title": "주말 축제",
   "shot.event.sub": "소원을 들어주고 특별한 장식을 받으세요",
   "shot.postcard.title": "마을 엽서 모으기",
-  "shot.postcard.sub": "주문마다 조각이 하나씩"
+  "shot.postcard.sub": "주문마다 조각이 하나씩",
+  "shop.stamps": "스탬프 카드",
+  "shop.stamps_hint": "구매할 때마다 스탬프 1개. %d개 모으면 💎 %d와 희귀 장식",
+  "shop.stamps_done": "스탬프 카드 완성!",
+  "shop.stamp_added": "스탬프 %d / %d"
 }

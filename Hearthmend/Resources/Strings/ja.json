@@ -174,5 +174,9 @@
   "shot.event.title": "週末のお祭り",
   "shot.event.sub": "願いをかなえて限定デコをゲット",
   "shot.postcard.title": "村の絵はがきを集めよう",
-  "shot.postcard.sub": "注文ごとにピースが1枚"
+  "shot.postcard.sub": "注文ごとにピースが1枚",
+  "shop.stamps": "スタンプカード",
+  "shop.stamps_hint": "購入ごとにスタンプ1つ。%d個で💎 %dとレアなデコ",
+  "shop.stamps_done": "スタンプカード完成！",
+  "shop.stamp_added": "スタンプ %d / %d"
 }
