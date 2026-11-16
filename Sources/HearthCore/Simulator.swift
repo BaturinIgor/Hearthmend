@@ -194,17 +194,42 @@ public enum Simulator {
         return false
     }
 
+    /// Предметы, которых заказам еще не хватает (то, что уже лежит на поле, не считается).
+    private static func missing(_ game: Game) -> [Item: Int] {
+        var onBoard: [Item: Int] = [:]
+        for case .item(let item)? in game.state.cells { onBoard[item, default: 0] += 1 }
+        var result: [Item: Int] = [:]
+        for (item, count) in demand(game) {
+            let lack = count - (onBoard[item] ?? 0)
+            if lack > 0 { result[item] = lack }
+        }
+        return result
+    }
+
+    /// Тратит энергию на цепочку, которой заказам не хватает больше всего с учетом заготовок на поле.
     private static func spawn(_ game: Game, report: inout SimReport) -> Game.SpawnResult {
-        let need = demand(game)
+        let lack = missing(game)
         var chainNeed: [String: Int] = [:]
-        for (item, count) in need { chainNeed[item.chain, default: 0] += item.value * count }
+        var topTier: [String: Int] = [:]
+        for (item, count) in lack {
+            chainNeed[item.chain, default: 0] += item.value * count
+            topTier[item.chain] = max(topTier[item.chain] ?? 0, item.tier)
+        }
+        let reserved = demand(game)
+        var seen: [Item: Int] = [:]
+        for case .item(let item)? in game.state.cells {
+            seen[item, default: 0] += 1
+            guard let top = topTier[item.chain], item.tier < top,
+                  seen[item]! > (reserved[item] ?? 0) else { continue }
+            chainNeed[item.chain, default: 0] -= item.value
+        }
         let gens = game.state.cells.enumerated().compactMap { i, piece -> (Int, GeneratorPiece)? in
             if case .generator(let g)? = piece { return (i, g) }
             return nil
         }
         guard !gens.isEmpty else { return .notGenerator }
         let best = gens.max { a, b in
-            (chainNeed[a.1.chain] ?? 0, a.1.tier) < (chainNeed[b.1.chain] ?? 0, b.1.tier)
+            (chainNeed[a.1.chain] ?? Int.min / 2, a.1.tier) < (chainNeed[b.1.chain] ?? Int.min / 2, b.1.tier)
         }!
         let result = game.spawn(from: best.0)
         if case .spawned = result {
