@@ -60,5 +60,7 @@ schemes:
         Hearthmend: all
     run:
       config: Debug
+      # покупки без App Store Connect: Xcode берет товары из этого файла
+      storeKitConfiguration: Config/Products.storekit
     archive:
       config: Release

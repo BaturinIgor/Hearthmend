@@ -1,0 +1,123 @@
+{
+  "identifier": "9C1A3F2E",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "6337527476",
+      "localizations": [
+        {
+          "description": "80 Gems",
+          "displayName": "80 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.small",
+      "referenceName": "80 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "8651195673",
+      "localizations": [
+        {
+          "description": "450 Gems",
+          "displayName": "450 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.medium",
+      "referenceName": "450 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "5242854147",
+      "localizations": [
+        {
+          "description": "1000 Gems",
+          "displayName": "1000 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.large",
+      "referenceName": "1000 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "19.99",
+      "familyShareable": false,
+      "internalID": "3323950563",
+      "localizations": [
+        {
+          "description": "2200 Gems",
+          "displayName": "2200 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.chest",
+      "referenceName": "2200 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "2205771317",
+      "localizations": [
+        {
+          "description": "Starter Pack",
+          "displayName": "Starter Pack",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.starter",
+      "referenceName": "Starter Pack",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_applicationInternalID": "0",
+    "_developerTeamID": "",
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21000001",
+      "localizations": [],
+      "name": "VIP",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "21000002",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Monthly VIP",
+              "displayName": "VIP",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.personal.hearthmend.vip.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "VIP Monthly",
+          "subscriptionGroupID": "21000001",
+          "type": "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}
