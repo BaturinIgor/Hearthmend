@@ -65,6 +65,8 @@ jobs:
           xcrun simctl boot "$DEVICE"
           xcrun simctl bootstatus "$DEVICE" -b
           xcrun simctl install "$DEVICE" "$APP"
+          # после загрузки система показывает приветственные уведомления: ждем, пока уйдут
+          sleep 60
           mkdir -p shots/store
           shoot() { # язык, файл, аргументы
             xcrun simctl terminate "$DEVICE" com.personal.hearthmend 2>/dev/null || true
@@ -74,6 +76,7 @@ jobs:
           }
           # прогрев: первый запуск дольше
           shoot en /tmp/warmup.png -shot board
+          sleep 20
           shoot en shots/review_shop.png -shop -shot shop
           for pair in en:en-US ru:ru uk:uk de:de-DE fr:fr-FR es:es-ES pt-BR:pt-BR it:it ja:ja ko:ko zh-Hans:zh-Hans tr:tr pl:pl; do
             lang=${pair%%:*}; locale=${pair#*:}

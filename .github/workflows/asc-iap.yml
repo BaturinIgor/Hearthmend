@@ -1,4 +1,4 @@
-name: "App Store Connect: покупки и страница"
+name: "App Store Connect: покупки, страница и версия"
 
 # Заводит покупки и подписку VIP (tools/asc_iap.py) и тексты страницы приложения на всех языках
 # (tools/asc_listing.py). Запуск только по кнопке.
@@ -30,3 +30,10 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: python tools/asc_listing.py
+      - name: Release settings (price, age rating, categories, build)
+        if: always()
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: python tools/asc_release.py
