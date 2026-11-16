@@ -12,6 +12,14 @@ enum Shot {
     }()
 
     static var isLate: Bool { name == "north" }
+    /// Постройка в центре кадра на скриншотах деревни: самое живое место.
+    static var focus: String? {
+        switch name {
+        case "village": return "square_stalls"
+        case "north": return "orchard_market"
+        default: return nil
+        }
+    }
     static var hasCaption: Bool { name != nil && name != "shop" }
 }
 
@@ -23,14 +31,14 @@ struct ShotFrame: View {
         GeometryReader { geo in
             let full = geo.size.height + geo.safeAreaInsets.top + geo.safeAreaInsets.bottom
             let width = geo.size.width
-            let top = full * 0.205
+            let top = full * 0.225
             let scale = (full - top - 18) / full
             ZStack(alignment: .top) {
                 LinearGradient(colors: [Color(red: 0.42, green: 0.66, blue: 0.36), Color(red: 0.98, green: 0.88, blue: 0.62)],
                                startPoint: .top, endPoint: .bottom)
                 caption
-                    .frame(width: width - 44, height: top - 20)
-                    .padding(.top, 22)
+                    .frame(width: width - 44, height: top - 58)
+                    .padding(.top, 54)
                 screen
                     .frame(width: width, height: full)
                     .clipShape(RoundedRectangle(cornerRadius: 46, style: .continuous))
@@ -43,6 +51,7 @@ struct ShotFrame: View {
             .frame(width: width, height: full)
         }
         .ignoresSafeArea()
+        .statusBar(hidden: true)
     }
 
     private var caption: some View {
