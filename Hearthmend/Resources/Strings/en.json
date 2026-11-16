@@ -1,0 +1,17 @@
+{
+  "orders.title": "Orders",
+  "orders.give": "Give",
+  "basket.title": "Basket",
+  "basket.empty": "Tap an item, then \"To basket\"",
+  "selected.sell": "Sell +%d",
+  "selected.store": "To basket",
+  "selected.max": "Top tier",
+  "toast.no_energy": "Out of energy. It refills over time",
+  "toast.board_full": "The board is full",
+  "toast.no_gems": "Not enough gems",
+  "toast.debris": "Merge items next to the rubble to clear it",
+  "toast.sold": "Sold for %d coins",
+  "toast.basket_full": "The basket is full",
+  "toast.order_done": "Order done: +%d coins, +%d stars",
+  "hint.start": "Drag two identical items together to merge them. Tap a generator to get new items."
+}

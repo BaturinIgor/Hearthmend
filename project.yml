@@ -1,0 +1,64 @@
+name: Hearthmend
+options:
+  bundleIdPrefix: com.personal
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+
+packages:
+  HearthCore:
+    path: .
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGN_IDENTITY: ""
+    DEVELOPMENT_TEAM: ""
+    ENABLE_USER_SCRIPT_SANDBOXING: "NO"
+
+targets:
+  Hearthmend:
+    type: application
+    platform: iOS
+    sources:
+      - path: Hearthmend
+    dependencies:
+      - package: HearthCore
+    info:
+      path: Hearthmend/Info.plist
+      properties:
+        CFBundleDisplayName: Hearthmend
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, ru]
+        CFBundleAllowMixedLocalizations: true
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UIRequiresFullScreen: true
+        UIStatusBarHidden: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.personal.hearthmend
+        PRODUCT_NAME: Hearthmend
+        TARGETED_DEVICE_FAMILY: "1"
+
+schemes:
+  Hearthmend:
+    build:
+      targets:
+        Hearthmend: all
+    run:
+      config: Debug
+    archive:
+      config: Release

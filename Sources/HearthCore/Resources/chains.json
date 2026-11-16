@@ -1,0 +1,120 @@
+{
+  "chains": [
+    {
+      "id": "garden",
+      "items": [
+        "garden_seed",
+        "garden_sprout",
+        "garden_carrot",
+        "garden_cabbage",
+        "garden_pumpkin",
+        "garden_barrel",
+        "garden_hay"
+      ],
+      "emoji": [
+        "🫘",
+        "🌱",
+        "🥕",
+        "🥬",
+        "🎃",
+        "🛢️",
+        "🌾"
+      ],
+      "generator": "gen_garden",
+      "generatorEmoji": "🪴",
+      "generatorTiers": 3
+    },
+    {
+      "id": "forest",
+      "items": [
+        "forest_twig",
+        "forest_log",
+        "forest_bark",
+        "forest_stool",
+        "forest_mossy",
+        "forest_bench",
+        "forest_barrel"
+      ],
+      "emoji": [
+        "🌿",
+        "🪵",
+        "🟫",
+        "🪑",
+        "🪵",
+        "🛋️",
+        "🛢️"
+      ],
+      "generator": "gen_forest",
+      "generatorEmoji": "🌳",
+      "generatorTiers": 3
+    },
+    {
+      "id": "quarry",
+      "items": [
+        "quarry_pebble",
+        "quarry_stone",
+        "quarry_ore",
+        "quarry_copper",
+        "quarry_gold",
+        "quarry_pickaxe",
+        "quarry_lantern"
+      ],
+      "emoji": [
+        "🔘",
+        "🪨",
+        "🟠",
+        "🟧",
+        "🥇",
+        "⛏️",
+        "🏮"
+      ],
+      "generator": "gen_quarry",
+      "generatorEmoji": "⛰️",
+      "generatorTiers": 3
+    },
+    {
+      "id": "apiary",
+      "items": [
+        "apiary_flower",
+        "apiary_lily",
+        "apiary_violet",
+        "apiary_pot",
+        "apiary_honey",
+        "apiary_mead"
+      ],
+      "emoji": [
+        "🌺",
+        "🌸",
+        "🪻",
+        "🪴",
+        "🍯",
+        "🧉"
+      ],
+      "generator": "gen_apiary",
+      "generatorEmoji": "🐝",
+      "generatorTiers": 3
+    },
+    {
+      "id": "farm",
+      "items": [
+        "farm_egg",
+        "farm_fried",
+        "farm_milk",
+        "farm_cheese",
+        "farm_bread",
+        "farm_picnic"
+      ],
+      "emoji": [
+        "🥚",
+        "🍳",
+        "🥛",
+        "🧀",
+        "🍞",
+        "🧺"
+      ],
+      "generator": "gen_farm",
+      "generatorEmoji": "🐔",
+      "generatorTiers": 3
+    }
+  ]
+}

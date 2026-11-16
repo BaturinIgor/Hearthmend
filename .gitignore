@@ -1,0 +1,11 @@
+.DS_Store
+*.xcodeproj/
+Hearthmend/Info.plist
+build/
+.build/
+.swiftpm/
+Payload/
+*.ipa
+# спрайты пака: в git только зашифрованный Art/sprites.enc
+Hearthmend/Resources/Sprites/
+art/
