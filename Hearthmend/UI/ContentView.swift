@@ -5,8 +5,9 @@ import HearthCore
 struct ContentView: View {
     @EnvironmentObject private var store: GameStore
     @State private var scene = BoardScene(size: CGSize(width: 350, height: 450))
-    @State private var screen: Screen = .board
-    @State private var showShop = false
+    @State private var screen: Screen = CommandLine.arguments.contains("-village") ? .village : .board
+    @State private var showShop = CommandLine.arguments.contains("-shop")
+    @State private var showSettings = false
     @State private var showDaily = false
 
     var body: some View {
@@ -33,8 +34,9 @@ struct ContentView: View {
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: screen)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showDaily)
         .sheet(isPresented: $showShop) { ShopView() }
+        .background(EmptyView().sheet(isPresented: $showSettings) { SettingsView() })
         .onAppear {
-            if store.game.dailyRewardReady {
+            if store.game.dailyRewardReady, store.game.tutorial == .done {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { showDaily = true }
             }
         }
@@ -45,8 +47,9 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             Theme.background.ignoresSafeArea()
             VStack(spacing: 8) {
-                TopBar(openVillage: { screen = .village }, openShop: { showShop = true })
+                TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
+                EventBanner()
                 SpriteView(scene: scene, options: [.allowsTransparency])
                     .aspectRatio(CGFloat(store.balance.cols) / CGFloat(store.balance.rows), contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -55,6 +58,9 @@ struct ContentView: View {
                 BasketBar()
             }
             .padding(.top, 4)
+            TutorialTip(openVillage: { screen = .village })
+                .padding(.bottom, 54)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.tutorialStep)
             if let toast = store.toast {
                 Text(toast)
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -73,7 +79,7 @@ struct ContentView: View {
             store.onBoardChange = { [weak scene] in scene?.render() }
             scene.render()
         }
-        .onChange(of: store.selected) { _ in scene.render() }
+        .onChange(of: store.selected) { _ in scene.updateSelection() }
     }
 }
 
@@ -127,10 +133,11 @@ private struct TopBar: View {
     @EnvironmentObject private var store: GameStore
     let openVillage: () -> Void
     let openShop: () -> Void
+    let openSettings: () -> Void
 
     var body: some View {
         HStack(spacing: 8) {
-            LevelBadge()
+            Button(action: openSettings) { LevelBadge() }
             Button(action: openShop) { Counter(icon: "⚡️", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
             Counter(icon: "🪙", value: "\(store.state.coins)")
             Button(action: openShop) { Counter(icon: "💎", value: "\(store.state.gems)", plus: true) }

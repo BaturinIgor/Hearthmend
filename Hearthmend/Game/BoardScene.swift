@@ -85,15 +85,58 @@ final class BoardScene: SKScene {
                 boardNode.addChild(node)
                 contentNodes[i] = node
             }
-            if store.selected == i {
-                let ring = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
-                ring.strokeColor = Palette.selected
-                ring.lineWidth = 3
-                ring.position = center(of: i)
-                ring.zPosition = 2
-                boardNode.addChild(ring)
-            }
         }
+        updateSelection()
+        tutorialHints(state)
+    }
+
+    /// Подсказки обучения: пульсирующие рамки на генераторе или на паре одинаковых предметов.
+    private func tutorialHints(_ state: GameState) {
+        guard let store else { return }
+        var cells: [Int] = []
+        switch store.game.tutorial {
+        case .spawn:
+            if let g = state.cells.firstIndex(where: { if case .generator? = $0 { return true } else { return false } }) {
+                cells = [g]
+            }
+        case .merge:
+            var seen: [Item: Int] = [:]
+            for (i, piece) in state.cells.enumerated() {
+                guard let item = piece?.item, store.catalog.next(item) != nil else { continue }
+                if let j = seen[item] { cells = [j, i]; break }
+                seen[item] = i
+            }
+        default:
+            break
+        }
+        for i in cells {
+            let ring = SKShapeNode(rectOf: CGSize(width: cellSize - 1, height: cellSize - 1), cornerRadius: cellSize * 0.2)
+            ring.strokeColor = .white
+            ring.lineWidth = 3
+            ring.glowWidth = 4
+            ring.position = center(of: i)
+            ring.zPosition = 3
+            ring.run(.repeatForever(.sequence([
+                .group([.scale(to: 1.12, duration: 0.5), .fadeAlpha(to: 0.4, duration: 0.5)]),
+                .group([.scale(to: 1.0, duration: 0.5), .fadeAlpha(to: 1, duration: 0.5)]),
+            ])))
+            boardNode.addChild(ring)
+        }
+    }
+
+    /// Только рамка выбора, без перерисовки поля: анимации слияния и полета не обрываются.
+    func updateSelection() {
+        boardNode.childNode(withName: "selection")?.removeFromParent()
+        guard let i = store?.selected else { return }
+        let ring = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
+        ring.name = "selection"
+        ring.strokeColor = Palette.selected
+        ring.lineWidth = 3
+        ring.position = center(of: i)
+        ring.zPosition = 2
+        ring.setScale(0.85)
+        ring.run(.scale(to: 1, duration: 0.12))
+        boardNode.addChild(ring)
     }
 
     private func makeNode(for piece: Piece, highlighted: Bool) -> SKNode {
@@ -201,13 +244,22 @@ final class BoardScene: SKScene {
         }
         guard let store, let touch = touches.first, let from = touchIndex else { return }
         let p = touch.location(in: self)
-        guard dragging != nil else {
-            store.tap(from)
+        guard let dragged = dragging else {
+            let result = store.tap(from)
             render()
+            if case .spawned(let cell, _)? = result {
+                squish(at: from)
+                fly(cell, from: center(of: from))
+            } else if case .noEnergy? = result {
+                shake(at: from)
+            }
             return
         }
         guard let to = index(at: p), to != from else {
-            render()
+            // мимо поля или на то же место: предмет плавно возвращается
+            dragged.run(.group([.move(to: center(of: from), duration: 0.16), .scale(to: 1, duration: 0.16)])) { [weak self] in
+                self?.render()
+            }
             return
         }
         let result = store.move(from: from, to: to)
@@ -215,12 +267,19 @@ final class BoardScene: SKScene {
         switch result {
         case .merged(_, let cleared, let bubble):
             pop(at: to)
+            sparkle(at: to)
             for i in cleared { dust(at: i) }
-            if let bubble { pop(at: bubble) }
+            if let bubble { fly(bubble, from: center(of: to)) }
         case .mergedGenerator:
             pop(at: to)
-        default:
-            break
+            sparkle(at: to)
+        case .moved:
+            slide(to, from: p)
+        case .swapped:
+            slide(to, from: p)
+            slide(from, from: center(of: to))
+        case .invalid:
+            slide(from, from: p)
         }
     }
 
@@ -237,6 +296,69 @@ final class BoardScene: SKScene {
         guard let node = contentNodes[index] else { return }
         node.setScale(0.6)
         node.run(.sequence([.scale(to: 1.2, duration: 0.1), .scale(to: 1.0, duration: 0.08)]))
+    }
+
+    /// Предмет приезжает в свою клетку из точки, где его отпустили.
+    private func slide(_ index: Int, from point: CGPoint) {
+        guard let node = contentNodes[index] else { return }
+        let target = node.position
+        node.position = point
+        let move = SKAction.move(to: target, duration: 0.14)
+        move.timingMode = .easeOut
+        node.run(move)
+    }
+
+    /// Новый предмет вылетает из генератора по дуге.
+    private func fly(_ index: Int, from start: CGPoint) {
+        guard let node = contentNodes[index] else { return }
+        let end = node.position
+        let lift = max(cellSize * 0.8, hypot(end.x - start.x, end.y - start.y) * 0.35)
+        let path = CGMutablePath()
+        path.move(to: start)
+        path.addQuadCurve(to: end, control: CGPoint(x: (start.x + end.x) / 2, y: max(start.y, end.y) + lift))
+        node.position = start
+        node.setScale(0.3)
+        let follow = SKAction.follow(path, asOffset: false, orientToPath: false, duration: 0.28)
+        follow.timingMode = .easeOut
+        node.run(.sequence([
+            .group([follow, .scale(to: 1.0, duration: 0.28)]),
+            .scale(to: 1.12, duration: 0.06),
+            .scale(to: 1.0, duration: 0.08),
+        ]))
+    }
+
+    /// Генератор приседает, когда выдает предмет.
+    private func squish(at index: Int) {
+        guard let node = contentNodes[index] else { return }
+        node.run(.sequence([
+            .group([.scaleX(to: 1.12, duration: 0.06), .scaleY(to: 0.88, duration: 0.06)]),
+            .group([.scaleX(to: 0.96, duration: 0.08), .scaleY(to: 1.06, duration: 0.08)]),
+            .scale(to: 1.0, duration: 0.06),
+        ]))
+    }
+
+    private func shake(at index: Int) {
+        guard let node = contentNodes[index] else { return }
+        let d = cellSize * 0.06
+        node.run(.sequence([.moveBy(x: d, y: 0, duration: 0.04), .moveBy(x: -2 * d, y: 0, duration: 0.06),
+                            .moveBy(x: 2 * d, y: 0, duration: 0.06), .moveBy(x: -d, y: 0, duration: 0.04)]))
+    }
+
+    /// Искры при слиянии.
+    private func sparkle(at index: Int) {
+        let c = center(of: index)
+        for k in 0..<8 {
+            let angle = CGFloat(k) / 8 * .pi * 2
+            let star = SKShapeNode(circleOfRadius: cellSize * 0.05)
+            star.fillColor = k.isMultiple(of: 2) ? .white : Palette.needed
+            star.strokeColor = .clear
+            star.position = c
+            star.zPosition = 6
+            boardNode.addChild(star)
+            let out = SKAction.moveBy(x: cos(angle) * cellSize * 0.6, y: sin(angle) * cellSize * 0.6, duration: 0.3)
+            out.timingMode = .easeOut
+            star.run(.sequence([.group([out, .fadeOut(withDuration: 0.3), .scale(to: 0.3, duration: 0.3)]), .removeFromParent()]))
+        }
     }
 
     private func dust(at index: Int) {

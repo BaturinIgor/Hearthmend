@@ -6,20 +6,25 @@ public final class Game {
     public internal(set) var state: GameState
     public let catalog: Catalog
     public let village: VillageDef
+    public let events: EventsDef
     public let balance: Balance
     public var now: () -> Date
     private var rng: SplitMix64
     /// Уровни, полученные последним отданным заказом: интерфейс показывает праздник.
     public private(set) var lastLevelUps: [Int] = []
+    /// Награды события, открытые последним отданным заказом.
+    public private(set) var lastEventRewards: [EventReward] = []
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
                 village: VillageDef = .bundled,
+                events: EventsDef = .bundled,
                 balance: Balance = Balance(),
                 seed: UInt64 = UInt64.random(in: 0...UInt64.max),
                 now: @escaping () -> Date = Date.init) {
         self.catalog = catalog
         self.village = village
+        self.events = events
         self.balance = balance
         self.now = now
         self.rng = SplitMix64(seed: seed)
@@ -199,6 +204,7 @@ public final class Game {
         tier = min(tier, catalog.maxTier(of: gen.chain))
         let item = Item(chain: gen.chain, tier: tier)
         state.cells[cell] = .item(item)
+        advanceTutorial(from: .spawn)
         return .spawned(index: cell, item: item)
     }
 
@@ -226,6 +232,7 @@ public final class Game {
             state.cells[to] = .item(next)
             state.cells[from] = nil
             state.mergesTotal += 1
+            advanceTutorial(from: .merge)
             state.bestTier[next.chain] = max(state.bestTier[next.chain] ?? 0, next.tier)
             let cleared = clearDebris(around: to)
             let bubble = maybeBubble(next, near: to)
@@ -356,7 +363,9 @@ public final class Game {
         state.coins += order.coins
         state.stars += order.stars
         state.ordersTotal += 1
+        advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
+        lastEventRewards = addEventTokens(order.stars)
         placePendingGenerators()
         refillOrders()
         return order

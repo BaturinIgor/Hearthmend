@@ -8,6 +8,7 @@ struct VillageView: View {
     @Binding var screen: Screen
     @State private var picked: VillageTask?
     @State private var justBuilt: String?
+    @State private var showDecor = false
 
     /// Размер карты в пикселях пака (tools/village_map.py: 32 x 50 клеток по 16).
     static let mapSize = CGSize(width: 512, height: 800)
@@ -40,8 +41,22 @@ struct VillageView: View {
                     TaskCard(task: task, close: { withAnimation(.spring(response: 0.35)) { picked = nil } }, build: { build(task) })
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
-                    BackToBoardButton { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { screen = .board } }
-                        .transition(.opacity)
+                    if showDecor { DecorTray(place: placeDecor).transition(.move(edge: .bottom).combined(with: .opacity)) }
+                    HStack(spacing: 10) {
+                        BackToBoardButton { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { screen = .board } }
+                        if !store.state.decorOwned.isEmpty || !store.state.placedDecor.isEmpty {
+                            Button {
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { showDecor.toggle() }
+                            } label: {
+                                Text("🪴")
+                                    .font(.system(size: 24))
+                                    .frame(width: 50, height: 50)
+                                    .background(Circle().fill(showDecor ? Theme.accent : Theme.card))
+                                    .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
+                            }
+                        }
+                    }
+                    .transition(.opacity)
                 }
             }
             .padding(.horizontal, 12)
@@ -69,6 +84,9 @@ struct VillageView: View {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { picked = task }
                     }
             }
+            ForEach(store.state.placedDecor) { decor in
+                DecorPiece(decor: decor, scale: scale)
+            }
         }
     }
 
@@ -81,6 +99,13 @@ struct VillageView: View {
         if store.game.isAvailable(task) { return .site }
         if let d = store.game.village.district(of: task.id), store.game.isDistrictOpen(d) { return .planned }
         return .hidden
+    }
+
+    /// Новое украшение ставится у дороги рядом с текущим районом; дальше игрок двигает его пальцем.
+    private func placeDecor(_ key: String) {
+        let y = Double(focusTask?.y ?? 25) + 2
+        let x = 17.5 + Double(store.state.placedDecor.count % 5)
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) { store.placeDecor(key, x: x, y: y) }
     }
 
     private var focusTask: VillageTask? {
@@ -120,6 +145,87 @@ struct VillageView: View {
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
         .padding(.horizontal, 12)
         .padding(.top, 4)
+    }
+}
+
+/// Украшение на карте: перетаскивается пальцем, долгое нажатие убирает в запас.
+private struct DecorPiece: View {
+    @EnvironmentObject private var store: GameStore
+    let decor: PlacedDecor
+    let scale: CGFloat
+    @State private var drag: CGSize = .zero
+    @State private var lifted = false
+
+    var body: some View {
+        let image = Sprites.image(decor.key)
+        let w = (image?.size.width ?? 16) * scale, h = (image?.size.height ?? 16) * scale
+        DecorIcon(key: decor.key, size: max(w, h))
+            .frame(width: w, height: h)
+            .scaleEffect(lifted ? 1.15 : 1, anchor: .bottom)
+            .shadow(color: .black.opacity(lifted ? 0.35 : 0), radius: 4, y: 3)
+            .padding(.leading, max(0, CGFloat(decor.x) * 16 * scale - w / 2))
+            .padding(.top, max(0, CGFloat(decor.y) * 16 * scale - h))
+            .offset(drag)
+            .highPriorityGesture(
+                DragGesture(minimumDistance: 4)
+                    .onChanged { v in
+                        if !lifted { Haptics.light() }
+                        lifted = true
+                        drag = v.translation
+                    }
+                    .onEnded { v in
+                        let cell = 16 * scale
+                        store.moveDecor(id: decor.id, x: decor.x + Double(v.translation.width / cell),
+                                        y: decor.y + Double(v.translation.height / cell))
+                        drag = .zero
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { lifted = false }
+                    }
+            )
+            .onLongPressGesture(minimumDuration: 0.6) {
+                withAnimation(.spring(response: 0.3)) { store.storeDecor(id: decor.id) }
+                store.show(L10n.t("decor.stored"))
+            }
+    }
+}
+
+/// Запас украшений: тап ставит украшение на карту.
+private struct DecorTray: View {
+    @EnvironmentObject private var store: GameStore
+    let place: (String) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(L10n.t("decor.hint"))
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundColor(Theme.text.opacity(0.8))
+            if store.state.decorOwned.isEmpty {
+                Text(L10n.t("decor.empty"))
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(Theme.text)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(store.state.decorOwned.keys.sorted(), id: \.self) { key in
+                            Button { place(key) } label: {
+                                ZStack(alignment: .topTrailing) {
+                                    DecorIcon(key: key, size: 40)
+                                        .frame(width: 52, height: 52)
+                                        .background(RoundedRectangle(cornerRadius: 10).fill(Theme.card))
+                                    Text("\(store.state.decorOwned[key] ?? 0)")
+                                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                                        .foregroundColor(.white)
+                                        .padding(4)
+                                        .background(Circle().fill(Theme.wood))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(10)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card.opacity(0.97)))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.4), lineWidth: 1.5))
     }
 }
 

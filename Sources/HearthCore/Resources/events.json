@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "id": "fair",
+      "milestones": [
+        { "tokens": 10, "energy": 20 },
+        { "tokens": 25, "decor": "decor_flowers_purple" },
+        { "tokens": 45, "coins": 300 },
+        { "tokens": 70, "gems": 10 },
+        { "tokens": 100, "choiceDecor": true },
+        { "tokens": 140, "energy": 50 },
+        { "tokens": 190, "gems": 20, "decor": "decor_torch" }
+      ],
+      "choices": [
+        { "id": "mila", "decor": "decor_garland" },
+        { "id": "tim", "decor": "decor_scarecrow" }
+      ]
+    },
+    {
+      "id": "harvest",
+      "milestones": [
+        { "tokens": 10, "coins": 150 },
+        { "tokens": 25, "decor": "decor_mushroom" },
+        { "tokens": 45, "energy": 30 },
+        { "tokens": 70, "gems": 10 },
+        { "tokens": 100, "choiceDecor": true },
+        { "tokens": 140, "coins": 500 },
+        { "tokens": 190, "gems": 20, "decor": "decor_logs" }
+      ],
+      "choices": [
+        { "id": "mila", "decor": "decor_nest" },
+        { "id": "tim", "decor": "decor_trough" }
+      ]
+    },
+    {
+      "id": "lights",
+      "milestones": [
+        { "tokens": 10, "energy": 20 },
+        { "tokens": 25, "decor": "decor_bush" },
+        { "tokens": 45, "gems": 5 },
+        { "tokens": 70, "coins": 400 },
+        { "tokens": 100, "choiceDecor": true },
+        { "tokens": 140, "energy": 50 },
+        { "tokens": 190, "gems": 20, "decor": "decor_flowers_red" }
+      ],
+      "choices": [
+        { "id": "mila", "decor": "decor_torch" },
+        { "id": "tim", "decor": "decor_bench" }
+      ]
+    }
+  ]
+}

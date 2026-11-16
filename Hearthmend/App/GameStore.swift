@@ -10,6 +10,8 @@ final class GameStore: ObservableObject {
     @Published var toast: String?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
+    /// Свежие награды события: баннер события их показывает.
+    @Published var eventRewards: [EventReward] = []
 
     let game: Game
     private var timer: Timer?
@@ -18,8 +20,11 @@ final class GameStore: ObservableObject {
     /// Сцена перерисовывает поле после изменений, которые сделал не перетаскиванием.
     var onBoardChange: (() -> Void)?
 
+    /// Демо для скриншотов App Store: запуск с аргументом -demo, прогресс не сохраняется.
+    static let isDemo = CommandLine.arguments.contains("-demo")
+
     init() {
-        game = Game(state: Persistence.load())
+        game = Self.isDemo ? Game.demo() : Game(state: Persistence.load())
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()
@@ -47,7 +52,7 @@ final class GameStore: ObservableObject {
 
     private func commit() {
         state = game.state
-        Persistence.save(game.state)
+        if !Self.isDemo { Persistence.save(game.state) }
     }
 
     func show(_ text: String) {
@@ -62,13 +67,18 @@ final class GameStore: ObservableObject {
 
     // MARK: - Действия
 
-    func tap(_ index: Int) {
+    /// Тап по клетке. Для генератора возвращает результат, чтобы сцена показала полет предмета.
+    @discardableResult
+    func tap(_ index: Int) -> Game.SpawnResult? {
         switch game.piece(at: index) {
         case .generator?:
-            switch game.spawn(from: index) {
+            let result = game.spawn(from: index)
+            switch result {
             case .spawned:
                 Haptics.light()
+                Audio.shared.play(.spawn)
             case .noEnergy:
+                Audio.shared.play(.nope)
                 show(L10n.t("toast.no_energy"))
             case .boardFull:
                 show(L10n.t("toast.board_full"))
@@ -77,10 +87,11 @@ final class GameStore: ObservableObject {
             }
             selected = nil
             commit()
-            onBoardChange?()
+            return result
         case .bubble?:
             if game.popBubble(at: index) {
                 Haptics.success()
+                Audio.shared.play(.sparkle)
                 commit()
                 onBoardChange?()
             } else {
@@ -93,6 +104,7 @@ final class GameStore: ObservableObject {
         case nil:
             selected = nil
         }
+        return nil
     }
 
     @discardableResult
@@ -101,8 +113,10 @@ final class GameStore: ObservableObject {
         switch result {
         case .merged, .mergedGenerator:
             Haptics.success()
+            Audio.shared.play(.merge)
             selected = to
         case .moved, .swapped:
+            Audio.shared.play(.drop)
             if selected == from { selected = to }
         case .invalid:
             break
@@ -144,8 +158,12 @@ final class GameStore: ObservableObject {
     func deliver(_ order: Order) {
         guard game.deliver(orderId: order.id) != nil else { return }
         Haptics.success()
+        Audio.shared.play(.coins)
         selected = nil
         show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        if !game.lastEventRewards.isEmpty {
+            eventRewards = game.lastEventRewards
+        }
         if let level = game.lastLevelUps.last {
             celebrate(Celebration(icon: "🎉",
                                   title: String(format: L10n.t("level.up"), level),
@@ -164,6 +182,7 @@ final class GameStore: ObservableObject {
         switch game.complete(taskId: id) {
         case .done(let task):
             Haptics.success()
+            Audio.shared.play(.build)
             if let resident = task.resident, let chain = task.unlocksChain {
                 celebrate(Celebration(icon: "🏡",
                                       title: String(format: L10n.t("resident.arrived"), L10n.t("resident.\(resident)")),
@@ -235,6 +254,7 @@ final class GameStore: ObservableObject {
         let amount = paid ? game.openJarNow() : game.openJar()
         if amount > 0 {
             Haptics.success()
+            Audio.shared.play(.sparkle)
             show(String(format: L10n.t("jar.opened"), amount))
             commit()
         } else if paid {
@@ -251,12 +271,45 @@ final class GameStore: ObservableObject {
         return reward
     }
 
+    func skipTutorial() {
+        game.skipTutorial()
+        commit()
+        onBoardChange?()
+    }
+
+    // MARK: - События и украшения
+
+    func chooseEvent(_ id: String) {
+        let rewards = game.chooseEvent(id)
+        Haptics.success()
+        if !rewards.isEmpty { eventRewards = rewards }
+        commit()
+    }
+
+    func placeDecor(_ key: String, x: Double, y: Double) {
+        guard game.placeDecor(key, x: x, y: y) != nil else { return }
+        Haptics.light()
+        commit()
+    }
+
+    func moveDecor(id: Int, x: Double, y: Double) {
+        game.moveDecor(id: id, x: x, y: y)
+        commit()
+    }
+
+    func storeDecor(id: Int) {
+        game.storeDecor(id: id)
+        Haptics.light()
+        commit()
+    }
+
     /// Можно ли сейчас что-то построить: на кнопке деревни горит отметка.
     var canBuildSomething: Bool {
         game.availableTasks.contains { $0.cost <= state.stars }
     }
 
     private func celebrate(_ c: Celebration) {
+        Audio.shared.play(.levelup)
         celebration = c
     }
 

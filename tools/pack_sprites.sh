@@ -9,6 +9,7 @@ SRC="$1"
 TMP="$(mktemp -d)"
 python3 "$(dirname "$0")/sprites.py" "$SRC" "$TMP/Sprites" --sheet "$TMP/sheet.png"
 python3 "$(dirname "$0")/village_map.py" "$SRC" "$TMP/Sprites"
+python3 "$(dirname "$0")/make_icon.py" "$TMP/Sprites/appicon.png" "$SRC"
 tar -C "$TMP" -czf "$TMP/sprites.tar.gz" Sprites
 mkdir -p Art
 openssl enc -aes-256-cbc -md sha256 -salt -in "$TMP/sprites.tar.gz" -out Art/sprites.enc -pass env:ASSETS_KEY

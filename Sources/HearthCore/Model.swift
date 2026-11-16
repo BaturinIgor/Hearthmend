@@ -154,6 +154,17 @@ public struct GameState: Codable, Equatable {
     /// Ежедневная награда.
     public var dailyClaimedAt: Date?
     public var dailyStreak: Int = 0
+    /// Событие выходных: ключ недели, ленточки, сколько ступеней выдано, выбор жителя.
+    public var eventKey: String?
+    public var eventTokens: Int = 0
+    public var eventClaimed: Int = 0
+    public var eventChoice: String?
+    /// Украшения: в запасе и на карте.
+    public var decorOwned: [String: Int] = [:]
+    public var placedDecor: [PlacedDecor] = []
+    public var nextDecorId: Int = 1
+    /// Шаг обучения (TutorialStep). Старые сохранения с отданными заказами обучение пропускают.
+    public var tutorialStep: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -180,6 +191,8 @@ public struct GameState: Codable, Equatable {
         case bestTier, unlockedChains, mergesTotal, ordersTotal, completedTasks, level, pendingGenerators
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
+        case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
+        case tutorialStep
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -212,6 +225,15 @@ public struct GameState: Codable, Equatable {
         coinEnergyBought = try c.decodeIfPresent(Int.self, forKey: .coinEnergyBought) ?? 0
         dailyClaimedAt = try c.decodeIfPresent(Date.self, forKey: .dailyClaimedAt)
         dailyStreak = try c.decodeIfPresent(Int.self, forKey: .dailyStreak) ?? 0
+        eventKey = try c.decodeIfPresent(String.self, forKey: .eventKey)
+        eventTokens = try c.decodeIfPresent(Int.self, forKey: .eventTokens) ?? 0
+        eventClaimed = try c.decodeIfPresent(Int.self, forKey: .eventClaimed) ?? 0
+        eventChoice = try c.decodeIfPresent(String.self, forKey: .eventChoice)
+        decorOwned = try c.decodeIfPresent([String: Int].self, forKey: .decorOwned) ?? [:]
+        placedDecor = try c.decodeIfPresent([PlacedDecor].self, forKey: .placedDecor) ?? []
+        nextDecorId = try c.decodeIfPresent(Int.self, forKey: .nextDecorId) ?? 1
+        tutorialStep = try c.decodeIfPresent(Int.self, forKey: .tutorialStep)
+            ?? (ordersTotal > 0 ? TutorialStep.done.rawValue : 0)
     }
 }
 

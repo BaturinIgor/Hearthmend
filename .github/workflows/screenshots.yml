@@ -1,0 +1,75 @@
+name: Screenshots
+
+# Скриншоты для App Store: собирает игру под симулятор, запускает демо-состояние (-demo)
+# на разных экранах и сохраняет картинки. По кнопке или на PR с меткой screenshots.
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize]
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shots:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'screenshots')
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack sprites
+        env:
+          ASSETS_KEY: ${{ secrets.ASSETS_KEY }}
+        run: |
+          if [ -z "$ASSETS_KEY" ]; then echo "::warning::нет ASSETS_KEY, скриншоты с эмодзи"; exit 0; fi
+          if openssl enc -d -aes-256-cbc -md sha256 -in Art/sprites.enc -pass env:ASSETS_KEY | tar -xz -C Hearthmend/Resources; then
+            if [ -f Hearthmend/Resources/Sprites/appicon.png ]; then
+              mv Hearthmend/Resources/Sprites/appicon.png Hearthmend/Resources/Assets.xcassets/AppIcon.appiconset/icon.png
+            fi
+          else
+            rm -rf Hearthmend/Resources/Sprites
+            echo "::warning::Не удалось расшифровать спрайты, скриншоты с эмодзи"
+          fi
+
+      - name: Build for simulator
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -project Hearthmend.xcodeproj -scheme Hearthmend -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build > build.log 2>&1 || { grep -E "error:" build.log | sort -u | head -50; exit 1; }
+
+      - name: Take screenshots
+        run: |
+          set -e
+          APP=build/Build/Products/Debug-iphonesimulator/Hearthmend.app
+          # самый большой iPhone, который есть в этом Xcode (для App Store нужен 6.9")
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)['devices']
+          names=[x for r in d.values() for x in r if 'iPhone' in x['name']]
+          best=[x for x in names if 'Pro Max' in x['name']] or [x for x in names if 'Plus' in x['name']] or names
+          print(best[-1]['udid'])")
+          xcrun simctl boot "$DEVICE"
+          xcrun simctl bootstatus "$DEVICE" -b
+          xcrun simctl status_bar "$DEVICE" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+          xcrun simctl install "$DEVICE" "$APP"
+          mkdir -p shots
+          for lang in en ru; do
+            for screen in board village shop; do
+              args="-demo -AppleLanguages ($lang)"
+              [ "$screen" != board ] && args="$args -$screen"
+              xcrun simctl terminate "$DEVICE" com.personal.hearthmend 2>/dev/null || true
+              xcrun simctl launch "$DEVICE" com.personal.hearthmend $args
+              sleep 6
+              xcrun simctl io "$DEVICE" screenshot "shots/${lang}_${screen}.png"
+            done
+          done
+          ls -la shots
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots

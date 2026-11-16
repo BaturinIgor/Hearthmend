@@ -37,6 +37,8 @@ public struct SimReport: CustomStringConvertible {
     public var energyFromLevels = 0
     public var energyFromJar = 0
     public var energyFromCoins = 0
+    public var energyFromEvents = 0
+    public var eventMilestones = 0
     public var coinsSpent = 0
     public var level = 1
     public var tasksDone = 0
@@ -54,7 +56,7 @@ public struct SimReport: CustomStringConvertible {
         дней \(String(format: "%.1f", days)), сессий \(sessions), энергия \(energySpent), слияний \(merges), \
         заказов \(orders), звезд \(starsEarned), задач \(tasksDone), уровень \(level)
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
-        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), застреваний \(stalledSessions)
+        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), застреваний \(stalledSessions)
         районы: \(districts)
         """
     }
@@ -134,7 +136,11 @@ public enum Simulator {
         report.orders += 1
         report.coinsFromOrders += order.coins
         report.starsEarned += order.stars
-        if !game.lastLevelUps.isEmpty { report.energyFromLevels += game.state.energy - energyBefore }
+        let eventEnergy = game.lastEventRewards.reduce(0) { $0 + $1.energy }
+        report.energyFromEvents += eventEnergy
+        report.eventMilestones += game.lastEventRewards.count
+        if !game.lastLevelUps.isEmpty { report.energyFromLevels += game.state.energy - energyBefore - eventEnergy }
+        if game.eventNeedsChoice, let choice = game.activeEvent?.choices.first { game.chooseEvent(choice.id) }
         return true
     }
 

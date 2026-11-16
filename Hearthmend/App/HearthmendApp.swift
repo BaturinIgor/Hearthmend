@@ -12,17 +12,24 @@ struct HearthmendApp: App {
                 .environmentObject(store)
                 .environmentObject(shop)
                 .preferredColorScheme(.light)
-                .onAppear { shop.attach(store) }
+                .onAppear {
+                    shop.attach(store)
+                    Audio.shared.startMusic()
+                }
         }
     }
 }
 
 enum Haptics {
+    private static var on: Bool { UserDefaults.standard.object(forKey: "hapticsOn") as? Bool ?? true }
+
     static func light() {
+        guard on else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     static func success() {
+        guard on else { return }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
