@@ -64,6 +64,14 @@ SPRITES = {
     "farm_bread": ("Outdoor decoration/Picnic_Basket.png", 1, 0, 1, 1),
     "farm_picnic": ("Outdoor decoration/Picnic_Basket.png", 0, 0, 1, 1),
     "gen_farm": ("Animals/Chicken/Chicken_01.png", 0, 0, 2, 2),
+    # сад
+    "orchard_cherry": (FOOD, 6, 6, 1, 1),
+    "orchard_pear": (FOOD, 6, 5, 1, 1),
+    "orchard_apple": (FOOD, 6, 3, 1, 1),
+    "orchard_peach": (FOOD, 6, 4, 1, 1),
+    "orchard_grapes": (FOOD, 0, 5, 1, 1),
+    "orchard_melon": (FOOD, 6, 7, 1, 1),
+    "gen_orchard": ("Crops/Apple_Tree.png", 0, 0, 2, 4),
     # завал
     "debris": (DECOR, 3, 6, 1, 1),
 }

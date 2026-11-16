@@ -130,5 +130,20 @@
   "settings.sound": "Sounds",
   "settings.music": "Music",
   "settings.haptics": "Haptics",
-  "settings.version": "Version"
+  "settings.version": "Version",
+  "district.orchard": "Orchard",
+  "district.hilltop": "Hilltop",
+  "chain.orchard": "Orchard",
+  "task.orchard_sign": "Put up the orchard sign",
+  "task.orchard_trees": "Plant the fruit grove",
+  "task.orchard_bower": "Raise the grape arbor",
+  "task.orchard_cottage": "Gardener's cottage",
+  "task.orchard_press": "Build the cider press",
+  "task.orchard_market": "Open the fruit stalls",
+  "task.hill_cottage": "Cottage on the hill",
+  "task.hill_bakery": "Light the bakery oven",
+  "task.hill_glasshouse": "Glass conservatory",
+  "task.hill_library": "Restore the library",
+  "task.hill_manor": "Mend the old manor",
+  "task.hill_bell": "Ring the hilltop bell"
 }

@@ -11,7 +11,9 @@ import json, os, random, sys
 from PIL import Image
 
 CELL = 16
-MAP_W, MAP_H = 32, 50
+MAP_W, MAP_H = 32, 94
+# северный берег (сад и холм) над рекой; старые районы ниже на NORTH клеток
+NORTH = 44
 
 B = "Buildings/Buildings/"
 U = B + "Unique_Buildings/"
@@ -42,6 +44,21 @@ BUILDINGS = {
     "bld_smithy": (U + "Blacksmith_House/Blacksmith_House_Red.png", None),
     "bld_greenhouse": (U + "Greenhouse/GreenHouse_Wood.png", 0, 0, 96, 128),
     "bld_festival": (U + "Church/Church_Red.png", 336, 0, 112, 144),
+    # сад
+    "bld_signpost": (OD + "Signs.png", 0, 16, 16, 32),
+    # роща из трех деревьев собирается в grove()
+    "bld_grove": ("Crops/Apple_Tree.png", None),
+    "bld_bower": ("Crops/Grapes_Bower.png", 96, 80, 96, 80),
+    "bld_orchard_house": (B + "Houses/Stone/House_2_Stone_Green_Red.png", None),
+    "bld_press": (U + "Shed/Shed_Green_Blue.png", None),
+    "bld_market2": (U + "Stalls/Market_Stalls.png", 96, 0, 96, 48),
+    # холм
+    "bld_hill_cottage": (B + "Houses/Limestone/House_1_Limestone_Base_Red.png", None),
+    "bld_bakery": (B + "Houses/Limestone/House_4_Limestone_Base_Red.png", None),
+    "bld_glasshouse": (U + "Greenhouse/GreenHouse_Green.png", 0, 0, 96, 128),
+    "bld_library": (B + "Houses/Limestone/House_3_Limestone_Base_Blue.png", None),
+    "bld_manor": (B + "Houses/Stone/House_5_Stone_Red_Blue.png", None),
+    "bld_bell": (U + "Church/Church_Blue.png", 336, 0, 112, 144),
 }
 
 # украшения из событий: ставятся на карту куда угодно
@@ -74,7 +91,21 @@ def load(pack, path):
     return Image.open(os.path.join(pack, path)).convert("RGBA")
 
 
+def grove(pack):
+    trees = [crop_opaque(load(pack, f"Crops/{n}_Tree.png")) for n in ("Pear", "Apple", "Peach")]
+    w = trees[0].width + trees[1].width + trees[2].width - 8
+    h = max(t.height for t in trees) + 6
+    im = Image.new("RGBA", (w, h))
+    # средняя чуть ниже, чтобы роща не выглядела строем
+    im.alpha_composite(trees[0], (0, h - 6 - trees[0].height))
+    im.alpha_composite(trees[2], (w - trees[2].width, h - 6 - trees[2].height))
+    im.alpha_composite(trees[1], (trees[0].width - 4, h - trees[1].height))
+    return im
+
+
 def building(pack, key):
+    if key == "bld_grove":
+        return grove(pack)
     spec = BUILDINGS[key]
     im = load(pack, spec[0])
     if spec[1] is not None:
@@ -122,22 +153,22 @@ def compose_background(pack):
             if rnd.random() < 0.08:
                 bg.alpha_composite(rnd.choice(tufts), (x * CELL, y * CELL))
 
-    # река сверху
+    # река поперек карты, сад и холм на северном берегу
     water_sheet = load(pack, "Tiles/Water/Water_Tile_1.png")
     water_fill = load(pack, "Tiles/Water/Water_Middle.png")
-    water = {(x, y) for x in range(MAP_W) for y in range(0, 5)}
+    water = {(x, y) for x in range(MAP_W) for y in range(NORTH, NORTH + 5)}
     autotile(bg, water, water_sheet, 0, 0, water_fill)
 
-    # дорожки: главная сверху вниз от моста и поперечные в каждом районе
+    # дорожки: главная сверху вниз через мост и поперечные в каждом районе
     grass_sheet = load(pack, "Tiles/Grass/Grass_Tiles_1.png")
     dirt_fill = tile(grass_sheet, 1, 6)
     path = set()
-    for y in range(6, 41):
+    for y in list(range(10, NORTH)) + list(range(NORTH + 6, NORTH + 41)):
         path |= {(15, y), (16, y)}
-    for y0 in (20, 39):
+    for y0 in (13, 28, NORTH + 20, NORTH + 39):
         path |= {(x, y) for x in range(2, 30) for y in (y0, y0 + 1)}
     # площадь вокруг фонтана
-    path |= {(x, y) for x in range(8, 15) for y in range(22, 28)}
+    path |= {(x, y) for x in range(8, 15) for y in range(NORTH + 22, NORTH + 28)}
     autotile(bg, path, grass_sheet, 0, 5, dirt_fill)
     return bg
 

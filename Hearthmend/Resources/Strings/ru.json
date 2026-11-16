@@ -130,5 +130,20 @@
   "settings.sound": "Звуки",
   "settings.music": "Музыка",
   "settings.haptics": "Вибрация",
-  "settings.version": "Версия"
+  "settings.version": "Версия",
+  "district.orchard": "Сад",
+  "district.hilltop": "Холм",
+  "chain.orchard": "Сад",
+  "task.orchard_sign": "Поставить указатель сада",
+  "task.orchard_trees": "Посадить плодовую рощу",
+  "task.orchard_bower": "Поднять виноградную арку",
+  "task.orchard_cottage": "Домик садовника",
+  "task.orchard_press": "Собрать сидровый пресс",
+  "task.orchard_market": "Открыть фруктовые прилавки",
+  "task.hill_cottage": "Домик на холме",
+  "task.hill_bakery": "Разжечь печь пекарни",
+  "task.hill_glasshouse": "Стеклянная оранжерея",
+  "task.hill_library": "Вернуть библиотеку",
+  "task.hill_manor": "Починить старую усадьбу",
+  "task.hill_bell": "Ударить в колокол на холме"
 }

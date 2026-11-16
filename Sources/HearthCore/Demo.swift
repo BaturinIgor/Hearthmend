@@ -22,9 +22,9 @@ extension Game {
         game.state.dailyClaimedAt = now()
         game.state.decorOwned = ["decor_torch": 1]
         game.state.placedDecor = [
-            PlacedDecor(id: 1, key: "decor_garland", x: 11, y: 22.5),
-            PlacedDecor(id: 2, key: "decor_flowers_purple", x: 7, y: 33),
-            PlacedDecor(id: 3, key: "decor_scarecrow", x: 18.5, y: 43),
+            PlacedDecor(id: 1, key: "decor_garland", x: 11, y: 66.5),
+            PlacedDecor(id: 2, key: "decor_flowers_purple", x: 7, y: 77),
+            PlacedDecor(id: 3, key: "decor_scarecrow", x: 18.5, y: 87),
         ]
         game.state.nextDecorId = 4
         // поле: генераторы внизу, над ними пары и цепочки разных ступеней

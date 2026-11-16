@@ -10,8 +10,8 @@ struct VillageView: View {
     @State private var justBuilt: String?
     @State private var showDecor = false
 
-    /// Размер карты в пикселях пака (tools/village_map.py: 32 x 50 клеток по 16).
-    static let mapSize = CGSize(width: 512, height: 800)
+    /// Размер карты в пикселях пака (tools/village_map.py: 32 x 94 клеток по 16).
+    static let mapSize = CGSize(width: 512, height: 1504)
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -103,7 +103,7 @@ struct VillageView: View {
 
     /// Новое украшение ставится у дороги рядом с текущим районом; дальше игрок двигает его пальцем.
     private func placeDecor(_ key: String) {
-        let y = Double(focusTask?.y ?? 25) + 2
+        let y = Double(focusTask?.y ?? 70) + 2
         let x = 17.5 + Double(store.state.placedDecor.count % 5)
         withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) { store.placeDecor(key, x: x, y: y) }
     }

@@ -9,7 +9,7 @@ public struct VillageTask: Codable, Equatable, Identifiable {
     /// Спрайт постройки на карте деревни.
     public let building: String
     /// Место на карте в клетках по 16 пикселей.
-    public let x: Int
+    public let x: Double
     public let y: Int
     public var gems: Int?
     public var unlocksChain: String?
