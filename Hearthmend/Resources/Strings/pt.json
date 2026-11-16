@@ -174,5 +174,14 @@
   "shot.event.title": "Festas de fim de semana",
   "shot.event.sub": "Realize um desejo e ganhe um enfeite único",
   "shot.postcard.title": "Colecione cartões-postais",
-  "shot.postcard.sub": "Cada pedido rende uma peça"
+  "shot.postcard.sub": "Cada pedido rende uma peça",
+  "shop.stamps": "Cartão de selos",
+  "shop.stamps_hint": "Cada compra adiciona um selo. Com %d: 💎 %d e um enfeite raro",
+  "shop.stamps_done": "Cartão de selos completo!",
+  "shop.stamp_added": "Selo %d de %d",
+  "season.spring": "Primavera",
+  "season.summer": "Verão",
+  "season.autumn": "Outono",
+  "season.winter": "Inverno",
+  "village.fog_next": "Próximo: %@"
 }

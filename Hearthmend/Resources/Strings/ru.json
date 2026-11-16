@@ -174,5 +174,14 @@
   "shot.event.title": "Праздники по выходным",
   "shot.event.sub": "Исполни мечту и получи редкое украшение",
   "shot.postcard.title": "Собирай открытки",
-  "shot.postcard.sub": "Каждый заказ даёт кусочек"
+  "shot.postcard.sub": "Каждый заказ даёт кусочек",
+  "shop.stamps": "Карточка штампов",
+  "shop.stamps_hint": "Каждая покупка ставит штамп. За %d штампов: 💎 %d и редкое украшение",
+  "shop.stamps_done": "Карточка штампов собрана!",
+  "shop.stamp_added": "Штамп %d из %d",
+  "season.spring": "Весна",
+  "season.summer": "Лето",
+  "season.autumn": "Осень",
+  "season.winter": "Зима",
+  "village.fog_next": "Дальше: %@"
 }

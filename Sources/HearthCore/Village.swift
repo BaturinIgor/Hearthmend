@@ -61,6 +61,20 @@ extension Game {
         return previous.tasks.allSatisfy { state.completedTasks.contains($0.id) }
     }
 
+    /// Первый закрытый район: над картой висит туман с его названием.
+    public var nextLockedDistrict: District? {
+        village.districts.first { !isDistrictOpen($0) }
+    }
+
+    /// До какой строки карты (в клетках, сверху) лежит туман над закрытыми районами.
+    /// Чуть выше самой северной постройки открытых районов, чтобы крыши не прятались. nil - все открыто.
+    public var fogRow: Double? {
+        guard nextLockedDistrict != nil else { return nil }
+        let open = village.districts.filter(isDistrictOpen).flatMap(\.tasks)
+        guard let top = open.map(\.y).min() else { return nil }
+        return max(0, Double(top) - 7)
+    }
+
     public var currentDistrict: District? {
         village.districts.first { d in !d.tasks.allSatisfy { state.completedTasks.contains($0.id) } }
     }

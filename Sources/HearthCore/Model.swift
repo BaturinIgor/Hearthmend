@@ -111,6 +111,10 @@ public struct Balance: Equatable {
     public var postcardGems = 10
     public var postcardCoins = 100
 
+    /// Карточка штампов: штамп за каждую покупку, за полную карточку кристаллы и украшение.
+    public var stampsPerCard = 6
+    public var stampCardGems = 150
+
     /// Опыт до следующего уровня: xpBase * уровень^2.
     public var xpBase = 12
     public var levelUpEnergy = 20
@@ -188,6 +192,8 @@ public struct GameState: Codable, Equatable {
     /// Открытки: сколько собрано и сколько кусочков у текущей.
     public var postcardIndex: Int = 0
     public var postcardPieces: Int = 0
+    public var stamps: Int = 0
+    public var stampCards: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -215,7 +221,7 @@ public struct GameState: Codable, Equatable {
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
-        case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces
+        case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces, stamps, stampCards
         case tutorialStep
     }
 
@@ -265,6 +271,8 @@ public struct GameState: Codable, Equatable {
         boostOn = try c.decodeIfPresent(Bool.self, forKey: .boostOn) ?? false
         postcardIndex = try c.decodeIfPresent(Int.self, forKey: .postcardIndex) ?? 0
         postcardPieces = try c.decodeIfPresent(Int.self, forKey: .postcardPieces) ?? 0
+        stamps = try c.decodeIfPresent(Int.self, forKey: .stamps) ?? 0
+        stampCards = try c.decodeIfPresent(Int.self, forKey: .stampCards) ?? 0
     }
 }
 

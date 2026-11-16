@@ -174,5 +174,14 @@
   "shot.event.title": "Weekend festivals",
   "shot.event.sub": "Grant a wish and win a unique decoration",
   "shot.postcard.title": "Collect village postcards",
-  "shot.postcard.sub": "Every order adds a piece"
+  "shot.postcard.sub": "Every order adds a piece",
+  "shop.stamps": "Stamp card",
+  "shop.stamps_hint": "Every purchase adds a stamp. Collect %d for 💎 %d and a rare decoration",
+  "shop.stamps_done": "Stamp card complete!",
+  "shop.stamp_added": "Stamp %d of %d",
+  "season.spring": "Spring",
+  "season.summer": "Summer",
+  "season.autumn": "Autumn",
+  "season.winter": "Winter",
+  "village.fog_next": "Next: %@"
 }

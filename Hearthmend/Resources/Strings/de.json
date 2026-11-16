@@ -174,5 +174,14 @@
   "shot.event.title": "Feste am Wochenende",
   "shot.event.sub": "Erfülle einen Wunsch, gewinn eine seltene Deko",
   "shot.postcard.title": "Sammle Dorf-Postkarten",
-  "shot.postcard.sub": "Jeder Auftrag bringt ein Teil"
+  "shot.postcard.sub": "Jeder Auftrag bringt ein Teil",
+  "shop.stamps": "Stempelkarte",
+  "shop.stamps_hint": "Jeder Kauf gibt einen Stempel. Für %d gibt es 💎 %d und eine seltene Deko",
+  "shop.stamps_done": "Stempelkarte voll!",
+  "shop.stamp_added": "Stempel %d von %d",
+  "season.spring": "Frühling",
+  "season.summer": "Sommer",
+  "season.autumn": "Herbst",
+  "season.winter": "Winter",
+  "village.fog_next": "Als Nächstes: %@"
 }

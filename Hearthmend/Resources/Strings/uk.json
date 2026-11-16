@@ -174,5 +174,14 @@
   "shot.event.title": "Свята на вихідних",
   "shot.event.sub": "Здійсни мрію й отримай рідкісну прикрасу",
   "shot.postcard.title": "Збирай листівки",
-  "shot.postcard.sub": "Кожне замовлення дає шматочок"
+  "shot.postcard.sub": "Кожне замовлення дає шматочок",
+  "shop.stamps": "Картка штампів",
+  "shop.stamps_hint": "Кожна покупка ставить штамп. За %d штампів: 💎 %d і рідкісна прикраса",
+  "shop.stamps_done": "Картку штампів зібрано!",
+  "shop.stamp_added": "Штамп %d з %d",
+  "season.spring": "Весна",
+  "season.summer": "Літо",
+  "season.autumn": "Осінь",
+  "season.winter": "Зима",
+  "village.fog_next": "Далі: %@"
 }

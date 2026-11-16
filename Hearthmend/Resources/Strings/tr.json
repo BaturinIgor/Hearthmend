@@ -174,5 +174,14 @@
   "shot.event.title": "Hafta sonu şenlikleri",
   "shot.event.sub": "Bir dileği gerçekleştir, eşsiz süs kazan",
   "shot.postcard.title": "Köy kartpostalları topla",
-  "shot.postcard.sub": "Her sipariş bir parça getirir"
+  "shot.postcard.sub": "Her sipariş bir parça getirir",
+  "shop.stamps": "Damga kartı",
+  "shop.stamps_hint": "Her satın alma bir damga ekler. %d damga: 💎 %d ve nadir bir süs",
+  "shop.stamps_done": "Damga kartı tamam!",
+  "shop.stamp_added": "Damga %d / %d",
+  "season.spring": "İlkbahar",
+  "season.summer": "Yaz",
+  "season.autumn": "Sonbahar",
+  "season.winter": "Kış",
+  "village.fog_next": "Sıradaki: %@"
 }

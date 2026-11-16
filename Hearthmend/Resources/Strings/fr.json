@@ -174,5 +174,14 @@
   "shot.event.title": "Fêtes du week-end",
   "shot.event.sub": "Exauce un vœu, gagne une déco unique",
   "shot.postcard.title": "Collectionne les cartes",
-  "shot.postcard.sub": "Chaque commande ajoute une pièce"
+  "shot.postcard.sub": "Chaque commande ajoute une pièce",
+  "shop.stamps": "Carte de tampons",
+  "shop.stamps_hint": "Chaque achat ajoute un tampon. %d tampons : 💎 %d et une déco rare",
+  "shop.stamps_done": "Carte de tampons complète !",
+  "shop.stamp_added": "Tampon %d sur %d",
+  "season.spring": "Printemps",
+  "season.summer": "Été",
+  "season.autumn": "Automne",
+  "season.winter": "Hiver",
+  "village.fog_next": "Ensuite : %@"
 }
