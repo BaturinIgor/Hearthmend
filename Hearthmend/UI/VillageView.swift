@@ -29,7 +29,7 @@ struct VillageView: View {
                         if let focus = focusTask {
                             // ждем раскладку карты: при запуске сразу в деревню прокрутка раньше не срабатывала
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                                withAnimation(.easeInOut(duration: 0.6)) { proxy.scrollTo(focus.id, anchor: .center) }
+                                withAnimation(.easeInOut(duration: 0.6)) { proxy.scrollTo("focus_\(focus.id)", anchor: .center) }
                             }
                         }
                     }
@@ -88,6 +88,15 @@ struct VillageView: View {
             }
             ForEach(store.state.placedDecor) { decor in
                 DecorPiece(decor: decor, scale: scale)
+            }
+            // точки для прокрутки: у постройки рамка от верха карты (отступы), а scrollTo
+            // целится в середину рамки. Здесь рамка 1x1 ровно на постройке.
+            ForEach(store.game.village.allTasks) { task in
+                VStack(spacing: 0) {
+                    Color.clear.frame(width: 1, height: max(0, (CGFloat(task.y) - 2) * 16 * scale))
+                    Color.clear.frame(width: 1, height: 1).id("focus_\(task.id)")
+                }
+                .allowsHitTesting(false)
             }
             if let row = store.game.fogRow, row > 0 {
                 LockedFog(height: CGFloat(row) * 16 * scale, next: store.game.nextLockedDistrict.map { L10n.t("district.\($0.id)") })
