@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var scene = BoardScene(size: CGSize(width: 350, height: 450))
     @State private var screen: Screen = .board
     @State private var showShop = false
+    @State private var showSettings = false
     @State private var showDaily = false
 
     var body: some View {
@@ -33,6 +34,7 @@ struct ContentView: View {
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: screen)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showDaily)
         .sheet(isPresented: $showShop) { ShopView() }
+        .background(EmptyView().sheet(isPresented: $showSettings) { SettingsView() })
         .onAppear {
             if store.game.dailyRewardReady, store.game.tutorial == .done {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { showDaily = true }
@@ -45,7 +47,7 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             Theme.background.ignoresSafeArea()
             VStack(spacing: 8) {
-                TopBar(openVillage: { screen = .village }, openShop: { showShop = true })
+                TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
                 EventBanner()
                 SpriteView(scene: scene, options: [.allowsTransparency])
@@ -131,10 +133,11 @@ private struct TopBar: View {
     @EnvironmentObject private var store: GameStore
     let openVillage: () -> Void
     let openShop: () -> Void
+    let openSettings: () -> Void
 
     var body: some View {
         HStack(spacing: 8) {
-            LevelBadge()
+            Button(action: openSettings) { LevelBadge() }
             Button(action: openShop) { Counter(icon: "⚡️", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
             Counter(icon: "🪙", value: "\(store.state.coins)")
             Button(action: openShop) { Counter(icon: "💎", value: "\(store.state.gems)", plus: true) }

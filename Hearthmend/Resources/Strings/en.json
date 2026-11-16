@@ -124,5 +124,11 @@
   "tutorial.build": "You have stars! Let's go to the village and build something.",
   "tutorial.done": "",
   "tutorial.skip": "Skip",
-  "tutorial.go_village": "To the village"
+  "tutorial.go_village": "To the village",
+  "settings.title": "Settings",
+  "settings.level": "Level %d",
+  "settings.sound": "Sounds",
+  "settings.music": "Music",
+  "settings.haptics": "Haptics",
+  "settings.version": "Version"
 }

@@ -124,5 +124,11 @@
   "tutorial.build": "Звёзды есть! Пойдём в деревню и построим первое здание.",
   "tutorial.done": "",
   "tutorial.skip": "Пропустить",
-  "tutorial.go_village": "В деревню"
+  "tutorial.go_village": "В деревню",
+  "settings.title": "Настройки",
+  "settings.level": "Уровень %d",
+  "settings.sound": "Звуки",
+  "settings.music": "Музыка",
+  "settings.haptics": "Вибрация",
+  "settings.version": "Версия"
 }

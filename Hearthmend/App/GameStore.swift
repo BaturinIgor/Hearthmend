@@ -73,7 +73,9 @@ final class GameStore: ObservableObject {
             switch result {
             case .spawned:
                 Haptics.light()
+                Audio.shared.play(.spawn)
             case .noEnergy:
+                Audio.shared.play(.nope)
                 show(L10n.t("toast.no_energy"))
             case .boardFull:
                 show(L10n.t("toast.board_full"))
@@ -86,6 +88,7 @@ final class GameStore: ObservableObject {
         case .bubble?:
             if game.popBubble(at: index) {
                 Haptics.success()
+                Audio.shared.play(.sparkle)
                 commit()
                 onBoardChange?()
             } else {
@@ -107,8 +110,10 @@ final class GameStore: ObservableObject {
         switch result {
         case .merged, .mergedGenerator:
             Haptics.success()
+            Audio.shared.play(.merge)
             selected = to
         case .moved, .swapped:
+            Audio.shared.play(.drop)
             if selected == from { selected = to }
         case .invalid:
             break
@@ -150,6 +155,7 @@ final class GameStore: ObservableObject {
     func deliver(_ order: Order) {
         guard game.deliver(orderId: order.id) != nil else { return }
         Haptics.success()
+        Audio.shared.play(.coins)
         selected = nil
         show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
         if !game.lastEventRewards.isEmpty {
@@ -173,6 +179,7 @@ final class GameStore: ObservableObject {
         switch game.complete(taskId: id) {
         case .done(let task):
             Haptics.success()
+            Audio.shared.play(.build)
             if let resident = task.resident, let chain = task.unlocksChain {
                 celebrate(Celebration(icon: "🏡",
                                       title: String(format: L10n.t("resident.arrived"), L10n.t("resident.\(resident)")),
@@ -244,6 +251,7 @@ final class GameStore: ObservableObject {
         let amount = paid ? game.openJarNow() : game.openJar()
         if amount > 0 {
             Haptics.success()
+            Audio.shared.play(.sparkle)
             show(String(format: L10n.t("jar.opened"), amount))
             commit()
         } else if paid {
@@ -298,6 +306,7 @@ final class GameStore: ObservableObject {
     }
 
     private func celebrate(_ c: Celebration) {
+        Audio.shared.play(.levelup)
         celebration = c
     }
 
