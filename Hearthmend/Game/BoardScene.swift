@@ -107,7 +107,7 @@ final class BoardScene: SKScene {
                 glow.strokeColor = .clear
                 node.addChild(glow)
             }
-            node.addChild(emoji(catalog.emoji(for: item), scale: 0.62))
+            node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.62))
             node.addChild(badge("\(item.tier + 1)"))
         case .generator(let gen):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
@@ -115,14 +115,15 @@ final class BoardScene: SKScene {
             base.strokeColor = Palette.generatorStroke
             base.lineWidth = 2
             node.addChild(base)
-            node.addChild(emoji(catalog.chain(gen.chain)?.generatorEmoji ?? "?", scale: 0.6))
+            let def = catalog.chain(gen.chain)
+            node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.6))
             node.addChild(badge(String(repeating: "★", count: gen.tier + 1)))
         case .debris(let layers):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
             base.fillColor = Palette.debris
             base.strokeColor = .clear
             node.addChild(base)
-            node.addChild(emoji("🧱", scale: 0.5))
+            node.addChild(icon(key: "debris", fallback: "🧱", scale: 0.5))
             if layers > 1 { node.addChild(badge("\(layers)")) }
         case .bubble(let item, _):
             let bubble = SKShapeNode(circleOfRadius: cellSize * 0.44)
@@ -130,13 +131,23 @@ final class BoardScene: SKScene {
             bubble.strokeColor = .white
             bubble.lineWidth = 2
             node.addChild(bubble)
-            let inner = emoji(catalog.emoji(for: item), scale: 0.5)
+            let inner = icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.5)
             inner.alpha = 0.8
             node.addChild(inner)
             node.addChild(badge("💎\(store?.balance.bubblePopCost ?? 0)"))
             node.run(.repeatForever(.sequence([.scale(to: 1.05, duration: 0.6), .scale(to: 0.95, duration: 0.6)])))
         }
         return node
+    }
+
+    /// Спрайт из пака, если он есть в сборке, иначе эмодзи. scale - доля клетки.
+    private func icon(key: String, fallback: String, scale: CGFloat) -> SKNode {
+        guard let texture = Sprites.texture(key) else { return emoji(fallback, scale: scale) }
+        let sprite = SKSpriteNode(texture: texture)
+        let side = cellSize * (scale + 0.12)
+        let k = side / max(texture.size().width, texture.size().height)
+        sprite.size = CGSize(width: texture.size().width * k, height: texture.size().height * k)
+        return sprite
     }
 
     private func emoji(_ text: String, scale: CGFloat) -> SKLabelNode {
@@ -236,6 +247,30 @@ final class BoardScene: SKScene {
         puff.zPosition = 5
         boardNode.addChild(puff)
         puff.run(.sequence([.group([.scale(to: 1.6, duration: 0.25), .fadeOut(withDuration: 0.25)]), .removeFromParent()]))
+    }
+}
+
+/// Спрайты пака лежат в бандле как <ключ>.png (их распаковывает CI из Art/sprites.enc).
+/// Пиксель-арт масштабируется без сглаживания.
+@MainActor
+enum Sprites {
+    private static var cache: [String: SKTexture?] = [:]
+
+    static func texture(_ key: String) -> SKTexture? {
+        if let cached = cache[key] { return cached }
+        var texture: SKTexture?
+        if let image = image(key) {
+            let t = SKTexture(image: image)
+            t.filteringMode = .nearest
+            texture = t
+        }
+        cache[key] = texture
+        return texture
+    }
+
+    static func image(_ key: String) -> UIImage? {
+        guard !key.isEmpty, let path = Bundle.main.path(forResource: key, ofType: "png") else { return nil }
+        return UIImage(contentsOfFile: path)
     }
 }
 

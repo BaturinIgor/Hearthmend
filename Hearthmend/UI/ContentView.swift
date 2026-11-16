@@ -116,7 +116,7 @@ private struct OrderCard: View {
             HStack(spacing: 2) {
                 ForEach(Array(order.needs.enumerated()), id: \.offset) { _, item in
                     ZStack(alignment: .bottomTrailing) {
-                        Text(store.catalog.emoji(for: item)).font(.system(size: 26))
+                        ItemIcon(item: item, size: 30)
                         Text("\(item.tier + 1)")
                             .font(.system(size: 10, weight: .heavy, design: .rounded))
                             .foregroundColor(Theme.text)
@@ -152,7 +152,7 @@ private struct SelectedBar: View {
     var body: some View {
         HStack(spacing: 8) {
             if let index = store.selected, let item = store.game.piece(at: index)?.item {
-                Text(store.catalog.emoji(for: item)).font(.system(size: 26))
+                ItemIcon(item: item, size: 30)
                 Text(item.tier == store.catalog.maxTier(of: item.chain) ? L10n.t("selected.max") : "\(item.tier + 1)/\(store.catalog.maxTier(of: item.chain) + 1)")
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.text)
@@ -199,8 +199,9 @@ private struct BasketBar: View {
                 Button {
                     store.retrieve(i)
                 } label: {
-                    Text(item.map { store.catalog.emoji(for: $0) } ?? "")
-                        .font(.system(size: 22))
+                    Group {
+                        if let item { ItemIcon(item: item, size: 26) } else { Color.clear }
+                    }
                         .frame(width: 38, height: 38)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Theme.card))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.wood.opacity(0.4), lineWidth: 1))
@@ -209,5 +210,24 @@ private struct BasketBar: View {
             }
         }
         .padding(.bottom, 8)
+    }
+}
+
+/// Иконка предмета: спрайт пака без сглаживания или эмодзи, пока спрайтов нет.
+struct ItemIcon: View {
+    @EnvironmentObject private var store: GameStore
+    let item: Item
+    let size: CGFloat
+
+    var body: some View {
+        if let image = Sprites.image(store.catalog.key(for: item)) {
+            Image(uiImage: image)
+                .resizable()
+                .interpolation(.none)
+                .scaledToFit()
+                .frame(width: size, height: size)
+        } else {
+            Text(store.catalog.emoji(for: item)).font(.system(size: size * 0.85))
+        }
     }
 }

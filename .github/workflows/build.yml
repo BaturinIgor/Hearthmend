@@ -37,8 +37,12 @@ jobs:
             exit 0
           fi
           mkdir -p Hearthmend/Resources
-          openssl enc -d -aes-256-cbc -md sha256 -in Art/sprites.enc -pass env:ASSETS_KEY | tar -xz -C Hearthmend/Resources
-          echo "::notice::Спрайтов: $(ls Hearthmend/Resources/Sprites | wc -l | tr -d ' ')"
+          if openssl enc -d -aes-256-cbc -md sha256 -in Art/sprites.enc -pass env:ASSETS_KEY | tar -xz -C Hearthmend/Resources; then
+            echo "::notice::Спрайтов: $(ls Hearthmend/Resources/Sprites | wc -l | tr -d ' ')"
+          else
+            rm -rf Hearthmend/Resources/Sprites
+            echo "::warning::Не удалось расшифровать Art/sprites.enc (другой ASSETS_KEY?), сборка с эмодзи"
+          fi
 
       - name: Install tools
         run: |
