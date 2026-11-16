@@ -8,6 +8,8 @@ final class GameStore: ObservableObject {
     @Published private(set) var state: GameState
     @Published var selected: Int?
     @Published var toast: String?
+    /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
+    @Published var celebration: Celebration?
 
     let game: Game
     private var timer: Timer?
@@ -144,8 +146,54 @@ final class GameStore: ObservableObject {
         Haptics.success()
         selected = nil
         show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        if let level = game.lastLevelUps.last {
+            celebrate(Celebration(icon: "🎉",
+                                  title: String(format: L10n.t("level.up"), level),
+                                  subtitle: String(format: L10n.t("level.reward"),
+                                                   balance.levelUpEnergy * game.lastLevelUps.count,
+                                                   balance.levelUpGems * game.lastLevelUps.count)))
+        }
         commit()
         onBoardChange?()
+    }
+
+    /// Строит задачу деревни. Возвращает true, если построено.
+    @discardableResult
+    func completeTask(_ id: String) -> Bool {
+        let districtBefore = game.currentDistrict
+        switch game.complete(taskId: id) {
+        case .done(let task):
+            Haptics.success()
+            if let resident = task.resident, let chain = task.unlocksChain {
+                celebrate(Celebration(icon: "🏡",
+                                      title: String(format: L10n.t("resident.arrived"), L10n.t("resident.\(resident)")),
+                                      subtitle: String(format: L10n.t("resident.chain"), L10n.t("chain.\(chain)"))))
+            } else if let district = districtBefore, game.currentDistrict?.id != district.id {
+                celebrate(Celebration(icon: "🎊",
+                                      title: String(format: L10n.t("district.done"), L10n.t("district.\(district.id)")),
+                                      subtitle: game.currentDistrict.map { String(format: L10n.t("district.next"), L10n.t("district.\($0.id)")) }
+                                          ?? L10n.t("village.done")))
+            } else if let gems = task.gems {
+                show(String(format: L10n.t("task.gems"), gems))
+            }
+            commit()
+            onBoardChange?()
+            return true
+        case .notEnoughStars:
+            show(L10n.t("toast.no_stars"))
+            return false
+        case .locked:
+            return false
+        }
+    }
+
+    /// Можно ли сейчас что-то построить: на кнопке деревни горит отметка.
+    var canBuildSomething: Bool {
+        game.availableTasks.contains { $0.cost <= state.stars }
+    }
+
+    private func celebrate(_ c: Celebration) {
+        celebration = c
     }
 
     func canDeliver(_ order: Order) -> Bool { game.canDeliver(order) }
@@ -158,6 +206,13 @@ final class GameStore: ObservableObject {
         exit(0)
     }
     #endif
+}
+
+struct Celebration: Equatable, Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let subtitle: String
 }
 
 /// Сохранение в Application Support/save.json.

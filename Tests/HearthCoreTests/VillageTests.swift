@@ -64,9 +64,10 @@ final class VillageTests: XCTestCase {
 
     func testCompleteSpendsStars() {
         let game = makeGame()
-        game.testSetStars(1)
+        let cost = game.village.task("square_clear")!.cost
+        game.testSetStars(cost - 1)
         XCTAssertEqual(game.complete(taskId: "square_clear"), .notEnoughStars(missing: 1))
-        game.testSetStars(5)
+        game.testSetStars(cost + 3)
         guard case .done = game.complete(taskId: "square_clear") else { return XCTFail() }
         XCTAssertEqual(game.state.stars, 3)
         XCTAssertEqual(game.complete(taskId: "square_clear"), .locked, "второй раз нельзя")
@@ -75,7 +76,7 @@ final class VillageTests: XCTestCase {
 
     func testTaskGivesGems() {
         let game = makeGame()
-        game.testSetStars(100)
+        game.testSetStars(1000)
         for id in ["square_clear", "square_well"] { _ = game.complete(taskId: id) }
         let gems = game.state.gems
         _ = game.complete(taskId: "square_home")
@@ -84,7 +85,7 @@ final class VillageTests: XCTestCase {
 
     func testResidentUnlocksChainAndPlacesGenerator() {
         let game = makeGame()
-        game.testSetStars(100)
+        game.testSetStars(1000)
         for id in ["square_clear", "square_well", "square_home", "square_beekeeper"] {
             guard case .done = game.complete(taskId: id) else { return XCTFail(id) }
         }
@@ -96,7 +97,7 @@ final class VillageTests: XCTestCase {
 
     func testGeneratorWaitsForFreeCell() {
         let game = makeGame()
-        game.testSetStars(100)
+        game.testSetStars(1000)
         for i in 0..<game.balance.cellCount { game.testSet(i, .item(Item(chain: "quarry", tier: 6))) }
         game.testSet(0, .item(Item(chain: "garden", tier: 0)))
         for id in ["square_clear", "square_well", "square_home", "square_beekeeper"] {
@@ -163,7 +164,7 @@ final class VillageTests: XCTestCase {
 
     func testVillageProgressSurvivesSave() throws {
         let game = makeGame()
-        game.testSetStars(10)
+        game.testSetStars(game.village.task("square_clear")!.cost + 8)
         _ = game.complete(taskId: "square_clear")
         let data = try JSONEncoder().encode(game.state)
         let loaded = try JSONDecoder().decode(GameState.self, from: data)
