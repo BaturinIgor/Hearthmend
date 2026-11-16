@@ -1,0 +1,40 @@
+{
+  "districts": [
+    {
+      "id": "square",
+      "tasks": [
+        { "id": "square_clear", "cost": 4, "requires": [], "building": "bld_square", "x": 11, "y": 26 },
+        { "id": "square_well", "cost": 6, "requires": ["square_clear"], "building": "bld_well", "x": 13, "y": 31 },
+        { "id": "square_lamps", "cost": 8, "requires": ["square_clear"], "building": "bld_lamps", "x": 8, "y": 26 },
+        { "id": "square_home", "cost": 12, "requires": ["square_well"], "building": "bld_home", "x": 4, "y": 31, "gems": 5 },
+        { "id": "square_benches", "cost": 10, "requires": ["square_lamps"], "building": "bld_benches", "x": 11, "y": 29 },
+        { "id": "square_flowers", "cost": 12, "requires": ["square_benches"], "building": "bld_flowers", "x": 9, "y": 32 },
+        { "id": "square_beekeeper", "cost": 16, "requires": ["square_home"], "building": "bld_beekeeper", "x": 5, "y": 38, "unlocksChain": "apiary", "resident": "mila" },
+        { "id": "square_stalls", "cost": 16, "requires": ["square_flowers", "square_beekeeper"], "building": "bld_stalls", "x": 12, "y": 36, "gems": 5 },
+        { "id": "square_inn", "cost": 20, "requires": ["square_stalls"], "building": "bld_inn", "x": 24, "y": 34, "gems": 10 }
+      ]
+    },
+    {
+      "id": "farmstead",
+      "tasks": [
+        { "id": "farm_fence", "cost": 30, "requires": [], "building": "bld_fence", "x": 9, "y": 44 },
+        { "id": "farm_coop", "cost": 45, "requires": ["farm_fence"], "building": "bld_coop", "x": 4, "y": 50, "unlocksChain": "farm", "resident": "tim" },
+        { "id": "farm_hay", "cost": 40, "requires": ["farm_coop"], "building": "bld_hay", "x": 10, "y": 48 },
+        { "id": "farm_silo", "cost": 50, "requires": ["farm_hay"], "building": "bld_silo", "x": 13, "y": 50 },
+        { "id": "farm_barn", "cost": 60, "requires": ["farm_silo"], "building": "bld_barn", "x": 21, "y": 50, "gems": 10 },
+        { "id": "farm_windmill", "cost": 80, "requires": ["farm_barn"], "building": "bld_windmill", "x": 29, "y": 50, "gems": 15 }
+      ]
+    },
+    {
+      "id": "riverside",
+      "tasks": [
+        { "id": "river_bridge", "cost": 70, "requires": [], "building": "bld_bridge", "x": 16, "y": 7 },
+        { "id": "river_fisher", "cost": 85, "requires": ["river_bridge"], "building": "bld_fisher", "x": 4, "y": 11 },
+        { "id": "river_boat", "cost": 85, "requires": ["river_fisher"], "building": "bld_boat", "x": 9, "y": 4 },
+        { "id": "river_smithy", "cost": 105, "requires": ["river_bridge"], "building": "bld_smithy", "x": 7, "y": 19 },
+        { "id": "river_greenhouse", "cost": 120, "requires": ["river_smithy", "river_boat"], "building": "bld_greenhouse", "x": 11, "y": 11, "gems": 20 },
+        { "id": "river_festival", "cost": 145, "requires": ["river_greenhouse"], "building": "bld_festival", "x": 24, "y": 13, "gems": 30 }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: swift test
+        shell: bash
         run: swift test 2>&1 | tee test.log
       - name: Upload log
         if: always()
