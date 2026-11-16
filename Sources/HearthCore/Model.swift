@@ -90,6 +90,15 @@ public struct Balance: Equatable {
     /// Бесплатно открыть кувшин можно раз в столько секунд.
     public var jarCooldown: TimeInterval = 8 * 3600
 
+    /// Магазин: пачка энергии за кристаллы, энергия за монеты (несколько раз в день, дорожает),
+    /// места в корзине за монеты.
+    public var energyPack = 100
+    public var coinEnergyAmount = 25
+    public var coinEnergyBasePrice = 300
+    public var coinEnergyPerDay = 3
+    public var basketMax = 12
+    public var basketSlotBasePrice = 500
+
     /// Опыт до следующего уровня: xpBase * уровень^2.
     public var xpBase = 12
     public var levelUpEnergy = 20
@@ -136,6 +145,15 @@ public struct GameState: Codable, Equatable {
     /// Энергия в кувшине светлячков и когда его последний раз открыли бесплатно.
     public var jarEnergy: Int = 0
     public var jarOpenedAt: Date?
+    /// Покупки и магазин.
+    public var vipUntil: Date?
+    public var purchasedOneTime: [String] = []
+    public var grantedTransactions: [String] = []
+    public var coinEnergyDay: Date?
+    public var coinEnergyBought: Int = 0
+    /// Ежедневная награда.
+    public var dailyClaimedAt: Date?
+    public var dailyStreak: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -161,6 +179,7 @@ public struct GameState: Codable, Equatable {
         case cells, energy, energyUpdatedAt, coins, gems, stars, xp, orders, nextOrderId, basket, basketSize
         case bestTier, unlockedChains, mergesTotal, ordersTotal, completedTasks, level, pendingGenerators
         case jarEnergy, jarOpenedAt
+        case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -186,6 +205,13 @@ public struct GameState: Codable, Equatable {
         pendingGenerators = try c.decodeIfPresent([String].self, forKey: .pendingGenerators) ?? []
         jarEnergy = try c.decodeIfPresent(Int.self, forKey: .jarEnergy) ?? 0
         jarOpenedAt = try c.decodeIfPresent(Date.self, forKey: .jarOpenedAt)
+        vipUntil = try c.decodeIfPresent(Date.self, forKey: .vipUntil)
+        purchasedOneTime = try c.decodeIfPresent([String].self, forKey: .purchasedOneTime) ?? []
+        grantedTransactions = try c.decodeIfPresent([String].self, forKey: .grantedTransactions) ?? []
+        coinEnergyDay = try c.decodeIfPresent(Date.self, forKey: .coinEnergyDay)
+        coinEnergyBought = try c.decodeIfPresent(Int.self, forKey: .coinEnergyBought) ?? 0
+        dailyClaimedAt = try c.decodeIfPresent(Date.self, forKey: .dailyClaimedAt)
+        dailyStreak = try c.decodeIfPresent(Int.self, forKey: .dailyStreak) ?? 0
     }
 }
 

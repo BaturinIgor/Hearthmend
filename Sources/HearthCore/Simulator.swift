@@ -11,6 +11,9 @@ public struct SimConfig {
     public var popBubbles = true
     /// Открывать ли кувшин светлячков бесплатно, когда можно.
     public var openJar = true
+    /// Забирать ежедневную награду и покупать энергию за монеты, когда хватает.
+    public var claimDaily = true
+    public var buyCoinEnergy = true
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -33,6 +36,8 @@ public struct SimReport: CustomStringConvertible {
     public var bubblesPopped = 0
     public var energyFromLevels = 0
     public var energyFromJar = 0
+    public var energyFromCoins = 0
+    public var coinsSpent = 0
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -49,7 +54,7 @@ public struct SimReport: CustomStringConvertible {
         дней \(String(format: "%.1f", days)), сессий \(sessions), энергия \(energySpent), слияний \(merges), \
         заказов \(orders), звезд \(starsEarned), задач \(tasksDone), уровень \(level)
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
-        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), застреваний \(stalledSessions)
+        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), застреваний \(stalledSessions)
         районы: \(districts)
         """
     }
@@ -72,6 +77,11 @@ public enum Simulator {
             game.refreshEnergy()
             game.expireBubbles()
             if config.openJar { report.energyFromJar += game.openJar() }
+            if config.claimDaily { game.claimDaily() }
+            while config.buyCoinEnergy, let price = game.coinEnergyPrice, game.state.coins >= price, game.buyEnergyWithCoins() {
+                report.energyFromCoins += game.balance.coinEnergyAmount
+                report.coinsSpent += price
+            }
             report.sessions += 1
             let stalled = playSession(game, config: config, report: &report)
             if stalled { report.stalledSessions += 1 }
