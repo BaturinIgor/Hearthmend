@@ -47,6 +47,7 @@ struct ContentView: View {
             VStack(spacing: 8) {
                 TopBar(openVillage: { screen = .village }, openShop: { showShop = true })
                 OrdersStrip()
+                EventBanner()
                 SpriteView(scene: scene, options: [.allowsTransparency])
                     .aspectRatio(CGFloat(store.balance.cols) / CGFloat(store.balance.rows), contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 14))

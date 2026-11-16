@@ -44,6 +44,22 @@ BUILDINGS = {
     "bld_festival": (U + "Church/Church_Red.png", 336, 0, 112, 144),
 }
 
+# украшения из событий: ставятся на карту куда угодно
+DECOR = {
+    "decor_scarecrow": (OD + "Scarecrows.png", 0, 0, 32, 32),
+    "decor_trough": (OD + "Water_Troughs.png", 16, 0, 32, 16),
+    "decor_torch": (OD + "Big_Torch_Anim.png", 0, 0, 16, 48),
+    "decor_garland": (OD + "Outdoor_Decor.png", 64, 240, 32, 32),
+    "decor_bush": (OD + "Outdoor_Decor.png", 48, 144, 16, 16),
+    "decor_flowers_purple": (OD + "Outdoor_Decor.png", 80, 336, 32, 32),
+    "decor_flowers_red": (OD + "Outdoor_Decor.png", 80, 368, 32, 32),
+    "decor_logs": (OD + "Outdoor_Decor.png", 0, 256, 32, 48),
+    "decor_mushroom": (OD + "Outdoor_Decor.png", 112, 32, 16, 16),
+    "decor_nest": ("Outdoor decoration/Nests.png", 32, 0, 16, 16),
+    "decor_bench": (OD + "Benches.png", 0, 0, 32, 32),
+}
+BUILDINGS.update(DECOR)
+
 
 # центр крыльев относительно левого верхнего угла башни, в пикселях
 WINDMILL_HUB = (22, 40)

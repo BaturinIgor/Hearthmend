@@ -10,6 +10,8 @@ final class GameStore: ObservableObject {
     @Published var toast: String?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
+    /// Свежие награды события: баннер события их показывает.
+    @Published var eventRewards: [EventReward] = []
 
     let game: Game
     private var timer: Timer?
@@ -146,6 +148,9 @@ final class GameStore: ObservableObject {
         Haptics.success()
         selected = nil
         show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        if !game.lastEventRewards.isEmpty {
+            eventRewards = game.lastEventRewards
+        }
         if let level = game.lastLevelUps.last {
             celebrate(Celebration(icon: "🎉",
                                   title: String(format: L10n.t("level.up"), level),
@@ -249,6 +254,32 @@ final class GameStore: ObservableObject {
             commit()
         }
         return reward
+    }
+
+    // MARK: - События и украшения
+
+    func chooseEvent(_ id: String) {
+        let rewards = game.chooseEvent(id)
+        Haptics.success()
+        if !rewards.isEmpty { eventRewards = rewards }
+        commit()
+    }
+
+    func placeDecor(_ key: String, x: Double, y: Double) {
+        guard game.placeDecor(key, x: x, y: y) != nil else { return }
+        Haptics.light()
+        commit()
+    }
+
+    func moveDecor(id: Int, x: Double, y: Double) {
+        game.moveDecor(id: id, x: x, y: y)
+        commit()
+    }
+
+    func storeDecor(id: Int) {
+        game.storeDecor(id: id)
+        Haptics.light()
+        commit()
     }
 
     /// Можно ли сейчас что-то построить: на кнопке деревни горит отметка.
