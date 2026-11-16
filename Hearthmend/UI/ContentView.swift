@@ -74,7 +74,7 @@ struct ContentView: View {
             store.onBoardChange = { [weak scene] in scene?.render() }
             scene.render()
         }
-        .onChange(of: store.selected) { _ in scene.render() }
+        .onChange(of: store.selected) { _ in scene.updateSelection() }
     }
 }
 

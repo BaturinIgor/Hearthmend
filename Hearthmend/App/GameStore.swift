@@ -64,10 +64,13 @@ final class GameStore: ObservableObject {
 
     // MARK: - Действия
 
-    func tap(_ index: Int) {
+    /// Тап по клетке. Для генератора возвращает результат, чтобы сцена показала полет предмета.
+    @discardableResult
+    func tap(_ index: Int) -> Game.SpawnResult? {
         switch game.piece(at: index) {
         case .generator?:
-            switch game.spawn(from: index) {
+            let result = game.spawn(from: index)
+            switch result {
             case .spawned:
                 Haptics.light()
             case .noEnergy:
@@ -79,7 +82,7 @@ final class GameStore: ObservableObject {
             }
             selected = nil
             commit()
-            onBoardChange?()
+            return result
         case .bubble?:
             if game.popBubble(at: index) {
                 Haptics.success()
@@ -95,6 +98,7 @@ final class GameStore: ObservableObject {
         case nil:
             selected = nil
         }
+        return nil
     }
 
     @discardableResult
