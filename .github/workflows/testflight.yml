@@ -1,0 +1,119 @@
+name: TestFlight
+
+# Подписанная сборка и загрузка в TestFlight. Подпись автоматическая через ключ App Store Connect API
+# (секреты ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8). Запуск по кнопке, номер сборки = номер запуска.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+env:
+  TEAM_ID: 46V47ZSX5V
+
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack sprites
+        env:
+          ASSETS_KEY: ${{ secrets.ASSETS_KEY }}
+        run: |
+          if [ -z "$ASSETS_KEY" ] || [ ! -f Art/sprites.enc ]; then
+            echo "::error::Нет ASSETS_KEY или Art/sprites.enc: в App Store без спрайтов не грузим"
+            exit 1
+          fi
+          mkdir -p Hearthmend/Resources
+          openssl enc -d -aes-256-cbc -md sha256 -in Art/sprites.enc -pass env:ASSETS_KEY | tar -xz -C Hearthmend/Resources
+          if [ -f Hearthmend/Resources/Sprites/appicon.png ]; then
+            mv Hearthmend/Resources/Sprites/appicon.png Hearthmend/Resources/Assets.xcassets/AppIcon.appiconset/icon.png
+          fi
+          echo "::notice::Спрайтов: $(ls Hearthmend/Resources/Sprites | wc -l | tr -d ' ')"
+
+      - name: API key
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          if [ -z "$ASC_KEY_P8" ]; then echo "::error::Нет секретов ASC_*"; exit 1; fi
+          mkdir -p "$RUNNER_TEMP/keys"
+          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8"
+
+      - name: Install tools
+        run: |
+          brew install xcodegen
+          xcodebuild -version
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project Hearthmend.xcodeproj \
+            -scheme Hearthmend \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/Hearthmend.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM=$TEAM_ID \
+            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGN_IDENTITY="Apple Development" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            > archive.log 2>&1 || { grep -E "error:|warning: .*sign" archive.log | sort -u | head -80; tail -60 archive.log; exit 1; }
+          tail -5 archive.log
+
+      - name: Upload to App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath build/Hearthmend.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" 2>&1 | tee export.log
+          echo "::notice::Сборка ${{ github.run_number }} загружена, через 10-30 минут появится в TestFlight"
+
+      - name: Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-logs
+          path: |
+            archive.log
+            export.log
+          if-no-files-found: ignore
+
+      - name: Remove key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"
