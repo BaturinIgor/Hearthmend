@@ -1,0 +1,29 @@
+name: Tests
+
+# Правила игры (пакет HearthCore) проверяются на Linux: так дешевле, чем на macOS.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: swift:5.10
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift test
+        run: swift test 2>&1 | tee test.log
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log
+          path: test.log
+          if-no-files-found: ignore

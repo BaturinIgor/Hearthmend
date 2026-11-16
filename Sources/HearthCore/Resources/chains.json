@@ -1,0 +1,44 @@
+{
+  "chains": [
+    {
+      "id": "garden",
+      "items": ["garden_seed", "garden_sprout", "garden_carrot", "garden_cabbage", "garden_pumpkin", "garden_basket", "garden_stall"],
+      "emoji": ["🫘", "🌱", "🥕", "🥬", "🎃", "🧺", "🏪"],
+      "generator": "gen_garden",
+      "generatorEmoji": "🪴",
+      "generatorTiers": 3
+    },
+    {
+      "id": "forest",
+      "items": ["forest_twig", "forest_log", "forest_planks", "forest_crate", "forest_chair", "forest_cart", "forest_wagon"],
+      "emoji": ["🌿", "🪵", "🛷", "📦", "🪑", "🛒", "🚃"],
+      "generator": "gen_forest",
+      "generatorEmoji": "🌳",
+      "generatorTiers": 3
+    },
+    {
+      "id": "quarry",
+      "items": ["quarry_pebble", "quarry_stone", "quarry_ore", "quarry_ingot", "quarry_pickaxe", "quarry_lantern", "quarry_bell"],
+      "emoji": ["🔘", "🪨", "🟠", "🥇", "⛏️", "🏮", "🔔"],
+      "generator": "gen_quarry",
+      "generatorEmoji": "⛰️",
+      "generatorTiers": 3
+    },
+    {
+      "id": "apiary",
+      "items": ["apiary_flower", "apiary_bouquet", "apiary_comb", "apiary_honey", "apiary_candle", "apiary_pie", "apiary_cake"],
+      "emoji": ["🌼", "💐", "🧇", "🍯", "🕯️", "🥧", "🎂"],
+      "generator": "gen_apiary",
+      "generatorEmoji": "🐝",
+      "generatorTiers": 3
+    },
+    {
+      "id": "farm",
+      "items": ["farm_egg", "farm_chick", "farm_hen", "farm_milk", "farm_cheese", "farm_picnic"],
+      "emoji": ["🥚", "🐣", "🐔", "🥛", "🧀", "🍱"],
+      "generator": "gen_farm",
+      "generatorEmoji": "🛖",
+      "generatorTiers": 3
+    }
+  ]
+}
