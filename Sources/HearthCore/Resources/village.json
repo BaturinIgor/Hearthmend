@@ -3,37 +3,59 @@
     {
       "id": "square",
       "tasks": [
-        { "id": "square_clear", "cost": 4, "requires": [], "building": "bld_square", "x": 11, "y": 26 },
-        { "id": "square_well", "cost": 6, "requires": ["square_clear"], "building": "bld_well", "x": 13, "y": 31 },
-        { "id": "square_lamps", "cost": 8, "requires": ["square_clear"], "building": "bld_lamps", "x": 8, "y": 26 },
-        { "id": "square_home", "cost": 12, "requires": ["square_well"], "building": "bld_home", "x": 4, "y": 31, "gems": 5 },
-        { "id": "square_benches", "cost": 10, "requires": ["square_lamps"], "building": "bld_benches", "x": 11, "y": 29 },
-        { "id": "square_flowers", "cost": 12, "requires": ["square_benches"], "building": "bld_flowers", "x": 9, "y": 32 },
-        { "id": "square_beekeeper", "cost": 16, "requires": ["square_home"], "building": "bld_beekeeper", "x": 5, "y": 38, "unlocksChain": "apiary", "resident": "mila" },
-        { "id": "square_stalls", "cost": 16, "requires": ["square_flowers", "square_beekeeper"], "building": "bld_stalls", "x": 12, "y": 36, "gems": 5 },
-        { "id": "square_inn", "cost": 20, "requires": ["square_stalls"], "building": "bld_inn", "x": 24, "y": 34, "gems": 10 }
+        { "id": "square_clear", "cost": 4, "requires": [], "building": "bld_square", "x": 11, "y": 70 },
+        { "id": "square_well", "cost": 6, "requires": ["square_clear"], "building": "bld_well", "x": 13, "y": 75 },
+        { "id": "square_lamps", "cost": 8, "requires": ["square_clear"], "building": "bld_lamps", "x": 8, "y": 70 },
+        { "id": "square_home", "cost": 12, "requires": ["square_well"], "building": "bld_home", "x": 4, "y": 75, "gems": 5 },
+        { "id": "square_benches", "cost": 10, "requires": ["square_lamps"], "building": "bld_benches", "x": 11, "y": 73 },
+        { "id": "square_flowers", "cost": 12, "requires": ["square_benches"], "building": "bld_flowers", "x": 9, "y": 76 },
+        { "id": "square_beekeeper", "cost": 16, "requires": ["square_home"], "building": "bld_beekeeper", "x": 5, "y": 82, "unlocksChain": "apiary", "resident": "mila" },
+        { "id": "square_stalls", "cost": 16, "requires": ["square_flowers", "square_beekeeper"], "building": "bld_stalls", "x": 12, "y": 80, "gems": 5 },
+        { "id": "square_inn", "cost": 20, "requires": ["square_stalls"], "building": "bld_inn", "x": 24, "y": 78, "gems": 10 }
       ]
     },
     {
       "id": "farmstead",
       "tasks": [
-        { "id": "farm_fence", "cost": 30, "requires": [], "building": "bld_fence", "x": 9, "y": 44 },
-        { "id": "farm_coop", "cost": 45, "requires": ["farm_fence"], "building": "bld_coop", "x": 4, "y": 50, "unlocksChain": "farm", "resident": "tim" },
-        { "id": "farm_hay", "cost": 40, "requires": ["farm_coop"], "building": "bld_hay", "x": 10, "y": 48 },
-        { "id": "farm_silo", "cost": 50, "requires": ["farm_hay"], "building": "bld_silo", "x": 13, "y": 50 },
-        { "id": "farm_barn", "cost": 60, "requires": ["farm_silo"], "building": "bld_barn", "x": 21, "y": 50, "gems": 10 },
-        { "id": "farm_windmill", "cost": 80, "requires": ["farm_barn"], "building": "bld_windmill", "x": 29, "y": 50, "gems": 15 }
+        { "id": "farm_fence", "cost": 30, "requires": [], "building": "bld_fence", "x": 9, "y": 88 },
+        { "id": "farm_coop", "cost": 45, "requires": ["farm_fence"], "building": "bld_coop", "x": 4, "y": 94, "unlocksChain": "farm", "resident": "tim" },
+        { "id": "farm_hay", "cost": 40, "requires": ["farm_coop"], "building": "bld_hay", "x": 10, "y": 92 },
+        { "id": "farm_silo", "cost": 50, "requires": ["farm_hay"], "building": "bld_silo", "x": 13, "y": 94 },
+        { "id": "farm_barn", "cost": 60, "requires": ["farm_silo"], "building": "bld_barn", "x": 21, "y": 94, "gems": 10 },
+        { "id": "farm_windmill", "cost": 80, "requires": ["farm_barn"], "building": "bld_windmill", "x": 29, "y": 94, "gems": 15 }
       ]
     },
     {
       "id": "riverside",
       "tasks": [
-        { "id": "river_bridge", "cost": 70, "requires": [], "building": "bld_bridge", "x": 16, "y": 7 },
-        { "id": "river_fisher", "cost": 85, "requires": ["river_bridge"], "building": "bld_fisher", "x": 4, "y": 11 },
-        { "id": "river_boat", "cost": 85, "requires": ["river_fisher"], "building": "bld_boat", "x": 9, "y": 4 },
-        { "id": "river_smithy", "cost": 105, "requires": ["river_bridge"], "building": "bld_smithy", "x": 7, "y": 19 },
-        { "id": "river_greenhouse", "cost": 120, "requires": ["river_smithy", "river_boat"], "building": "bld_greenhouse", "x": 11, "y": 11, "gems": 20 },
-        { "id": "river_festival", "cost": 145, "requires": ["river_greenhouse"], "building": "bld_festival", "x": 24, "y": 13, "gems": 30 }
+        { "id": "river_bridge", "cost": 70, "requires": [], "building": "bld_bridge", "x": 16, "y": 51 },
+        { "id": "river_fisher", "cost": 85, "requires": ["river_bridge"], "building": "bld_fisher", "x": 4, "y": 55 },
+        { "id": "river_boat", "cost": 85, "requires": ["river_fisher"], "building": "bld_boat", "x": 9, "y": 48 },
+        { "id": "river_smithy", "cost": 105, "requires": ["river_bridge"], "building": "bld_smithy", "x": 7, "y": 63 },
+        { "id": "river_greenhouse", "cost": 120, "requires": ["river_smithy", "river_boat"], "building": "bld_greenhouse", "x": 11, "y": 55, "gems": 20 },
+        { "id": "river_festival", "cost": 145, "requires": ["river_greenhouse"], "building": "bld_festival", "x": 24, "y": 57, "gems": 30 }
+      ]
+    },
+    {
+      "id": "orchard",
+      "tasks": [
+        { "id": "orchard_sign", "cost": 110, "requires": [], "building": "bld_signpost", "x": 18, "y": 42, "unlocksChain": "orchard" },
+        { "id": "orchard_trees", "cost": 130, "requires": ["orchard_sign"], "building": "bld_grove", "x": 5.5, "y": 43 },
+        { "id": "orchard_bower", "cost": 140, "requires": ["orchard_trees"], "building": "bld_bower", "x": 8, "y": 36 },
+        { "id": "orchard_cottage", "cost": 150, "requires": ["orchard_sign"], "building": "bld_orchard_house", "x": 22, "y": 38 },
+        { "id": "orchard_press", "cost": 165, "requires": ["orchard_cottage"], "building": "bld_press", "x": 28.5, "y": 43 },
+        { "id": "orchard_market", "cost": 190, "requires": ["orchard_bower", "orchard_press"], "building": "bld_market2", "x": 11.5, "y": 42, "gems": 25 }
+      ]
+    },
+    {
+      "id": "hilltop",
+      "tasks": [
+        { "id": "hill_cottage", "cost": 180, "requires": [], "building": "bld_hill_cottage", "x": 5, "y": 26 },
+        { "id": "hill_bakery", "cost": 200, "requires": ["hill_cottage"], "building": "bld_bakery", "x": 27.5, "y": 26 },
+        { "id": "hill_glasshouse", "cost": 215, "requires": ["hill_cottage"], "building": "bld_glasshouse", "x": 20.5, "y": 25 },
+        { "id": "hill_library", "cost": 230, "requires": ["hill_bakery"], "building": "bld_library", "x": 6, "y": 12 },
+        { "id": "hill_manor", "cost": 250, "requires": ["hill_library", "hill_glasshouse"], "building": "bld_manor", "x": 25, "y": 12 },
+        { "id": "hill_bell", "cost": 280, "requires": ["hill_manor"], "building": "bld_bell", "x": 16, "y": 11, "gems": 40 }
       ]
     }
   ]

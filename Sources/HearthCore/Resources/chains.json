@@ -115,6 +115,28 @@
       "generator": "gen_farm",
       "generatorEmoji": "🐔",
       "generatorTiers": 3
+    },
+    {
+      "id": "orchard",
+      "items": [
+        "orchard_cherry",
+        "orchard_pear",
+        "orchard_apple",
+        "orchard_peach",
+        "orchard_grapes",
+        "orchard_melon"
+      ],
+      "emoji": [
+        "🍒",
+        "🍐",
+        "🍎",
+        "🍑",
+        "🍇",
+        "🍉"
+      ],
+      "generator": "gen_orchard",
+      "generatorEmoji": "🌳",
+      "generatorTiers": 3
     }
   ]
 }

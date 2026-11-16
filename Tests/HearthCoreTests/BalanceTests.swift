@@ -46,6 +46,17 @@ final class BalanceTests: XCTestCase {
         }
     }
 
+    /// Северный берег: сад и холм тоже проходятся, и каждый следующий район не короче предыдущего.
+    func testNorthDistrictsAreReachable() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            guard let c = r.districtDoneDay["riverside"], let d = r.districtDoneDay["orchard"],
+                  let e = r.districtDoneDay["hilltop"] else { return XCTFail("зерно \(seed): сад или холм не пройдены") }
+            XCTAssertGreaterThan(d - c, 2, "зерно \(seed): сад пролетается слишком быстро")
+            XCTAssertLessThan(d - c, e - d + 1, "зерно \(seed): холм не длиннее сада")
+        }
+    }
+
     func testBoardDoesNotStall() {
         for seed in seeds {
             let r = report(seed: seed)

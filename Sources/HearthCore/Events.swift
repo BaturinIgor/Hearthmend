@@ -158,7 +158,7 @@ extension Game {
 
     // MARK: - Украшения на карте
 
-    public static let mapSize = (width: 32.0, height: 50.0)
+    public static let mapSize = (width: 32.0, height: 94.0)
 
     @discardableResult
     public func placeDecor(_ key: String, x: Double, y: Double) -> PlacedDecor? {
