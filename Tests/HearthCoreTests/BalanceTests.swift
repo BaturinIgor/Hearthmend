@@ -80,6 +80,15 @@ final class BalanceTests: XCTestCase {
         }
     }
 
+    /// События радуют, но энергия с них - небольшая добавка.
+    func testEventsGiveSmallEnergyShare() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.eventMilestones, 0, "зерно \(seed): события работают")
+            XCTAssertLessThanOrEqual(Double(r.energyFromEvents), Double(r.energySpent) * 0.1, "зерно \(seed)")
+        }
+    }
+
     /// Пузырь не дешевле энергии, которую стоит сам предмет, на любой ступени любой цепочки.
     func testBubblesAreNeverCheaperThanEnergy() {
         let b = Balance()
