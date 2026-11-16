@@ -73,7 +73,9 @@ public struct Balance: Equatable {
     public var bubbleMinTier = 3
     public var bubbleChance = 0.1
     public var bubbleLifetime: TimeInterval = 30
-    public var bubblePopCost = 5
+    /// Сколько энергии стоит один кристалл в магазине. От этого считаются цены в кристаллах,
+    /// чтобы покупка за кристаллы не была выгоднее, чем та же энергия (проверяет бот баланса).
+    public var energyPerGem = 2
     public var basketSize = 6
     public var startGems = 20
     public var startCoins = 0
@@ -82,9 +84,24 @@ public struct Balance: Equatable {
     /// Сколько верхних рядов при старте закрыто завалом.
     public var debrisRows = 3
 
+    /// Опыт до следующего уровня: xpBase * уровень^2.
+    public var xpBase = 12
+    public var levelUpEnergy = 20
+    public var levelUpGems = 2
+
     public init() {}
 
     public var cellCount: Int { cols * rows }
+
+    /// Цена пузыря в кристаллах: по энергии столько же, сколько стоит сам предмет (2^ступень).
+    public func popCost(_ item: Item) -> Int {
+        max(1, (item.value + energyPerGem - 1) / energyPerGem)
+    }
+
+    /// Сколько опыта нужно, чтобы с уровня level перейти на следующий.
+    public func xpToNext(level: Int) -> Int {
+        xpBase * level * level
+    }
 }
 
 /// Сохранение игрока.
@@ -105,6 +122,59 @@ public struct GameState: Codable, Equatable {
     public var unlockedChains: [String]
     public var mergesTotal: Int
     public var ordersTotal: Int
+    /// Выполненные задачи деревни.
+    public var completedTasks: [String] = []
+    public var level: Int = 1
+    /// Генераторы новых цепочек, которым не хватило места на поле: встанут, когда место появится.
+    public var pendingGenerators: [String] = []
+
+    public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
+                orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
+                unlockedChains: [String], mergesTotal: Int, ordersTotal: Int) {
+        self.cells = cells
+        self.energy = energy
+        self.energyUpdatedAt = energyUpdatedAt
+        self.coins = coins
+        self.gems = gems
+        self.stars = stars
+        self.xp = xp
+        self.orders = orders
+        self.nextOrderId = nextOrderId
+        self.basket = basket
+        self.basketSize = basketSize
+        self.bestTier = bestTier
+        self.unlockedChains = unlockedChains
+        self.mergesTotal = mergesTotal
+        self.ordersTotal = ordersTotal
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case cells, energy, energyUpdatedAt, coins, gems, stars, xp, orders, nextOrderId, basket, basketSize
+        case bestTier, unlockedChains, mergesTotal, ordersTotal, completedTasks, level, pendingGenerators
+    }
+
+    /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        cells = try c.decode([Piece?].self, forKey: .cells)
+        energy = try c.decode(Int.self, forKey: .energy)
+        energyUpdatedAt = try c.decode(Date.self, forKey: .energyUpdatedAt)
+        coins = try c.decode(Int.self, forKey: .coins)
+        gems = try c.decode(Int.self, forKey: .gems)
+        stars = try c.decode(Int.self, forKey: .stars)
+        xp = try c.decode(Int.self, forKey: .xp)
+        orders = try c.decode([Order].self, forKey: .orders)
+        nextOrderId = try c.decode(Int.self, forKey: .nextOrderId)
+        basket = try c.decode([Item].self, forKey: .basket)
+        basketSize = try c.decode(Int.self, forKey: .basketSize)
+        bestTier = try c.decode([String: Int].self, forKey: .bestTier)
+        unlockedChains = try c.decode([String].self, forKey: .unlockedChains)
+        mergesTotal = try c.decode(Int.self, forKey: .mergesTotal)
+        ordersTotal = try c.decode(Int.self, forKey: .ordersTotal)
+        completedTasks = try c.decodeIfPresent([String].self, forKey: .completedTasks) ?? []
+        level = try c.decodeIfPresent(Int.self, forKey: .level) ?? 1
+        pendingGenerators = try c.decodeIfPresent([String].self, forKey: .pendingGenerators) ?? []
+    }
 }
 
 /// Детерминированный генератор случайных чисел: тесты и симулятор баланса задают зерно.

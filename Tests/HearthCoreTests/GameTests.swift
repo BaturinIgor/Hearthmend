@@ -252,7 +252,7 @@ final class GameTests: XCTestCase {
         let b = game.balance
         game.testSet(4, .bubble(carrot, expiresAt: clock.date.addingTimeInterval(30)))
         XCTAssertTrue(game.popBubble(at: 4))
-        XCTAssertEqual(game.state.gems, b.startGems - b.bubblePopCost)
+        XCTAssertEqual(game.state.gems, b.startGems - b.popCost(carrot))
         XCTAssertEqual(game.piece(at: 4), .item(carrot))
         game.testSet(5, .bubble(carrot, expiresAt: clock.date.addingTimeInterval(30)))
         game.testSetGems(0)

@@ -3,18 +3,23 @@ import Foundation
 /// Правила поля слияния. Без UI: сцена и SwiftUI только вызывают эти методы и рисуют состояние.
 /// Время и случайность передаются снаружи, поэтому все правила проверяются тестами.
 public final class Game {
-    public private(set) var state: GameState
+    public internal(set) var state: GameState
     public let catalog: Catalog
+    public let village: VillageDef
     public let balance: Balance
     public var now: () -> Date
     private var rng: SplitMix64
+    /// Уровни, полученные последним отданным заказом: интерфейс показывает праздник.
+    public private(set) var lastLevelUps: [Int] = []
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
+                village: VillageDef = .bundled,
                 balance: Balance = Balance(),
                 seed: UInt64 = UInt64.random(in: 0...UInt64.max),
                 now: @escaping () -> Date = Date.init) {
         self.catalog = catalog
+        self.village = village
         self.balance = balance
         self.now = now
         self.rng = SplitMix64(seed: seed)
@@ -182,6 +187,7 @@ public final class Game {
             state.bestTier[next.chain] = max(state.bestTier[next.chain] ?? 0, next.tier)
             let cleared = clearDebris(around: to)
             let bubble = maybeBubble(next, near: to)
+            placePendingGenerators()
             return .merged(item: next, cleared: cleared, bubble: bubble)
         case (.generator(let x), .generator(let y)?) where x == y:
             let tiers = catalog.chain(x.chain)?.generatorTiers ?? 1
@@ -241,8 +247,10 @@ public final class Game {
 
     /// Открывает пузырь за кристаллы: предмет остается на поле.
     public func popBubble(at index: Int) -> Bool {
-        guard case .bubble(let item, _) = piece(at: index), state.gems >= balance.bubblePopCost else { return false }
-        state.gems -= balance.bubblePopCost
+        guard case .bubble(let item, _) = piece(at: index) else { return false }
+        let cost = balance.popCost(item)
+        guard state.gems >= cost else { return false }
+        state.gems -= cost
         state.cells[index] = .item(item)
         return true
     }
@@ -257,6 +265,7 @@ public final class Game {
         state.cells[index] = nil
         let price = sellPrice(item)
         state.coins += price
+        placePendingGenerators()
         return price
     }
 
@@ -264,6 +273,7 @@ public final class Game {
         guard let item = piece(at: index)?.item, state.basket.count < state.basketSize else { return false }
         state.basket.append(item)
         state.cells[index] = nil
+        placePendingGenerators()
         return true
     }
 
@@ -303,8 +313,9 @@ public final class Game {
         state.orders.remove(at: index)
         state.coins += order.coins
         state.stars += order.stars
-        state.xp += order.xp
         state.ordersTotal += 1
+        lastLevelUps = addXP(order.xp)
+        placePendingGenerators()
         refillOrders()
         return order
     }
@@ -349,6 +360,8 @@ extension Game {
     func testSet(_ index: Int, _ piece: Piece?) { state.cells[index] = piece }
     func testSetEnergy(_ value: Int) { state.energy = value; state.energyUpdatedAt = now() }
     func testSetGems(_ value: Int) { state.gems = value }
+    func testSetStars(_ value: Int) { state.stars = value }
+    func testSetXP(_ value: Int) { state.xp = value }
     func testSetOrders(_ orders: [Order]) {
         state.orders = orders
         refillOrders()

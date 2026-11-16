@@ -134,7 +134,7 @@ final class BoardScene: SKScene {
             let inner = icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.5)
             inner.alpha = 0.8
             node.addChild(inner)
-            node.addChild(badge("💎\(store?.balance.bubblePopCost ?? 0)"))
+            node.addChild(badge("💎\(store?.balance.popCost(item) ?? 0)"))
             node.run(.repeatForever(.sequence([.scale(to: 1.05, duration: 0.6), .scale(to: 0.95, duration: 0.6)])))
         }
         return node
