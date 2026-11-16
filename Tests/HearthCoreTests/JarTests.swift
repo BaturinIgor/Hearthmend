@@ -61,6 +61,7 @@ final class JarTests: XCTestCase {
         XCTAssertNotNil(game.jarFreeIn)
         XCTAssertEqual(game.openJar(paid: true), 10, "за рекламу или VIP можно сразу")
         clock.advance(game.balance.jarCooldown + 1)
+        game.refreshEnergy()
         game.testSetJar(4)
         XCTAssertEqual(game.openJar(), 4)
     }

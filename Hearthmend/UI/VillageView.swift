@@ -128,6 +128,7 @@ enum Screen: Equatable {
 }
 
 /// Спрайт по ключу без сглаживания; пустое место, если спрайтов нет (сборка без пака).
+@MainActor
 func sprite(_ key: String, scale: CGFloat) -> some View {
     Group {
         if let image = Sprites.image(key) {
@@ -138,6 +139,7 @@ func sprite(_ key: String, scale: CGFloat) -> some View {
     }
 }
 
+@MainActor
 struct BuildingView: View {
     enum Mode { case built, site, planned, hidden }
 
@@ -277,6 +279,7 @@ private struct DustBurst: View {
     }
 }
 
+@MainActor
 private struct TaskCard: View {
     @EnvironmentObject private var store: GameStore
     let task: VillageTask

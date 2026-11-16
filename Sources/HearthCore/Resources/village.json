@@ -17,23 +17,23 @@
     {
       "id": "farmstead",
       "tasks": [
-        { "id": "farm_fence", "cost": 24, "requires": [], "building": "bld_fence", "x": 9, "y": 44 },
-        { "id": "farm_coop", "cost": 36, "requires": ["farm_fence"], "building": "bld_coop", "x": 4, "y": 50, "unlocksChain": "farm", "resident": "tim" },
-        { "id": "farm_hay", "cost": 32, "requires": ["farm_coop"], "building": "bld_hay", "x": 10, "y": 48 },
-        { "id": "farm_silo", "cost": 40, "requires": ["farm_hay"], "building": "bld_silo", "x": 13, "y": 50 },
-        { "id": "farm_barn", "cost": 48, "requires": ["farm_silo"], "building": "bld_barn", "x": 21, "y": 50, "gems": 10 },
-        { "id": "farm_windmill", "cost": 60, "requires": ["farm_barn"], "building": "bld_windmill", "x": 29, "y": 50, "gems": 15 }
+        { "id": "farm_fence", "cost": 30, "requires": [], "building": "bld_fence", "x": 9, "y": 44 },
+        { "id": "farm_coop", "cost": 45, "requires": ["farm_fence"], "building": "bld_coop", "x": 4, "y": 50, "unlocksChain": "farm", "resident": "tim" },
+        { "id": "farm_hay", "cost": 40, "requires": ["farm_coop"], "building": "bld_hay", "x": 10, "y": 48 },
+        { "id": "farm_silo", "cost": 50, "requires": ["farm_hay"], "building": "bld_silo", "x": 13, "y": 50 },
+        { "id": "farm_barn", "cost": 60, "requires": ["farm_silo"], "building": "bld_barn", "x": 21, "y": 50, "gems": 10 },
+        { "id": "farm_windmill", "cost": 80, "requires": ["farm_barn"], "building": "bld_windmill", "x": 29, "y": 50, "gems": 15 }
       ]
     },
     {
       "id": "riverside",
       "tasks": [
-        { "id": "river_bridge", "cost": 55, "requires": [], "building": "bld_bridge", "x": 16, "y": 7 },
-        { "id": "river_fisher", "cost": 65, "requires": ["river_bridge"], "building": "bld_fisher", "x": 4, "y": 11 },
-        { "id": "river_boat", "cost": 65, "requires": ["river_fisher"], "building": "bld_boat", "x": 9, "y": 4 },
-        { "id": "river_smithy", "cost": 80, "requires": ["river_bridge"], "building": "bld_smithy", "x": 7, "y": 19 },
-        { "id": "river_greenhouse", "cost": 90, "requires": ["river_smithy", "river_boat"], "building": "bld_greenhouse", "x": 11, "y": 11, "gems": 20 },
-        { "id": "river_festival", "cost": 110, "requires": ["river_greenhouse"], "building": "bld_festival", "x": 24, "y": 13, "gems": 30 }
+        { "id": "river_bridge", "cost": 70, "requires": [], "building": "bld_bridge", "x": 16, "y": 7 },
+        { "id": "river_fisher", "cost": 85, "requires": ["river_bridge"], "building": "bld_fisher", "x": 4, "y": 11 },
+        { "id": "river_boat", "cost": 85, "requires": ["river_fisher"], "building": "bld_boat", "x": 9, "y": 4 },
+        { "id": "river_smithy", "cost": 105, "requires": ["river_bridge"], "building": "bld_smithy", "x": 7, "y": 19 },
+        { "id": "river_greenhouse", "cost": 120, "requires": ["river_smithy", "river_boat"], "building": "bld_greenhouse", "x": 11, "y": 11, "gems": 20 },
+        { "id": "river_festival", "cost": 145, "requires": ["river_greenhouse"], "building": "bld_festival", "x": 24, "y": 13, "gems": 30 }
       ]
     }
   ]
