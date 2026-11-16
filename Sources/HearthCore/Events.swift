@@ -57,6 +57,13 @@ public struct EventReward: Equatable {
     public var energy = 0
     public var coins = 0
     public var decor: String?
+
+    public init(gems: Int = 0, energy: Int = 0, coins: Int = 0, decor: String? = nil) {
+        self.gems = gems
+        self.energy = energy
+        self.coins = coins
+        self.decor = decor
+    }
 }
 
 extension Game {
