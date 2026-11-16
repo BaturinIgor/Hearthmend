@@ -15,12 +15,16 @@ final class StringsTests: XCTestCase {
     }
 
     private func specifiers(_ s: String) -> [String] {
+        let a = Array(s)
         var result: [String] = []
-        var chars = Array(s)[...]
-        while let i = chars.firstIndex(of: "%") {
-            let next = chars.index(after: i)
-            if next < chars.endIndex { result.append(String(chars[next])) }
-            chars = chars[chars.index(after: next < chars.endIndex ? next : i)...]
+        var i = 0
+        while i < a.count - 1 {
+            if a[i] == "%" {
+                result.append(String(a[i + 1]))
+                i += 2
+            } else {
+                i += 1
+            }
         }
         return result.sorted()
     }
