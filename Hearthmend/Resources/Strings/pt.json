@@ -164,5 +164,15 @@
   "postcard.progress": "%d de %d peças",
   "postcard.how": "Cada pedido traz uma peça. Complete o cartão para ganhar gemas, moedas e uma decoração.",
   "postcard.collected": "Cartões coletados: %d",
-  "postcard.done": "Cartão completo: %@!"
+  "postcard.done": "Cartão completo: %@!",
+  "shot.board.title": "Combine e colecione",
+  "shot.board.sub": "Sementes viram abóboras, galhos viram bancos",
+  "shot.village.title": "Traga a vila de volta",
+  "shot.village.sub": "Casas, lojas e o velho moinho",
+  "shot.north.title": "Cinco bairros para restaurar",
+  "shot.north.sub": "Pomar, mansão na colina e mais",
+  "shot.event.title": "Festas de fim de semana",
+  "shot.event.sub": "Realize um desejo e ganhe um enfeite único",
+  "shot.postcard.title": "Colecione cartões-postais",
+  "shot.postcard.sub": "Cada pedido rende uma peça"
 }

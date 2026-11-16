@@ -164,5 +164,15 @@
   "postcard.progress": "%d / %d ピース",
   "postcard.how": "注文ごとにピースが1つ。ポストカードを完成させるとジェム、コイン、デコがもらえます。",
   "postcard.collected": "集めたポストカード：%d",
-  "postcard.done": "ポストカード完成：%@！"
+  "postcard.done": "ポストカード完成：%@！",
+  "shot.board.title": "合わせて育てよう",
+  "shot.board.sub": "種はかぼちゃに、小枝はベンチに",
+  "shot.village.title": "村をよみがえらせよう",
+  "shot.village.sub": "家やお店、古い風車を建て直そう",
+  "shot.north.title": "5つの地区を復興",
+  "shot.north.sub": "果樹園、丘の上のお屋敷など",
+  "shot.event.title": "週末のお祭り",
+  "shot.event.sub": "願いをかなえて限定デコをゲット",
+  "shot.postcard.title": "村の絵はがきを集めよう",
+  "shot.postcard.sub": "注文ごとにピースが1枚"
 }

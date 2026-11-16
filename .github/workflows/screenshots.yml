@@ -1,9 +1,15 @@
 name: Screenshots
 
-# Скриншоты для App Store: собирает игру под симулятор, запускает демо-состояние (-demo)
-# на разных экранах и сохраняет картинки. По кнопке или на PR с меткой screenshots.
+# Скриншоты для App Store: собирает игру под симулятор, запускает демо-состояние (-demo -shot <экран>)
+# на 13 языках, кладет уменьшенные копии в ветку shots-preview и по флажку upload загружает
+# скриншоты страницы и скриншот магазина для проверки покупок в App Store Connect (tools/asc_shots.py).
 on:
   workflow_dispatch:
+    inputs:
+      upload:
+        description: "Загрузить в App Store Connect"
+        type: boolean
+        default: false
   pull_request:
     types: [labeled, synchronize]
 
@@ -11,11 +17,14 @@ concurrency:
   group: screenshots-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   shots:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'screenshots')
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
 
@@ -51,25 +60,55 @@ jobs:
           d=json.load(sys.stdin)['devices']
           names=[x for r in d.values() for x in r if 'iPhone' in x['name']]
           best=[x for x in names if 'Pro Max' in x['name']] or [x for x in names if 'Plus' in x['name']] or names
+          print(best[-1]['udid'], best[-1]['name'], file=sys.stderr)
           print(best[-1]['udid'])")
           xcrun simctl boot "$DEVICE"
           xcrun simctl bootstatus "$DEVICE" -b
-          xcrun simctl status_bar "$DEVICE" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
           xcrun simctl install "$DEVICE" "$APP"
-          mkdir -p shots
-          for lang in en ru; do
-            for screen in board village shop; do
-              args="-demo -AppleLanguages ($lang)"
-              [ "$screen" != board ] && args="$args -$screen"
-              xcrun simctl terminate "$DEVICE" com.personal.hearthmend 2>/dev/null || true
-              xcrun simctl launch "$DEVICE" com.personal.hearthmend $args
-              sleep 6
-              xcrun simctl io "$DEVICE" screenshot "shots/${lang}_${screen}.png"
-            done
+          mkdir -p shots/store
+          shoot() { # язык, файл, аргументы
+            xcrun simctl terminate "$DEVICE" com.personal.hearthmend 2>/dev/null || true
+            xcrun simctl launch "$DEVICE" com.personal.hearthmend -demo -AppleLanguages "($1)" ${@:3}
+            sleep 8
+            xcrun simctl io "$DEVICE" screenshot "$2" >/dev/null
+          }
+          # прогрев: первый запуск дольше
+          shoot en /tmp/warmup.png -shot board
+          shoot en shots/review_shop.png -shop -shot shop
+          for pair in en:en-US ru:ru uk:uk de:de-DE fr:fr-FR es:es-ES pt-BR:pt-BR it:it ja:ja ko:ko zh-Hans:zh-Hans tr:tr pl:pl; do
+            lang=${pair%%:*}; locale=${pair#*:}
+            mkdir -p shots/store/$locale
+            shoot $lang shots/store/$locale/01_board.png -shot board
+            shoot $lang shots/store/$locale/02_village.png -village -shot village
+            shoot $lang shots/store/$locale/03_event.png -shot event
+            shoot $lang shots/store/$locale/04_north.png -village -shot north
+            shoot $lang shots/store/$locale/05_postcard.png -shot postcard
           done
-          ls -la shots
+          sips -g pixelWidth -g pixelHeight shots/store/en-US/01_board.png shots/review_shop.png
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: shots
+      - name: Preview branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          mkdir preview
+          for f in shots/store/*/*.png; do
+            l=$(basename $(dirname $f)); n=$(basename $f .png)
+            sips -Z 640 -s format jpeg -s formatOptions 70 "$f" --out "preview/${l}_${n}.jpg" >/dev/null
+          done
+          sips -Z 640 -s format jpeg -s formatOptions 70 shots/review_shop.png --out preview/review_shop.jpg >/dev/null
+          cd preview
+          git init -q -b shots-preview
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com add .
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "Скриншоты ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" shots-preview
+
+      - name: Upload to App Store Connect
+        if: github.event_name == 'workflow_dispatch' && inputs.upload
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          python3 -m pip install --break-system-packages -q "pyjwt[crypto]==2.9.0" || python3 -m pip install -q "pyjwt[crypto]==2.9.0"
+          python3 tools/asc_shots.py shots

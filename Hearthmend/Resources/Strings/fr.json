@@ -164,5 +164,15 @@
   "postcard.progress": "%d sur %d morceaux",
   "postcard.how": "Chaque commande apporte un morceau. Complète la carte pour gagner gemmes, pièces et une décoration.",
   "postcard.collected": "Cartes collectées : %d",
-  "postcard.done": "Carte complète : %@ !"
+  "postcard.done": "Carte complète : %@ !",
+  "shot.board.title": "Fusionne et collectionne",
+  "shot.board.sub": "Les graines deviennent citrouilles",
+  "shot.village.title": "Redonne vie au village",
+  "shot.village.sub": "Maisons, boutiques et vieux moulin",
+  "shot.north.title": "Cinq quartiers à rebâtir",
+  "shot.north.sub": "Verger, manoir sur la colline et plus",
+  "shot.event.title": "Fêtes du week-end",
+  "shot.event.sub": "Exauce un vœu, gagne une déco unique",
+  "shot.postcard.title": "Collectionne les cartes",
+  "shot.postcard.sub": "Chaque commande ajoute une pièce"
 }

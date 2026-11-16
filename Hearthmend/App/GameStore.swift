@@ -27,7 +27,7 @@ final class GameStore: ObservableObject {
     static let isDemo = CommandLine.arguments.contains("-demo")
 
     init() {
-        game = Self.isDemo ? Game.demo() : Game(state: Persistence.load())
+        game = Self.isDemo ? Game.demo(late: Shot.isLate, now: Game.demoClock()) : Game(state: Persistence.load())
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()

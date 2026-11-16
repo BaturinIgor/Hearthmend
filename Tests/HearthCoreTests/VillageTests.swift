@@ -173,4 +173,21 @@ final class VillageTests: XCTestCase {
         XCTAssertEqual(again.state.completedTasks, ["square_clear"])
         XCTAssertEqual(again.state.stars, 8)
     }
+
+    func testDemoStatesForScreenshots() {
+        let early = Game.demo()
+        let d = early.village.districts
+        XCTAssertEqual(early.state.completedTasks.count, d[0].tasks.count + 3)
+        let late = Game.demo(late: true)
+        XCTAssertEqual(late.state.completedTasks.count, d.prefix(3).reduce(0) { $0 + $1.tasks.count } + 4, "все постройки демо встали")
+        XCTAssertEqual(late.village.district(of: late.availableTasks.first!.id)?.id, d[3].id, "камера смотрит на Сад")
+    }
+
+    func testDemoClockIsWeekendWithEvent() {
+        let clock = Game.demoClock()
+        let game = Game.demo(now: clock)
+        XCTAssertNotNil(game.activeEvent, "на скриншотах идет праздник")
+        XCTAssertGreaterThan(game.state.eventClaimed, 0)
+        XCTAssertEqual(Game.eventCalendar.component(.weekday, from: clock()), 7, "суббота")
+    }
 }

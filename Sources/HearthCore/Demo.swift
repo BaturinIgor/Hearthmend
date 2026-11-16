@@ -3,12 +3,17 @@ import Foundation
 extension Game {
     /// Красивое состояние для скриншотов App Store: площадь отстроена, хутор в работе,
     /// на поле цепочки разных ступеней, есть украшения и прогресс события.
-    public static func demo(now: @escaping () -> Date = Date.init) -> Game {
+    /// late: деревня отстроена до Сада, для скриншота северных районов.
+    public static func demo(late: Bool = false, now: @escaping () -> Date = Date.init) -> Game {
         var b = Balance()
         b.debrisRows = 1
         let game = Game(balance: b, seed: 2026, now: now)
-        game.state.stars = 10_000
-        for task in game.village.districts[0].tasks + game.village.districts[1].tasks.prefix(3) {
+        game.state.stars = 100_000
+        let districts = game.village.districts
+        let built = late
+            ? districts.prefix(3).flatMap(\.tasks) + districts[3].tasks.prefix(4)
+            : districts[0].tasks + districts[1].tasks.prefix(3)
+        for task in built {
             _ = game.complete(taskId: task.id)
         }
         game.state.stars = 27
@@ -51,7 +56,16 @@ extension Game {
             Order(id: 9004, needs: [Item(chain: "farm", tier: 2)], coins: 12, stars: 1, xp: 4),
         ]
         game.state.nextOrderId = 9005
+        game.state.postcardPieces = 6
         if game.activeEvent != nil { game.state.eventTokens = 64; _ = game.claimEventMilestones() }
         return game
+    }
+
+    /// Часы демо: идут как обычно, но сдвинуты на субботу 16.01.2027, 12:00 UTC,
+    /// чтобы на скриншотах всегда шел праздник выходных.
+    public static func demoClock(start: Date = Date()) -> () -> Date {
+        let saturday = Date(timeIntervalSince1970: 1_800_100_800)
+        let shift = saturday.timeIntervalSince(start)
+        return { Date().addingTimeInterval(shift) }
     }
 }

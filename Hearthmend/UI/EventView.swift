@@ -68,7 +68,7 @@ struct EventBanner: View {
 }
 
 /// Экран события: история, выбор жителя и дорожка наград.
-private struct EventSheet: View {
+struct EventSheet: View {
     @EnvironmentObject private var store: GameStore
     @EnvironmentObject private var shop: StoreManager
     @Environment(\.dismiss) private var dismiss
