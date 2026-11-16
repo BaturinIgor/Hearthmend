@@ -36,7 +36,7 @@ targets:
       properties:
         CFBundleDisplayName: Hearthmend
         CFBundleDevelopmentRegion: en
-        CFBundleLocalizations: [en, ru]
+        CFBundleLocalizations: [en, ru, de, fr, es, pt, it, ja, ko, zh-Hans, tr, pl, uk]
         CFBundleAllowMixedLocalizations: true
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
