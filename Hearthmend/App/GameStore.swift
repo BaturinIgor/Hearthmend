@@ -187,6 +187,70 @@ final class GameStore: ObservableObject {
         }
     }
 
+    // MARK: - Покупки, магазин, кувшин, ежедневная награда
+
+    func grantPurchase(productId: String, transactionId: String, expires: Date?) {
+        guard game.grantPurchase(productId: productId, transactionId: transactionId, expires: expires) else { return }
+        Haptics.success()
+        show(L10n.t("shop.thanks"))
+        commit()
+    }
+
+    func updateVIP(expires: Date?) {
+        game.updateVIP(expires: expires)
+        commit()
+    }
+
+    func buyEnergyWithGems() {
+        if game.buyEnergyWithGems() {
+            Haptics.success()
+            show(String(format: L10n.t("shop.energy_added"), balance.energyPack))
+            commit()
+        } else {
+            show(L10n.t("toast.no_gems"))
+        }
+    }
+
+    func buyEnergyWithCoins() {
+        if game.buyEnergyWithCoins() {
+            Haptics.success()
+            show(String(format: L10n.t("shop.energy_added"), balance.coinEnergyAmount))
+            commit()
+        } else {
+            show(L10n.t("toast.no_coins"))
+        }
+    }
+
+    func buyBasketSlot() {
+        if game.buyBasketSlot() {
+            Haptics.success()
+            commit()
+        } else {
+            show(L10n.t("toast.no_coins"))
+        }
+    }
+
+    /// Бесплатное открытие кувшина или, если рано, за кристаллы (с VIP бесплатно).
+    func openJar(paid: Bool) {
+        let amount = paid ? game.openJarNow() : game.openJar()
+        if amount > 0 {
+            Haptics.success()
+            show(String(format: L10n.t("jar.opened"), amount))
+            commit()
+        } else if paid {
+            show(L10n.t("toast.no_gems"))
+        }
+    }
+
+    func claimDaily() -> ProductReward? {
+        let reward = game.claimDaily()
+        if reward != nil {
+            Haptics.success()
+            commit()
+        }
+        return reward
+    }
+
     /// Можно ли сейчас что-то построить: на кнопке деревни горит отметка.
     var canBuildSomething: Bool {
         game.availableTasks.contains { $0.cost <= state.stars }

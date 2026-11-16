@@ -4,12 +4,15 @@ import UIKit
 @main
 struct HearthmendApp: App {
     @StateObject private var store = GameStore()
+    @StateObject private var shop = StoreManager()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(store)
+                .environmentObject(shop)
                 .preferredColorScheme(.light)
+                .onAppear { shop.attach(store) }
         }
     }
 }
