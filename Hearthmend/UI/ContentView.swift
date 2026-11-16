@@ -34,7 +34,7 @@ struct ContentView: View {
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showDaily)
         .sheet(isPresented: $showShop) { ShopView() }
         .onAppear {
-            if store.game.dailyRewardReady {
+            if store.game.dailyRewardReady, store.game.tutorial == .done {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { showDaily = true }
             }
         }
