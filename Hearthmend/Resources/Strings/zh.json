@@ -164,5 +164,15 @@
   "postcard.progress": "%d / %d 块",
   "postcard.how": "每个订单带来一块碎片。集齐明信片可获得宝石、金币和装饰。",
   "postcard.collected": "已收集明信片：%d",
-  "postcard.done": "明信片集齐：%@！"
+  "postcard.done": "明信片集齐：%@！",
+  "shot.board.title": "合成与收集",
+  "shot.board.sub": "种子变南瓜，树枝变长椅",
+  "shot.village.title": "让村庄重焕生机",
+  "shot.village.sub": "重建房屋、商店和老风车",
+  "shot.north.title": "五个街区等你重建",
+  "shot.north.sub": "果园、山顶庄园等",
+  "shot.event.title": "周末节庆",
+  "shot.event.sub": "实现心愿，赢取独特装饰",
+  "shot.postcard.title": "收集村庄明信片",
+  "shot.postcard.sub": "每个订单都送一块拼图"
 }

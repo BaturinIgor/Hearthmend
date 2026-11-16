@@ -164,5 +164,15 @@
   "postcard.progress": "%d de %d piezas",
   "postcard.how": "Cada pedido trae una pieza. Completa la postal para ganar gemas, monedas y una decoración.",
   "postcard.collected": "Postales reunidas: %d",
-  "postcard.done": "¡Postal completa: %@!"
+  "postcard.done": "¡Postal completa: %@!",
+  "shot.board.title": "Combina y colecciona",
+  "shot.board.sub": "Semillas que se vuelven calabazas",
+  "shot.village.title": "Devuelve la vida al pueblo",
+  "shot.village.sub": "Casas, tiendas y el viejo molino",
+  "shot.north.title": "Cinco barrios por restaurar",
+  "shot.north.sub": "Huerto, mansión en la colina y más",
+  "shot.event.title": "Fiestas de fin de semana",
+  "shot.event.sub": "Cumple un deseo y gana un adorno único",
+  "shot.postcard.title": "Colecciona postales",
+  "shot.postcard.sub": "Cada pedido suma una pieza"
 }

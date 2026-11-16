@@ -8,7 +8,9 @@ struct HearthmendApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Group {
+                if Shot.hasCaption, let name = Shot.name { ShotFrame(name: name) } else { ContentView() }
+            }
                 .environmentObject(store)
                 .environmentObject(shop)
                 .preferredColorScheme(.light)

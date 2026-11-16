@@ -164,5 +164,15 @@
   "postcard.progress": "%d z %d kawałków",
   "postcard.how": "Każde zamówienie daje kawałek. Ułóż pocztówkę, by zdobyć klejnoty, monety i dekorację.",
   "postcard.collected": "Zebrane pocztówki: %d",
-  "postcard.done": "Pocztówka ułożona: %@!"
+  "postcard.done": "Pocztówka ułożona: %@!",
+  "shot.board.title": "Łącz i zbieraj",
+  "shot.board.sub": "Nasiona w dynie, gałązki w ławki",
+  "shot.village.title": "Przywróć wioskę do życia",
+  "shot.village.sub": "Domy, sklepiki i stary młyn",
+  "shot.north.title": "Pięć dzielnic do odbudowy",
+  "shot.north.sub": "Sad, dwór na wzgórzu i więcej",
+  "shot.event.title": "Festyny w weekendy",
+  "shot.event.sub": "Spełnij życzenie i zdobądź unikalną ozdobę",
+  "shot.postcard.title": "Zbieraj pocztówki",
+  "shot.postcard.sub": "Każde zamówienie to jeden kawałek"
 }

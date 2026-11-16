@@ -164,5 +164,15 @@
   "postcard.progress": "%d of %d pieces",
   "postcard.how": "Every order brings a piece. Complete the postcard to get gems, coins and a decoration.",
   "postcard.collected": "Postcards collected: %d",
-  "postcard.done": "Postcard complete: %@!"
+  "postcard.done": "Postcard complete: %@!",
+  "shot.board.title": "Merge and match",
+  "shot.board.sub": "Seeds become pumpkins, twigs become benches",
+  "shot.village.title": "Bring the village back",
+  "shot.village.sub": "Rebuild homes, shops and the old mill",
+  "shot.north.title": "Five districts to restore",
+  "shot.north.sub": "Orchard, hilltop manor and more",
+  "shot.event.title": "Weekend festivals",
+  "shot.event.sub": "Grant a wish and win a unique decoration",
+  "shot.postcard.title": "Collect village postcards",
+  "shot.postcard.sub": "Every order adds a piece"
 }

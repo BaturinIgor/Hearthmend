@@ -109,7 +109,8 @@ struct VillageView: View {
     }
 
     private var focusTask: VillageTask? {
-        store.game.availableTasks.first ?? store.game.village.allTasks.last
+        if let id = Shot.focus, let task = store.game.village.task(id) { return task }
+        return store.game.availableTasks.first ?? store.game.village.allTasks.last
     }
 
     private func build(_ task: VillageTask) {

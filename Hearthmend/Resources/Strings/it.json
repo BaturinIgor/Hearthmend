@@ -164,5 +164,15 @@
   "postcard.progress": "%d di %d pezzi",
   "postcard.how": "Ogni ordine porta un pezzo. Completa la cartolina per gemme, monete e una decorazione.",
   "postcard.collected": "Cartoline raccolte: %d",
-  "postcard.done": "Cartolina completa: %@!"
+  "postcard.done": "Cartolina completa: %@!",
+  "shot.board.title": "Unisci e colleziona",
+  "shot.board.sub": "I semi diventano zucche, i rami panchine",
+  "shot.village.title": "Riporta in vita il villaggio",
+  "shot.village.sub": "Case, botteghe e il vecchio mulino",
+  "shot.north.title": "Cinque quartieri da ricostruire",
+  "shot.north.sub": "Frutteto, villa sulla collina e altro",
+  "shot.event.title": "Feste nel weekend",
+  "shot.event.sub": "Esaudisci un desiderio, vinci una decorazione",
+  "shot.postcard.title": "Colleziona cartoline",
+  "shot.postcard.sub": "Ogni ordine aggiunge un pezzo"
 }

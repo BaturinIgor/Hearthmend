@@ -164,5 +164,15 @@
   "postcard.progress": "%d / %d parça",
   "postcard.how": "Her sipariş bir parça getirir. Kartpostalı tamamla, mücevher, altın ve süs kazan.",
   "postcard.collected": "Toplanan kartpostal: %d",
-  "postcard.done": "Kartpostal tamam: %@!"
+  "postcard.done": "Kartpostal tamam: %@!",
+  "shot.board.title": "Birleştir ve topla",
+  "shot.board.sub": "Tohumlar balkabağına, dallar banka dönüşür",
+  "shot.village.title": "Köye hayat ver",
+  "shot.village.sub": "Evler, dükkânlar ve eski değirmen",
+  "shot.north.title": "Onarılacak beş mahalle",
+  "shot.north.sub": "Meyve bahçesi, tepedeki konak ve fazlası",
+  "shot.event.title": "Hafta sonu şenlikleri",
+  "shot.event.sub": "Bir dileği gerçekleştir, eşsiz süs kazan",
+  "shot.postcard.title": "Köy kartpostalları topla",
+  "shot.postcard.sub": "Her sipariş bir parça getirir"
 }

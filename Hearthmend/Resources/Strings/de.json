@@ -164,5 +164,15 @@
   "postcard.progress": "%d von %d Teilen",
   "postcard.how": "Jeder Auftrag bringt ein Teil. Vervollständige die Postkarte für Edelsteine, Münzen und eine Deko.",
   "postcard.collected": "Gesammelte Postkarten: %d",
-  "postcard.done": "Postkarte komplett: %@!"
+  "postcard.done": "Postkarte komplett: %@!",
+  "shot.board.title": "Kombinieren und sammeln",
+  "shot.board.sub": "Aus Samen werden Kürbisse, aus Zweigen Bänke",
+  "shot.village.title": "Erweck das Dorf zum Leben",
+  "shot.village.sub": "Häuser, Läden und die alte Mühle",
+  "shot.north.title": "Fünf Viertel zum Aufbauen",
+  "shot.north.sub": "Obstgarten, Gutshof am Hügel und mehr",
+  "shot.event.title": "Feste am Wochenende",
+  "shot.event.sub": "Erfülle einen Wunsch, gewinn eine seltene Deko",
+  "shot.postcard.title": "Sammle Dorf-Postkarten",
+  "shot.postcard.sub": "Jeder Auftrag bringt ein Teil"
 }

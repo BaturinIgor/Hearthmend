@@ -164,5 +164,15 @@
   "postcard.progress": "%d / %d 조각",
   "postcard.how": "주문마다 조각이 하나씩. 엽서를 완성하면 보석, 코인, 장식을 받아요.",
   "postcard.collected": "모은 엽서: %d",
-  "postcard.done": "엽서 완성: %@!"
+  "postcard.done": "엽서 완성: %@!",
+  "shot.board.title": "합치고 모으세요",
+  "shot.board.sub": "씨앗은 호박으로, 나뭇가지는 벤치로",
+  "shot.village.title": "마을을 되살리세요",
+  "shot.village.sub": "집과 가게, 오래된 풍차를 다시 짓기",
+  "shot.north.title": "복구할 다섯 구역",
+  "shot.north.sub": "과수원, 언덕 위 저택 등",
+  "shot.event.title": "주말 축제",
+  "shot.event.sub": "소원을 들어주고 특별한 장식을 받으세요",
+  "shot.postcard.title": "마을 엽서 모으기",
+  "shot.postcard.sub": "주문마다 조각이 하나씩"
 }
