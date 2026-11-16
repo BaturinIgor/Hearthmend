@@ -32,7 +32,7 @@ AGE_ENUMS = ["alcoholTobaccoOrDrugUseOrReferences", "contests", "gamblingSimulat
              "profanityOrCrudeHumor", "sexualContentGraphicAndNudity", "sexualContentOrNudity",
              "violenceCartoonOrFantasy", "violenceRealistic", "violenceRealisticProlongedGraphicOrSadistic"]
 AGE_BOOLS = ["gambling", "unrestrictedWebAccess", "lootBox", "advertising", "ageAssurance",
-             "healthOrWellnessTopics", "messagingAndChat", "parentalControls", "userGeneratedContent"]
+             "healthOrWellnessTopics", "messagingAndChat", "parentalControls", "userGeneratedContent", "socialMedia"]
 
 todo = []
 
@@ -40,13 +40,20 @@ todo = []
 def patch_dropping_unknown(kind, rid, attrs, what):
     """PATCH; если API не знает какое-то поле, убирает его и пробует снова."""
     attrs = dict(attrs)
-    for _ in range(len(attrs) + 1):
+    for _ in range(len(attrs) + 8):
         s, d = call("PATCH", f"/v1/{kind}/{rid}", {"data": {"type": kind, "id": rid, "attributes": attrs}})
         if 200 <= s < 300:
             print(f"{what}: готово")
             return True
-        bad = {e.get("source", {}).get("pointer", "").rsplit("/", 1)[-1] for e in d.get("errors", [])}
-        bad &= set(attrs)
+        errs = d.get("errors", [])
+        field = lambda e: e.get("source", {}).get("pointer", "").rsplit("/", 1)[-1]  # noqa: E731
+        # новые обязательные вопросы анкеты: в игре ничего такого нет, отвечаем «нет»
+        missing = {field(e) for e in errs if e.get("code", "").endswith("ATTRIBUTE.REQUIRED")} - set(attrs) - {""}
+        if missing:
+            print(f"{what}: обязательные поля {', '.join(sorted(missing))} = нет")
+            attrs.update({k: False for k in missing})
+            continue
+        bad = {field(e) for e in errs} & set(attrs)
         if not bad:
             return ok(s, d, what)
         print(f"{what}: API не знает {', '.join(sorted(bad))}, без них")
