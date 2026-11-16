@@ -156,11 +156,18 @@ final class GameStore: ObservableObject {
     }
 
     func deliver(_ order: Order) {
+        let piggyBefore = state.piggyGems
         guard game.deliver(orderId: order.id) != nil else { return }
         Haptics.success()
         Audio.shared.play(.coins)
         selected = nil
-        show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        if piggyBefore < balance.piggyMin && state.piggyGems >= balance.piggyMin {
+            show(L10n.t("shop.piggy_ready"))
+        } else if piggyBefore < balance.piggyMax && game.piggyFull {
+            show(L10n.t("shop.piggy_full"))
+        } else {
+            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        }
         if !game.lastEventRewards.isEmpty {
             eventRewards = game.lastEventRewards
         }

@@ -3,20 +3,37 @@ import Foundation
 /// Покупки в App Store: что дает каждый продукт. ID должны совпадать с App Store Connect
 /// и с Hearthmend/Resources/Products.storekit.
 public struct ProductReward: Equatable {
+    public enum Kind: Equatable {
+        case plain
+        /// Разбить копилку: кристаллы, накопленные за заказы.
+        case piggy
+        /// Пропуск события: вторая дорожка наград текущих выходных.
+        case eventPass
+        /// Набор выходных: раз за событие.
+        case weekend
+    }
+
     public var gems = 0
     public var energy = 0
     public var coins = 0
+    public var stars = 0
+    public var decor: String?
     /// Подписка VIP на столько дней.
     public var vipDays = 0
-    /// Покупается один раз (стартовый набор).
+    /// Покупается один раз (стартовый набор, набор строителя).
     public var oneTime = false
+    public var kind: Kind = .plain
 
-    public init(gems: Int = 0, energy: Int = 0, coins: Int = 0, vipDays: Int = 0, oneTime: Bool = false) {
+    public init(gems: Int = 0, energy: Int = 0, coins: Int = 0, stars: Int = 0, decor: String? = nil,
+                vipDays: Int = 0, oneTime: Bool = false, kind: Kind = .plain) {
         self.gems = gems
         self.energy = energy
         self.coins = coins
+        self.stars = stars
+        self.decor = decor
         self.vipDays = vipDays
         self.oneTime = oneTime
+        self.kind = kind
     }
 }
 
@@ -28,16 +45,43 @@ public enum Products {
     public static let gemsChest = prefix + "gems.chest"
     public static let starter = prefix + "starter"
     public static let vipMonthly = prefix + "vip.monthly"
+    public static let gemsHuge = prefix + "gems.huge"
+    public static let gemsMega = prefix + "gems.mega"
+    public static let piggy = prefix + "piggy"
+    public static let eventPass = prefix + "event.pass"
+    public static let weekendBundle = prefix + "bundle.weekend"
+    public static let builder = prefix + "builder"
 
-    /// Награды. Цены задаются в App Store Connect: 0.99 / 4.99 / 9.99 / 19.99, набор 1.99, VIP 4.99 в месяц.
+    /// Награды. Цены задаются в App Store Connect (tools/asc_iap.py): кристаллы 0.99 / 4.99 / 9.99 / 19.99 /
+    /// 49.99 / 99.99, стартовый набор 1.99, копилка 2.99, пропуск события 3.99, набор выходных 4.99,
+    /// набор строителя 6.99, VIP 4.99 в месяц.
     public static let rewards: [String: ProductReward] = [
         gemsSmall: ProductReward(gems: 80),
         gemsMedium: ProductReward(gems: 450),
         gemsLarge: ProductReward(gems: 1000),
         gemsChest: ProductReward(gems: 2200),
+        gemsHuge: ProductReward(gems: 6000),
+        gemsMega: ProductReward(gems: 13000),
         starter: ProductReward(gems: 250, energy: 200, coins: 1000, oneTime: true),
         vipMonthly: ProductReward(vipDays: 30),
+        piggy: ProductReward(kind: .piggy),
+        eventPass: ProductReward(kind: .eventPass),
+        weekendBundle: ProductReward(gems: 300, energy: 150, decor: "decor_pond", kind: .weekend),
+        builder: ProductReward(gems: 300, stars: 60, decor: "decor_lamp_double", oneTime: true),
     ]
+
+    /// Вторая дорожка пропуска события: по награде на каждую ступень (7 ступеней в events.json).
+    public static let eventPassRewards: [EventReward] = [
+        EventReward(gems: 30),
+        EventReward(energy: 50),
+        EventReward(gems: 50),
+        EventReward(energy: 80),
+        EventReward(decor: "decor_lamp_hanging"),
+        EventReward(gems: 100),
+        EventReward(gems: 150, energy: 100),
+    ]
+    /// Если пропуск куплен, а события уже нет (купили в последнюю секунду), - кристаллы взамен.
+    public static let eventPassFallbackGems = 450
 
     public static var all: [String] { rewards.keys.sorted() }
 }
@@ -66,13 +110,82 @@ extension Game {
         state.gems += reward.gems
         state.energy += reward.energy
         state.coins += reward.coins
+        state.stars += reward.stars
+        if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
         if reward.oneTime { state.purchasedOneTime.append(productId) }
+        switch reward.kind {
+        case .plain:
+            break
+        case .piggy:
+            // деньги уже списаны: отдаем все, что накопилось, даже если меньше порога
+            state.gems += state.piggyGems
+            state.piggyGems = 0
+        case .eventPass:
+            if activeEvent != nil, let key = state.eventKey, state.eventPassKey != key {
+                state.eventPassKey = key
+                state.eventPassClaimed = 0
+                lastEventRewards += claimEventPassRewards()
+            } else {
+                state.gems += Products.eventPassFallbackGems
+            }
+        case .weekend:
+            if activeEvent != nil { state.weekendBundleKey = state.eventKey }
+        }
         if reward.vipDays > 0 {
             let base = max(state.vipUntil ?? now(), now())
             let until = expires ?? base.addingTimeInterval(Double(reward.vipDays) * 86400)
             state.vipUntil = max(state.vipUntil ?? until, until)
         }
         return true
+    }
+
+    /// Можно ли сейчас предложить покупку (магазин прячет то, что купить нельзя).
+    public func canOffer(_ productId: String) -> Bool {
+        guard let reward = Products.rewards[productId] else { return false }
+        if reward.oneTime, hasBought(productId) { return false }
+        switch reward.kind {
+        case .plain: return true
+        case .piggy: return state.piggyGems >= balance.piggyMin
+        case .eventPass: return activeEvent != nil && !hasEventPass
+        case .weekend:
+            guard activeEvent != nil else { return false }
+            return state.weekendBundleKey != state.eventKey
+        }
+    }
+
+    // MARK: - Копилка
+
+    /// Копилка наполняется за каждый заказ. Разбить ее можно покупкой, когда накопилось piggyMin.
+    func fillPiggy() {
+        state.piggyGems = min(balance.piggyMax, state.piggyGems + balance.piggyPerOrder)
+    }
+
+    public var piggyFull: Bool { state.piggyGems >= balance.piggyMax }
+
+    // MARK: - Пропуск события
+
+    public var hasEventPass: Bool {
+        // activeEvent первым: он сбрасывает ключ, если наступило новое событие
+        guard activeEvent != nil, let key = state.eventKey else { return false }
+        return state.eventPassKey == key
+    }
+
+    /// Награды второй дорожки за все уже открытые ступени, если пропуск куплен.
+    @discardableResult
+    func claimEventPassRewards() -> [EventReward] {
+        guard hasEventPass else { return [] }
+        var rewards: [EventReward] = []
+        let upTo = min(state.eventClaimed, Products.eventPassRewards.count)
+        while state.eventPassClaimed < upTo {
+            let r = Products.eventPassRewards[state.eventPassClaimed]
+            state.gems += r.gems
+            state.energy += r.energy
+            state.coins += r.coins
+            if let decor = r.decor { state.decorOwned[decor, default: 0] += 1 }
+            state.eventPassClaimed += 1
+            rewards.append(r)
+        }
+        return rewards
     }
 
     /// Подписка из StoreKit: срок действия по последней транзакции.

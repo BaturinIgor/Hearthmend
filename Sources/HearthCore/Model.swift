@@ -99,6 +99,11 @@ public struct Balance: Equatable {
     public var basketMax = 12
     public var basketSlotBasePrice = 500
 
+    /// Копилка: кристаллов за заказ, потолок и с какого количества ее можно разбить.
+    public var piggyPerOrder = 2
+    public var piggyMax = 300
+    public var piggyMin = 120
+
     /// Опыт до следующего уровня: xpBase * уровень^2.
     public var xpBase = 12
     public var levelUpEnergy = 20
@@ -165,6 +170,12 @@ public struct GameState: Codable, Equatable {
     public var nextDecorId: Int = 1
     /// Шаг обучения (TutorialStep). Старые сохранения с отданными заказами обучение пропускают.
     public var tutorialStep: Int = 0
+    /// Копилка: кристаллы, которые капают за заказы и достаются при покупке.
+    public var piggyGems: Int = 0
+    /// Пропуск события и набор выходных: для какого события (eventKey) куплены.
+    public var eventPassKey: String?
+    public var eventPassClaimed: Int = 0
+    public var weekendBundleKey: String?
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -192,6 +203,7 @@ public struct GameState: Codable, Equatable {
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
+        case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey
         case tutorialStep
     }
 
@@ -234,6 +246,10 @@ public struct GameState: Codable, Equatable {
         nextDecorId = try c.decodeIfPresent(Int.self, forKey: .nextDecorId) ?? 1
         tutorialStep = try c.decodeIfPresent(Int.self, forKey: .tutorialStep)
             ?? (ordersTotal > 0 ? TutorialStep.done.rawValue : 0)
+        piggyGems = try c.decodeIfPresent(Int.self, forKey: .piggyGems) ?? 0
+        eventPassKey = try c.decodeIfPresent(String.self, forKey: .eventPassKey)
+        eventPassClaimed = try c.decodeIfPresent(Int.self, forKey: .eventPassClaimed) ?? 0
+        weekendBundleKey = try c.decodeIfPresent(String.self, forKey: .weekendBundleKey)
     }
 }
 

@@ -145,5 +145,16 @@
   "task.hill_glasshouse": "Cam limonluk",
   "task.hill_library": "Kütüphaneyi onar",
   "task.hill_manor": "Eski konağı onar",
-  "task.hill_bell": "Tepedeki çanı çal"
+  "task.hill_bell": "Tepedeki çanı çal",
+  "shop.piggy": "Kumbara",
+  "shop.piggy_hint": "Her siparişte içine %d mücevher düşer. %d mücevherden itibaren kırabilirsin.",
+  "shop.piggy_full": "Kumbara doldu! Mücevherler boşa gitmesin diye kır",
+  "shop.piggy_ready": "Kumbara kırılmaya hazır! Mağazaya göz at",
+  "shop.pass": "Etkinlik kartı",
+  "shop.pass_hint": "Bu hafta sonunun her basamağında ikinci bir ödül",
+  "shop.pass_active": "Etkinlik kartı etkin",
+  "shop.weekend": "Hafta sonu paketi",
+  "shop.weekend_hint": "Sadece bu hafta sonu",
+  "shop.builder": "Usta seti",
+  "shop.builder_hint": "Binalar için yıldızlar ve bir sokak lambası. Tek seferlik teklif"
 }

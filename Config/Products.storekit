@@ -76,6 +76,96 @@
       "productID": "com.personal.hearthmend.starter",
       "referenceName": "Starter Pack",
       "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "49.99",
+      "familyShareable": false,
+      "internalID": "6337527501",
+      "localizations": [
+        {
+          "description": "6000 Gems",
+          "displayName": "6000 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.huge",
+      "referenceName": "6000 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "99.99",
+      "familyShareable": false,
+      "internalID": "6337527502",
+      "localizations": [
+        {
+          "description": "13000 Gems",
+          "displayName": "13000 Gems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.gems.mega",
+      "referenceName": "13000 Gems",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "internalID": "6337527503",
+      "localizations": [
+        {
+          "description": "Piggy Bank",
+          "displayName": "Piggy Bank",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.piggy",
+      "referenceName": "Piggy Bank",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "3.99",
+      "familyShareable": false,
+      "internalID": "6337527504",
+      "localizations": [
+        {
+          "description": "Event Pass",
+          "displayName": "Event Pass",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.event.pass",
+      "referenceName": "Event Pass",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "6337527505",
+      "localizations": [
+        {
+          "description": "Weekend Bundle",
+          "displayName": "Weekend Bundle",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.bundle.weekend",
+      "referenceName": "Weekend Bundle",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "6.99",
+      "familyShareable": false,
+      "internalID": "6337527506",
+      "localizations": [
+        {
+          "description": "Builder's Kit",
+          "displayName": "Builder's Kit",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.personal.hearthmend.builder",
+      "referenceName": "Builder's Kit",
+      "type": "NonConsumable"
     }
   ],
   "settings": {

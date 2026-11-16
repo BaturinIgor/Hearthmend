@@ -17,6 +17,7 @@ struct ShopView: View {
             ScrollView {
                 VStack(spacing: 14) {
                     wallet
+                    offers
                     if !store.game.isVIP { vipCard } else { vipActive }
                     if !store.game.hasBought(Products.starter) { starterCard }
                     section(L10n.t("shop.gems")) {
@@ -25,6 +26,8 @@ struct ShopView: View {
                             gemPack(Products.gemsMedium, icon: "💎💎")
                             gemPack(Products.gemsLarge, icon: "👝")
                             gemPack(Products.gemsChest, icon: "🧰")
+                            gemPack(Products.gemsHuge, icon: "💰")
+                            gemPack(Products.gemsMega, icon: "🏰")
                         }
                     }
                     section(L10n.t("shop.energy")) {
@@ -71,6 +74,78 @@ struct ShopView: View {
         }
         .font(.system(size: 17, weight: .heavy, design: .rounded))
         .foregroundColor(Theme.text)
+    }
+
+    // MARK: - Особые предложения
+
+    @ViewBuilder
+    private var offers: some View {
+        let game = store.game
+        let showPass = game.activeEvent != nil && !game.hasEventPass
+        let showWeekend = game.canOffer(Products.weekendBundle)
+        let showBuilder = game.canOffer(Products.builder)
+        VStack(spacing: 10) {
+            piggyCard
+            if showPass { passCard }
+            if showWeekend {
+                OfferCard(icon: "🎁", title: L10n.t("shop.weekend"), hint: L10n.t("shop.weekend_hint"),
+                          reward: Products.rewards[Products.weekendBundle]!, tint: .pink,
+                          price: priceTitle(Products.weekendBundle), busy: shop.purchasing == Products.weekendBundle) {
+                    Task { await shop.buy(Products.weekendBundle) }
+                }
+            }
+            if showBuilder {
+                OfferCard(icon: "🛠️", title: L10n.t("shop.builder"), hint: L10n.t("shop.builder_hint"),
+                          reward: Products.rewards[Products.builder]!, tint: Theme.wood,
+                          price: priceTitle(Products.builder), busy: shop.purchasing == Products.builder) {
+                    Task { await shop.buy(Products.builder) }
+                }
+            }
+        }
+    }
+
+    private var piggyCard: some View {
+        let b = store.balance
+        let gems = store.state.piggyGems
+        let ready = gems >= b.piggyMin
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 10) {
+                Text("🐷").font(.system(size: 34))
+                    .scaleEffect(store.game.piggyFull ? 1.08 : 1)
+                    .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: store.game.piggyFull)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(L10n.t("shop.piggy")).font(.system(size: 18, weight: .heavy, design: .rounded))
+                    Text(store.game.piggyFull ? L10n.t("shop.piggy_full")
+                         : String(format: L10n.t("shop.piggy_hint"), b.piggyPerOrder, b.piggyMin))
+                        .font(.system(size: 12, design: .rounded)).opacity(0.75)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Text("💎 \(gems)").font(.system(size: 18, weight: .heavy, design: .rounded))
+            }
+            ProgressBar(value: Double(gems) / Double(b.piggyMax)).frame(height: 9)
+            if ready {
+                BuyButton(title: priceTitle(Products.piggy), busy: shop.purchasing == Products.piggy) {
+                    Task { await shop.buy(Products.piggy) }
+                }
+            }
+        }
+        .foregroundColor(Theme.text)
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.pink.opacity(ready ? 0.7 : 0.3), lineWidth: 2))
+    }
+
+    private var passCard: some View {
+        let total = Products.eventPassRewards.reduce(EventReward()) {
+            EventReward(gems: $0.gems + $1.gems, energy: $0.energy + $1.energy, coins: $0.coins + $1.coins)
+        }
+        let decor = Products.eventPassRewards.first { $0.decor != nil }?.decor
+        return OfferCard(icon: "🎟️", title: L10n.t("shop.pass"), hint: L10n.t("shop.pass_hint"),
+                         reward: ProductReward(gems: total.gems, energy: total.energy, decor: decor), tint: .purple,
+                         price: priceTitle(Products.eventPass), busy: shop.purchasing == Products.eventPass) {
+            Task { await shop.buy(Products.eventPass) }
+        }
     }
 
     private var vipCard: some View {
@@ -176,7 +251,47 @@ struct ShopView: View {
     }
 }
 
-private struct BuyButton: View {
+/// Карточка набора: что внутри и кнопка с ценой.
+struct OfferCard: View {
+    let icon: String
+    let title: String
+    let hint: String
+    let reward: ProductReward
+    let tint: Color
+    let price: String
+    var busy = false
+    let action: () -> Void
+
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 10) {
+                Text(icon).font(.system(size: 32))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.system(size: 18, weight: .heavy, design: .rounded))
+                    Text(hint).font(.system(size: 12, design: .rounded)).opacity(0.75)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+            }
+            HStack(spacing: 12) {
+                if reward.gems > 0 { Text("💎 \(reward.gems)") }
+                if reward.energy > 0 { Text("⚡️ \(reward.energy)") }
+                if reward.coins > 0 { Text("🪙 \(reward.coins)") }
+                if reward.stars > 0 { Text("⭐️ \(reward.stars)") }
+                if let decor = reward.decor { DecorIcon(key: decor, size: 26) }
+                Spacer()
+            }
+            .font(.system(size: 16, weight: .bold, design: .rounded))
+            BuyButton(title: price, busy: busy, action: action)
+        }
+        .foregroundColor(Theme.text)
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 16).fill(LinearGradient(colors: [tint.opacity(0.18), Theme.card], startPoint: .topLeading, endPoint: .bottomTrailing)))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(tint.opacity(0.6), lineWidth: 2))
+    }
+}
+
+struct BuyButton: View {
     let title: String
     var busy = false
     let action: () -> Void

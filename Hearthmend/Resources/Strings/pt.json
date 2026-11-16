@@ -145,5 +145,16 @@
   "task.hill_glasshouse": "Estufa de vidro",
   "task.hill_library": "Restaurar a biblioteca",
   "task.hill_manor": "Consertar o velho solar",
-  "task.hill_bell": "Tocar o sino da colina"
+  "task.hill_bell": "Tocar o sino da colina",
+  "shop.piggy": "Cofrinho",
+  "shop.piggy_hint": "Cada pedido coloca %d gemas dentro. Você pode quebrá-lo a partir de %d gemas.",
+  "shop.piggy_full": "O cofrinho está cheio! Quebre-o para não perder gemas",
+  "shop.piggy_ready": "O cofrinho já pode ser quebrado! Veja a loja",
+  "shop.pass": "Passe do evento",
+  "shop.pass_hint": "Uma segunda recompensa em cada etapa deste fim de semana",
+  "shop.pass_active": "Passe do evento ativo",
+  "shop.weekend": "Pacote de fim de semana",
+  "shop.weekend_hint": "Só neste fim de semana",
+  "shop.builder": "Kit do construtor",
+  "shop.builder_hint": "Estrelas para construções e um poste de luz. Oferta única"
 }

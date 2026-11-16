@@ -17,22 +17,30 @@ import jwt
 API = "https://api.appstoreconnect.apple.com"
 BUNDLE = "com.personal.hearthmend"
 
-CONSUMABLES = [
-    # product id, тип, цена USD, ссылочное имя, en (имя, описание), ru (имя, описание)
-    ("gems.small", "CONSUMABLE", "0.99", "Gems 80",
-     ("80 Gems", "A handful of gems"), ("80 кристаллов", "Горсть кристаллов")),
-    ("gems.medium", "CONSUMABLE", "4.99", "Gems 450",
-     ("450 Gems", "A pouch of gems"), ("450 кристаллов", "Мешочек кристаллов")),
-    ("gems.large", "CONSUMABLE", "9.99", "Gems 1000",
-     ("1000 Gems", "A box of gems"), ("1000 кристаллов", "Шкатулка кристаллов")),
-    ("gems.chest", "CONSUMABLE", "19.99", "Gems 2200",
-     ("2200 Gems", "A whole chest of gems"), ("2200 кристаллов", "Целый сундук кристаллов")),
-    ("starter", "NON_CONSUMABLE", "1.99", "Starter Pack",
-     ("Starter Pack", "250 gems, 200 energy, 1000 coins"), ("Стартовый набор", "250 кристаллов, 200 энергии, 1000 монет")),
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from asc_texts import TEXTS, check, text  # noqa: E402
+
+# product id, тип, цена USD, ссылочное имя, поле текста (имя и field_desc), сколько кристаллов для имени
+PRODUCTS = [
+    ("gems.small", "CONSUMABLE", "0.99", "Gems 80", "gems", 80),
+    ("gems.medium", "CONSUMABLE", "4.99", "Gems 450", "gems", 450),
+    ("gems.large", "CONSUMABLE", "9.99", "Gems 1000", "gems", 1000),
+    ("gems.chest", "CONSUMABLE", "19.99", "Gems 2200", "gems", 2200),
+    ("gems.huge", "CONSUMABLE", "49.99", "Gems 6000", "gems", 6000),
+    ("gems.mega", "CONSUMABLE", "99.99", "Gems 13000", "gems", 13000),
+    ("starter", "NON_CONSUMABLE", "1.99", "Starter Pack", "starter", 0),
+    ("piggy", "CONSUMABLE", "2.99", "Piggy Bank", "piggy", 0),
+    ("event.pass", "CONSUMABLE", "3.99", "Event Pass", "pass", 0),
+    ("bundle.weekend", "CONSUMABLE", "4.99", "Weekend Bundle", "weekend", 0),
+    ("builder", "NON_CONSUMABLE", "6.99", "Builder Kit", "builder", 0),
 ]
-VIP = ("vip.monthly", "4.99", "VIP Monthly",
-       ("VIP", "Open the jar anytime, double daily gems"),
-       ("VIP", "Кувшин в любой момент, двойные кристаллы"))
+VIP = ("vip.monthly", "4.99", "VIP Monthly")
+
+
+def loc_texts(field, n=0):
+    return [(loc, text(loc, field, n=n), text(loc, field + "_desc")) for loc in TEXTS]
+
+
 REVIEW_NOTE = "Purchase from the shop (tap + next to gems). Rewards are granted instantly."
 
 errors = []
@@ -109,7 +117,7 @@ def price_point(path, price):
 
 def ensure_iap(app, terrs):
     existing = {i["attributes"]["productId"]: i for i in get_all(f"/v1/apps/{app}/inAppPurchasesV2?limit=200")}
-    for suffix, kind, price, ref, en, ru in CONSUMABLES:
+    for suffix, kind, price, ref, field, n in PRODUCTS:
         pid = f"{BUNDLE}.{suffix}"
         if pid in existing:
             iap = existing[pid]["id"]
@@ -125,9 +133,16 @@ def ensure_iap(app, terrs):
             iap = d["data"]["id"]
             print(f"{pid}: создан")
 
-        locs = {l["attributes"]["locale"] for l in get_all(f"/v2/inAppPurchases/{iap}/inAppPurchaseLocalizations")}
-        for locale, (name, desc) in (("en-US", en), ("ru", ru)):
-            if locale in locs:
+        locs = {l["attributes"]["locale"]: l for l in get_all(f"/v2/inAppPurchases/{iap}/inAppPurchaseLocalizations")}
+        for locale, name, desc in loc_texts(field, n):
+            have = locs.get(locale)
+            if have:
+                a = have["attributes"]
+                if a.get("name") != name or a.get("description") != desc:
+                    s, d = call("PATCH", f"/v1/inAppPurchaseLocalizations/{have['id']}", {"data": {
+                        "type": "inAppPurchaseLocalizations", "id": have["id"],
+                        "attributes": {"name": name, "description": desc}}})
+                    ok(s, d, f"{pid} описание {locale}")
                 continue
             s, d = call("POST", "/v1/inAppPurchaseLocalizations", {"data": {
                 "type": "inAppPurchaseLocalizations",
@@ -167,7 +182,7 @@ def ensure_iap(app, terrs):
 
 
 def ensure_vip(app, terrs):
-    suffix, price, ref, en, ru = VIP
+    suffix, price, ref = VIP
     pid = f"{BUNDLE}.{suffix}"
     groups = get_all(f"/v1/apps/{app}/subscriptionGroups")
     group = next((g["id"] for g in groups if g["attributes"].get("referenceName") == "VIP"), None)
@@ -178,11 +193,14 @@ def ensure_vip(app, terrs):
         if not ok(s, d, "группа VIP"):
             return
         group = d["data"]["id"]
-        for locale, name in (("en-US", "Hearthmend VIP"), ("ru", "Hearthmend VIP")):
-            s, d = call("POST", "/v1/subscriptionGroupLocalizations", {"data": {
-                "type": "subscriptionGroupLocalizations", "attributes": {"locale": locale, "name": name},
-                "relationships": {"subscriptionGroup": rel("subscriptionGroups", group)}}})
-            ok(s, d, f"группа VIP описание {locale}")
+    glocs = {l["attributes"]["locale"] for l in get_all(f"/v1/subscriptionGroups/{group}/subscriptionGroupLocalizations")}
+    for locale in TEXTS:
+        if locale in glocs:
+            continue
+        s, d = call("POST", "/v1/subscriptionGroupLocalizations", {"data": {
+            "type": "subscriptionGroupLocalizations", "attributes": {"locale": locale, "name": text(locale, "group")},
+            "relationships": {"subscriptionGroup": rel("subscriptionGroups", group)}}})
+        ok(s, d, f"группа VIP описание {locale}")
 
     subs = {x["attributes"]["productId"]: x["id"] for x in get_all(f"/v1/subscriptionGroups/{group}/subscriptions")}
     sub = subs.get(pid)
@@ -200,7 +218,7 @@ def ensure_vip(app, terrs):
         print(f"{pid}: создан")
 
     locs = {l["attributes"]["locale"] for l in get_all(f"/v1/subscriptions/{sub}/subscriptionLocalizations")}
-    for locale, (name, desc) in (("en-US", en), ("ru", ru)):
+    for locale, name, desc in loc_texts("vip"):
         if locale not in locs:
             s, d = call("POST", "/v1/subscriptionLocalizations", {"data": {
                 "type": "subscriptionLocalizations",
@@ -241,6 +259,9 @@ def ensure_vip(app, terrs):
 
 
 def main():
+    bad = check()
+    if bad:
+        sys.exit("тексты длиннее лимитов Apple:\n" + "\n".join(bad))
     app = app_id()
     terrs = territories()
     print("Стран:", len(terrs))

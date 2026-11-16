@@ -145,5 +145,16 @@
   "task.hill_glasshouse": "ガラスの温室",
   "task.hill_library": "図書館を直す",
   "task.hill_manor": "古い館を修理する",
-  "task.hill_bell": "丘の鐘を鳴らす"
+  "task.hill_bell": "丘の鐘を鳴らす",
+  "shop.piggy": "貯金箱",
+  "shop.piggy_hint": "注文ごとにジェムが%d個たまります。%d個から割れます。",
+  "shop.piggy_full": "貯金箱がいっぱい！ジェムがむだにならないうちに割りましょう",
+  "shop.piggy_ready": "貯金箱が割れるようになりました！ショップへどうぞ",
+  "shop.pass": "イベントパス",
+  "shop.pass_hint": "今週末のすべての段階でもう一つのごほうび",
+  "shop.pass_active": "イベントパス有効",
+  "shop.weekend": "週末セット",
+  "shop.weekend_hint": "今週末限定",
+  "shop.builder": "建築家セット",
+  "shop.builder_hint": "建物用のスターと街灯。一度きりのお得なセット"
 }

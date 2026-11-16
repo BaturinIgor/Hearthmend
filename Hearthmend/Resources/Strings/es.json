@@ -145,5 +145,16 @@
   "task.hill_glasshouse": "Invernadero de cristal",
   "task.hill_library": "Restaurar la biblioteca",
   "task.hill_manor": "Reparar la vieja mansión",
-  "task.hill_bell": "Tocar la campana de la colina"
+  "task.hill_bell": "Tocar la campana de la colina",
+  "shop.piggy": "Hucha",
+  "shop.piggy_hint": "Cada pedido mete %d gemas dentro. Puedes romperla desde %d gemas.",
+  "shop.piggy_full": "¡La hucha está llena! Rómpela para no perder gemas",
+  "shop.piggy_ready": "¡Ya puedes romper la hucha! Mira la tienda",
+  "shop.pass": "Pase del evento",
+  "shop.pass_hint": "Una segunda recompensa en cada paso de este fin de semana",
+  "shop.pass_active": "Pase del evento activo",
+  "shop.weekend": "Pack de fin de semana",
+  "shop.weekend_hint": "Solo este fin de semana",
+  "shop.builder": "Kit del constructor",
+  "shop.builder_hint": "Estrellas para construir y una farola. Oferta única"
 }

@@ -74,6 +74,10 @@ DECOR = {
     "decor_mushroom": (OD + "Outdoor_Decor.png", 112, 32, 16, 16),
     "decor_nest": ("Outdoor decoration/Nests.png", 32, 0, 16, 16),
     "decor_bench": (OD + "Benches.png", 0, 0, 32, 32),
+    # из покупок: пропуск события, набор выходных, набор строителя
+    "decor_lamp_hanging": (OD + "Lanter_Posts.png", 0, 288, 32, 48),
+    "decor_pond": (OD + "Fountain.png", 0, 0, 32, 40),
+    "decor_lamp_double": (OD + "Lanter_Posts.png", 0, 96, 16, 48),
 }
 BUILDINGS.update(DECOR)
 

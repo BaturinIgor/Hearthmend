@@ -136,7 +136,7 @@ extension Game {
             state.eventClaimed += 1
             rewards.append(reward)
         }
-        return rewards
+        return rewards + claimEventPassRewards()
     }
 
     /// Выбор жителя. Сделать его можно один раз за событие.

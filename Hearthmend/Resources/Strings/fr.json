@@ -145,5 +145,16 @@
   "task.hill_glasshouse": "Serre en verre",
   "task.hill_library": "Restaurer la bibliothèque",
   "task.hill_manor": "Réparer le vieux manoir",
-  "task.hill_bell": "Sonner la cloche de la colline"
+  "task.hill_bell": "Sonner la cloche de la colline",
+  "shop.piggy": "Tirelire",
+  "shop.piggy_hint": "Chaque commande y glisse %d gemmes. Tu peux la casser dès %d gemmes.",
+  "shop.piggy_full": "La tirelire est pleine ! Casse-la pour ne perdre aucune gemme",
+  "shop.piggy_ready": "La tirelire peut être cassée ! Passe à la boutique",
+  "shop.pass": "Pass d'événement",
+  "shop.pass_hint": "Une seconde récompense à chaque palier de ce week-end",
+  "shop.pass_active": "Pass d'événement actif",
+  "shop.weekend": "Pack du week-end",
+  "shop.weekend_hint": "Seulement ce week-end",
+  "shop.builder": "Kit du bâtisseur",
+  "shop.builder_hint": "Des étoiles pour bâtir et un lampadaire. Offre unique"
 }

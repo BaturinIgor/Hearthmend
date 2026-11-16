@@ -13,7 +13,7 @@ public final class Game {
     /// Уровни, полученные последним отданным заказом: интерфейс показывает праздник.
     public private(set) var lastLevelUps: [Int] = []
     /// Награды события, открытые последним отданным заказом.
-    public private(set) var lastEventRewards: [EventReward] = []
+    public internal(set) var lastEventRewards: [EventReward] = []
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -366,6 +366,7 @@ public final class Game {
         advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)
+        fillPiggy()
         placePendingGenerators()
         refillOrders()
         return order
