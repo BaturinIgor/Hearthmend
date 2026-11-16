@@ -204,6 +204,7 @@ public final class Game {
         tier = min(tier, catalog.maxTier(of: gen.chain))
         let item = Item(chain: gen.chain, tier: tier)
         state.cells[cell] = .item(item)
+        advanceTutorial(from: .spawn)
         return .spawned(index: cell, item: item)
     }
 
@@ -231,6 +232,7 @@ public final class Game {
             state.cells[to] = .item(next)
             state.cells[from] = nil
             state.mergesTotal += 1
+            advanceTutorial(from: .merge)
             state.bestTier[next.chain] = max(state.bestTier[next.chain] ?? 0, next.tier)
             let cleared = clearDebris(around: to)
             let bubble = maybeBubble(next, near: to)
@@ -361,6 +363,7 @@ public final class Game {
         state.coins += order.coins
         state.stars += order.stars
         state.ordersTotal += 1
+        advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)
         placePendingGenerators()

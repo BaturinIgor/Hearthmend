@@ -56,6 +56,9 @@ struct ContentView: View {
                 BasketBar()
             }
             .padding(.top, 4)
+            TutorialTip(openVillage: { screen = .village })
+                .padding(.bottom, 54)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.tutorialStep)
             if let toast = store.toast {
                 Text(toast)
                     .font(.system(size: 15, weight: .semibold, design: .rounded))

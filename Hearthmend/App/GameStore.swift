@@ -260,6 +260,12 @@ final class GameStore: ObservableObject {
         return reward
     }
 
+    func skipTutorial() {
+        game.skipTutorial()
+        commit()
+        onBoardChange?()
+    }
+
     // MARK: - События и украшения
 
     func chooseEvent(_ id: String) {

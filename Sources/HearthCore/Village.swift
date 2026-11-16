@@ -89,6 +89,7 @@ extension Game {
         guard state.stars >= task.cost else { return .notEnoughStars(missing: task.cost - state.stars) }
         state.stars -= task.cost
         state.completedTasks.append(task.id)
+        advanceTutorial(from: .build)
         state.gems += task.gems ?? 0
         if let chain = task.unlocksChain, catalog.chain(chain) != nil, !state.unlockedChains.contains(chain) {
             state.unlockedChains.append(chain)

@@ -117,5 +117,12 @@
   "event.lights.after.tim": "Tim and Mila sat on the bench until sunrise. The bench is yours.",
   "decor.stored": "Decoration put away",
   "decor.hint": "Tap to place. Drag to move, long press to put away.",
-  "decor.empty": "Decorations come from weekend events"
+  "decor.empty": "Decorations come from weekend events",
+  "tutorial.spawn": "Hi! I'm Mila. The village is in ruins, but we'll rebuild it. Tap the glowing generator to get an item.",
+  "tutorial.merge": "Great! Now drag an item onto a matching one to merge them into something better.",
+  "tutorial.deliver": "Villagers post orders at the top. When an item is ready, tap Give to earn stars.",
+  "tutorial.build": "You have stars! Let's go to the village and build something.",
+  "tutorial.done": "",
+  "tutorial.skip": "Skip",
+  "tutorial.go_village": "To the village"
 }

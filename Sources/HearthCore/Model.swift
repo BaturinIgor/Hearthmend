@@ -163,6 +163,8 @@ public struct GameState: Codable, Equatable {
     public var decorOwned: [String: Int] = [:]
     public var placedDecor: [PlacedDecor] = []
     public var nextDecorId: Int = 1
+    /// Шаг обучения (TutorialStep). Старые сохранения с отданными заказами обучение пропускают.
+    public var tutorialStep: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -190,6 +192,7 @@ public struct GameState: Codable, Equatable {
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
+        case tutorialStep
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -229,6 +232,8 @@ public struct GameState: Codable, Equatable {
         decorOwned = try c.decodeIfPresent([String: Int].self, forKey: .decorOwned) ?? [:]
         placedDecor = try c.decodeIfPresent([PlacedDecor].self, forKey: .placedDecor) ?? []
         nextDecorId = try c.decodeIfPresent(Int.self, forKey: .nextDecorId) ?? 1
+        tutorialStep = try c.decodeIfPresent(Int.self, forKey: .tutorialStep)
+            ?? (ordersTotal > 0 ? TutorialStep.done.rawValue : 0)
     }
 }
 

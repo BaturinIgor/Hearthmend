@@ -87,6 +87,41 @@ final class BoardScene: SKScene {
             }
         }
         updateSelection()
+        tutorialHints(state)
+    }
+
+    /// Подсказки обучения: пульсирующие рамки на генераторе или на паре одинаковых предметов.
+    private func tutorialHints(_ state: GameState) {
+        guard let store else { return }
+        var cells: [Int] = []
+        switch store.game.tutorial {
+        case .spawn:
+            if let g = state.cells.firstIndex(where: { if case .generator? = $0 { return true } else { return false } }) {
+                cells = [g]
+            }
+        case .merge:
+            var seen: [Item: Int] = [:]
+            for (i, piece) in state.cells.enumerated() {
+                guard let item = piece?.item, store.catalog.next(item) != nil else { continue }
+                if let j = seen[item] { cells = [j, i]; break }
+                seen[item] = i
+            }
+        default:
+            break
+        }
+        for i in cells {
+            let ring = SKShapeNode(rectOf: CGSize(width: cellSize - 1, height: cellSize - 1), cornerRadius: cellSize * 0.2)
+            ring.strokeColor = .white
+            ring.lineWidth = 3
+            ring.glowWidth = 4
+            ring.position = center(of: i)
+            ring.zPosition = 3
+            ring.run(.repeatForever(.sequence([
+                .group([.scale(to: 1.12, duration: 0.5), .fadeAlpha(to: 0.4, duration: 0.5)]),
+                .group([.scale(to: 1.0, duration: 0.5), .fadeAlpha(to: 1, duration: 0.5)]),
+            ])))
+            boardNode.addChild(ring)
+        }
     }
 
     /// Только рамка выбора, без перерисовки поля: анимации слияния и полета не обрываются.
