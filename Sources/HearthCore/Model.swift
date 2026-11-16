@@ -84,6 +84,12 @@ public struct Balance: Equatable {
     /// Сколько верхних рядов при старте закрыто завалом.
     public var debrisRows = 3
 
+    /// Кувшин светлячков: энергия, которая сгорела бы на потолке, копится медленнее в кувшине.
+    public var jarCapacity = 60
+    public var jarSlowdown = 2.0
+    /// Бесплатно открыть кувшин можно раз в столько секунд.
+    public var jarCooldown: TimeInterval = 8 * 3600
+
     /// Опыт до следующего уровня: xpBase * уровень^2.
     public var xpBase = 12
     public var levelUpEnergy = 20
@@ -127,6 +133,9 @@ public struct GameState: Codable, Equatable {
     public var level: Int = 1
     /// Генераторы новых цепочек, которым не хватило места на поле: встанут, когда место появится.
     public var pendingGenerators: [String] = []
+    /// Энергия в кувшине светлячков и когда его последний раз открыли бесплатно.
+    public var jarEnergy: Int = 0
+    public var jarOpenedAt: Date?
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -151,6 +160,7 @@ public struct GameState: Codable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case cells, energy, energyUpdatedAt, coins, gems, stars, xp, orders, nextOrderId, basket, basketSize
         case bestTier, unlockedChains, mergesTotal, ordersTotal, completedTasks, level, pendingGenerators
+        case jarEnergy, jarOpenedAt
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -174,6 +184,8 @@ public struct GameState: Codable, Equatable {
         completedTasks = try c.decodeIfPresent([String].self, forKey: .completedTasks) ?? []
         level = try c.decodeIfPresent(Int.self, forKey: .level) ?? 1
         pendingGenerators = try c.decodeIfPresent([String].self, forKey: .pendingGenerators) ?? []
+        jarEnergy = try c.decodeIfPresent(Int.self, forKey: .jarEnergy) ?? 0
+        jarOpenedAt = try c.decodeIfPresent(Date.self, forKey: .jarOpenedAt)
     }
 }
 

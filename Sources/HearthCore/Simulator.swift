@@ -9,6 +9,8 @@ public struct SimConfig {
     public var seed: UInt64 = 1
     /// Открывать ли пузыри за кристаллы.
     public var popBubbles = true
+    /// Открывать ли кувшин светлячков бесплатно, когда можно.
+    public var openJar = true
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -30,6 +32,7 @@ public struct SimReport: CustomStringConvertible {
     public var gemsSpentOnBubbles = 0
     public var bubblesPopped = 0
     public var energyFromLevels = 0
+    public var energyFromJar = 0
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -46,7 +49,7 @@ public struct SimReport: CustomStringConvertible {
         дней \(String(format: "%.1f", days)), сессий \(sessions), энергия \(energySpent), слияний \(merges), \
         заказов \(orders), звезд \(starsEarned), задач \(tasksDone), уровень \(level)
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
-        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), застреваний \(stalledSessions)
+        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), застреваний \(stalledSessions)
         районы: \(districts)
         """
     }
@@ -68,6 +71,7 @@ public enum Simulator {
             }
             game.refreshEnergy()
             game.expireBubbles()
+            if config.openJar { report.energyFromJar += game.openJar() }
             report.sessions += 1
             let stalled = playSession(game, config: config, report: &report)
             if stalled { report.stalledSessions += 1 }

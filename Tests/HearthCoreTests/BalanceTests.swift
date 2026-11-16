@@ -71,6 +71,15 @@ final class BalanceTests: XCTestCase {
         }
     }
 
+    /// Кувшин заметно помогает тем, кто заходит редко, но не удваивает энергию.
+    func testJarIsHelpfulButNotDominant() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.energyFromJar, 0, "зерно \(seed): кувшин работает")
+            XCTAssertLessThanOrEqual(Double(r.energyFromJar), Double(r.energySpent) * 0.3, "зерно \(seed)")
+        }
+    }
+
     /// Пузырь не дешевле энергии, которую стоит сам предмет, на любой ступени любой цепочки.
     func testBubblesAreNeverCheaperThanEnergy() {
         let b = Balance()

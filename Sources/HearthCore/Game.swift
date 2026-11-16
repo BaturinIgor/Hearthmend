@@ -106,17 +106,59 @@ public final class Game {
 
     // MARK: - Энергия
 
+    /// Восстанавливает энергию по времени. Когда энергия полная, время не сгорает: светлячки
+    /// собирают ее в кувшин медленнее (раз в energyRegen * jarSlowdown), пока он не заполнится.
     public func refreshEnergy() {
         let t = now()
-        guard state.energy < balance.energyMax else { return }
         // часы перевели назад: отсчет с "будущей" даты встал бы на часы
         if state.energyUpdatedAt > t { state.energyUpdatedAt = t }
-        let gained = Int(t.timeIntervalSince(state.energyUpdatedAt) / balance.energyRegen)
-        guard gained > 0 else { return }
-        state.energy = min(balance.energyMax, state.energy + gained)
-        state.energyUpdatedAt = state.energy >= balance.energyMax
+        if state.energy < balance.energyMax {
+            let gained = Int(t.timeIntervalSince(state.energyUpdatedAt) / balance.energyRegen)
+            guard gained > 0 else { return }
+            let room = balance.energyMax - state.energy
+            if gained < room {
+                state.energy += gained
+                state.energyUpdatedAt = state.energyUpdatedAt.addingTimeInterval(Double(gained) * balance.energyRegen)
+                return
+            }
+            // энергия заполнилась: остаток времени идет в кувшин
+            state.energy = balance.energyMax
+            state.energyUpdatedAt = state.energyUpdatedAt.addingTimeInterval(Double(room) * balance.energyRegen)
+        }
+        let step = balance.energyRegen * balance.jarSlowdown
+        guard state.jarEnergy < balance.jarCapacity else {
+            state.energyUpdatedAt = t
+            return
+        }
+        let caught = Int(t.timeIntervalSince(state.energyUpdatedAt) / step)
+        guard caught > 0 else { return }
+        state.jarEnergy = min(balance.jarCapacity, state.jarEnergy + caught)
+        state.energyUpdatedAt = state.jarEnergy >= balance.jarCapacity
             ? t
-            : state.energyUpdatedAt.addingTimeInterval(Double(gained) * balance.energyRegen)
+            : state.energyUpdatedAt.addingTimeInterval(Double(caught) * step)
+    }
+
+    // MARK: - Кувшин светлячков
+
+    /// Когда кувшин можно открыть бесплатно. nil - уже можно.
+    public var jarFreeIn: TimeInterval? {
+        guard let opened = state.jarOpenedAt else { return nil }
+        let left = opened.addingTimeInterval(balance.jarCooldown).timeIntervalSince(now())
+        return left > 0 ? left : nil
+    }
+
+    /// Открывает кувшин: вся собранная энергия переходит в запас (может превысить максимум).
+    /// Бесплатно раз в jarCooldown; paid = true - открыть сразу (за рекламу, кристаллы или VIP).
+    /// Возвращает, сколько энергии получено.
+    @discardableResult
+    public func openJar(paid: Bool = false) -> Int {
+        refreshEnergy()
+        guard state.jarEnergy > 0, paid || jarFreeIn == nil else { return 0 }
+        let amount = state.jarEnergy
+        state.jarEnergy = 0
+        if !paid { state.jarOpenedAt = now() }
+        state.energy += amount
+        return amount
     }
 
     /// Секунд до следующей единицы энергии или nil, если энергия полная.
@@ -361,6 +403,7 @@ extension Game {
     func testSetEnergy(_ value: Int) { state.energy = value; state.energyUpdatedAt = now() }
     func testSetGems(_ value: Int) { state.gems = value }
     func testSetStars(_ value: Int) { state.stars = value }
+    func testSetJar(_ value: Int) { state.jarEnergy = value }
     func testSetXP(_ value: Int) { state.xp = value }
     func testSetOrders(_ orders: [Order]) {
         state.orders = orders
