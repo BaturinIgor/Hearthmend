@@ -82,6 +82,8 @@ DECOR = {
 BUILDINGS.update(DECOR)
 
 
+POSTCARD_W, POSTCARD_H = 448, 336
+
 # центр крыльев относительно левого верхнего угла башни, в пикселях
 WINDMILL_HUB = (22, 40)
 
@@ -199,17 +201,26 @@ def main():
     bg.save(os.path.join(out, "map_bg.png"))
     print(f"{len(images)} построек и фон {bg.width}x{bg.height} в {out}")
 
+    canvas = bg.copy()
+    for t in sorted(tasks, key=lambda t: t["y"]):
+        im = images[t["building"]]
+        place(canvas, im, t["x"], t["y"])
+        if t["building"] == "bld_windmill":
+            blades = images["bld_windmill_blades"]
+            left, top = int(t["x"] * CELL - im.width / 2), int(t["y"] * CELL - im.height)
+            canvas.alpha_composite(blades, (left + WINDMILL_HUB[0] - blades.width // 2,
+                                            top + WINDMILL_HUB[1] - blades.height // 2))
+
+    # открытки: вид каждого района целиком отстроенным, по центру карты
+    for d in village["districts"]:
+        ys = [t["y"] for t in d["tasks"]]
+        cy = ((min(ys) + max(ys)) / 2 - 3) * CELL
+        left = (canvas.width - POSTCARD_W) // 2
+        top = int(min(max(cy - POSTCARD_H / 2, 0), canvas.height - POSTCARD_H))
+        canvas.crop((left, top, left + POSTCARD_W, top + POSTCARD_H)).save(os.path.join(out, f"postcard_{d['id']}.png"))
+
     if "--preview" in sys.argv:
         dest = sys.argv[sys.argv.index("--preview") + 1]
-        canvas = bg.copy()
-        for t in sorted(tasks, key=lambda t: t["y"]):
-            im = images[t["building"]]
-            place(canvas, im, t["x"], t["y"])
-            if t["building"] == "bld_windmill":
-                blades = images["bld_windmill_blades"]
-                left, top = int(t["x"] * CELL - im.width / 2), int(t["y"] * CELL - im.height)
-                canvas.alpha_composite(blades, (left + WINDMILL_HUB[0] - blades.width // 2,
-                                                top + WINDMILL_HUB[1] - blades.height // 2))
         canvas.resize((canvas.width * 2, canvas.height * 2), Image.NEAREST).convert("RGB").save(dest)
 
 

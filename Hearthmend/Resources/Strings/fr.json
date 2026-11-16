@@ -156,5 +156,13 @@
   "shop.weekend": "Pack du week-end",
   "shop.weekend_hint": "Seulement ce week-end",
   "shop.builder": "Kit du bâtisseur",
-  "shop.builder_hint": "Des étoiles pour bâtir et un lampadaire. Offre unique"
+  "shop.builder_hint": "Des étoiles pour bâtir et un lampadaire. Offre unique",
+  "boost.on": "Boost activé : 2 énergies pour un objet d'un niveau au-dessus",
+  "boost.off": "Boost désactivé",
+  "selected.undo": "Annuler",
+  "postcard.title": "Cartes postales",
+  "postcard.progress": "%d sur %d morceaux",
+  "postcard.how": "Chaque commande apporte un morceau. Complète la carte pour gagner gemmes, pièces et une décoration.",
+  "postcard.collected": "Cartes collectées : %d",
+  "postcard.done": "Carte complète : %@ !"
 }

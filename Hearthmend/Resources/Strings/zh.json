@@ -156,5 +156,13 @@
   "shop.weekend": "周末礼包",
   "shop.weekend_hint": "仅限本周末",
   "shop.builder": "建造者礼包",
-  "shop.builder_hint": "建筑用星星和一盏路灯。限购一次"
+  "shop.builder_hint": "建筑用星星和一盏路灯。限购一次",
+  "boost.on": "加速：2 点能量产出高一级物品",
+  "boost.off": "加速已关闭",
+  "selected.undo": "撤销",
+  "postcard.title": "明信片",
+  "postcard.progress": "%d / %d 块",
+  "postcard.how": "每个订单带来一块碎片。集齐明信片可获得宝石、金币和装饰。",
+  "postcard.collected": "已收集明信片：%d",
+  "postcard.done": "明信片集齐：%@！"
 }

@@ -156,5 +156,13 @@
   "shop.weekend": "Weekend bundle",
   "shop.weekend_hint": "Only this weekend",
   "shop.builder": "Builder's kit",
-  "shop.builder_hint": "Stars for buildings and a street lamp. One-time offer"
+  "shop.builder_hint": "Stars for buildings and a street lamp. One-time offer",
+  "boost.on": "Boost on: 2 energy for an item one step higher",
+  "boost.off": "Boost off",
+  "selected.undo": "Undo",
+  "postcard.title": "Postcards",
+  "postcard.progress": "%d of %d pieces",
+  "postcard.how": "Every order brings a piece. Complete the postcard to get gems, coins and a decoration.",
+  "postcard.collected": "Postcards collected: %d",
+  "postcard.done": "Postcard complete: %@!"
 }

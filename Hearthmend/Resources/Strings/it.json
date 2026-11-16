@@ -156,5 +156,13 @@
   "shop.weekend": "Pacchetto weekend",
   "shop.weekend_hint": "Solo questo weekend",
   "shop.builder": "Kit del costruttore",
-  "shop.builder_hint": "Stelle per costruire e un lampione. Offerta unica"
+  "shop.builder_hint": "Stelle per costruire e un lampione. Offerta unica",
+  "boost.on": "Boost attivo: 2 energia per un oggetto di un livello sopra",
+  "boost.off": "Boost disattivato",
+  "selected.undo": "Annulla",
+  "postcard.title": "Cartoline",
+  "postcard.progress": "%d di %d pezzi",
+  "postcard.how": "Ogni ordine porta un pezzo. Completa la cartolina per gemme, monete e una decorazione.",
+  "postcard.collected": "Cartoline raccolte: %d",
+  "postcard.done": "Cartolina completa: %@!"
 }

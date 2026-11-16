@@ -156,5 +156,13 @@
   "shop.weekend": "Hafta sonu paketi",
   "shop.weekend_hint": "Sadece bu hafta sonu",
   "shop.builder": "Usta seti",
-  "shop.builder_hint": "Binalar için yıldızlar ve bir sokak lambası. Tek seferlik teklif"
+  "shop.builder_hint": "Binalar için yıldızlar ve bir sokak lambası. Tek seferlik teklif",
+  "boost.on": "Hız: 2 enerjiyle bir üst seviye eşya",
+  "boost.off": "Hız kapalı",
+  "selected.undo": "Geri al",
+  "postcard.title": "Kartpostallar",
+  "postcard.progress": "%d / %d parça",
+  "postcard.how": "Her sipariş bir parça getirir. Kartpostalı tamamla, mücevher, altın ve süs kazan.",
+  "postcard.collected": "Toplanan kartpostal: %d",
+  "postcard.done": "Kartpostal tamam: %@!"
 }

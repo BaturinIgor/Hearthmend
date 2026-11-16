@@ -156,5 +156,13 @@
   "shop.weekend": "Wochenendpaket",
   "shop.weekend_hint": "Nur an diesem Wochenende",
   "shop.builder": "Baumeister-Set",
-  "shop.builder_hint": "Sterne für Gebäude und eine Laterne. Einmaliges Angebot"
+  "shop.builder_hint": "Sterne für Gebäude und eine Laterne. Einmaliges Angebot",
+  "boost.on": "Boost an: 2 Energie für ein Objekt eine Stufe höher",
+  "boost.off": "Boost aus",
+  "selected.undo": "Zurück",
+  "postcard.title": "Postkarten",
+  "postcard.progress": "%d von %d Teilen",
+  "postcard.how": "Jeder Auftrag bringt ein Teil. Vervollständige die Postkarte für Edelsteine, Münzen und eine Deko.",
+  "postcard.collected": "Gesammelte Postkarten: %d",
+  "postcard.done": "Postkarte komplett: %@!"
 }

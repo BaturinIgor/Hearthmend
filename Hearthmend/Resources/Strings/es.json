@@ -156,5 +156,13 @@
   "shop.weekend": "Pack de fin de semana",
   "shop.weekend_hint": "Solo este fin de semana",
   "shop.builder": "Kit del constructor",
-  "shop.builder_hint": "Estrellas para construir y una farola. Oferta única"
+  "shop.builder_hint": "Estrellas para construir y una farola. Oferta única",
+  "boost.on": "Impulso: 2 de energía por un objeto un nivel más alto",
+  "boost.off": "Impulso desactivado",
+  "selected.undo": "Deshacer",
+  "postcard.title": "Postales",
+  "postcard.progress": "%d de %d piezas",
+  "postcard.how": "Cada pedido trae una pieza. Completa la postal para ganar gemas, monedas y una decoración.",
+  "postcard.collected": "Postales reunidas: %d",
+  "postcard.done": "¡Postal completa: %@!"
 }

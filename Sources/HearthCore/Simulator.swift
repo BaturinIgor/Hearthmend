@@ -14,6 +14,8 @@ public struct SimConfig {
     /// Забирать ежедневную награду и покупать энергию за монеты, когда хватает.
     public var claimDaily = true
     public var buyCoinEnergy = true
+    /// Включать ускорение генераторов x2, как только оно откроется.
+    public var useBoost = false
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -114,7 +116,7 @@ public enum Simulator {
             if mergeSomething(game, report: &report) { continue }
             if config.popBubbles, popBubble(game, report: &report) { continue }
             if game.state.energy > 0 {
-                switch spawn(game, report: &report) {
+                switch spawn(game, config: config, report: &report) {
                 case .spawned: continue
                 case .boardFull:
                     if sellJunk(game, report: &report) { continue }
@@ -131,6 +133,7 @@ public enum Simulator {
     private static func deliverOrder(_ game: Game, report: inout SimReport) -> Bool {
         let ready = game.state.orders.filter(game.canDeliver).sorted { $0.coins > $1.coins }
         guard let order = ready.first else { return false }
+        game.refreshEnergy()
         let energyBefore = game.state.energy
         guard game.deliver(orderId: order.id) != nil else { return false }
         report.orders += 1
@@ -227,7 +230,7 @@ public enum Simulator {
     }
 
     /// Тратит энергию на цепочку, которой заказам не хватает больше всего с учетом заготовок на поле.
-    private static func spawn(_ game: Game, report: inout SimReport) -> Game.SpawnResult {
+    private static func spawn(_ game: Game, config: SimConfig, report: inout SimReport) -> Game.SpawnResult {
         let lack = missing(game)
         var chainNeed: [String: Int] = [:]
         var topTier: [String: Int] = [:]
@@ -251,10 +254,13 @@ public enum Simulator {
         let best = gens.max { a, b in
             (chainNeed[a.1.chain] ?? Int.min / 2, a.1.tier) < (chainNeed[b.1.chain] ?? Int.min / 2, b.1.tier)
         }!
+        if config.useBoost, game.boostUnlocked, !game.state.boostOn { game.setBoost(true) }
+        game.refreshEnergy()
+        let energyBefore = game.state.energy
         let result = game.spawn(from: best.0)
         if case .spawned = result {
             report.spawns += 1
-            report.energySpent += 1
+            report.energySpent += max(1, energyBefore - game.state.energy)
         }
         return result
     }

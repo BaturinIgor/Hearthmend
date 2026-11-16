@@ -156,5 +156,13 @@
   "shop.weekend": "Pacote de fim de semana",
   "shop.weekend_hint": "Só neste fim de semana",
   "shop.builder": "Kit do construtor",
-  "shop.builder_hint": "Estrelas para construções e um poste de luz. Oferta única"
+  "shop.builder_hint": "Estrelas para construções e um poste de luz. Oferta única",
+  "boost.on": "Impulso: 2 de energia por um item um nível acima",
+  "boost.off": "Impulso desligado",
+  "selected.undo": "Desfazer",
+  "postcard.title": "Cartões-postais",
+  "postcard.progress": "%d de %d peças",
+  "postcard.how": "Cada pedido traz uma peça. Complete o cartão para ganhar gemas, moedas e uma decoração.",
+  "postcard.collected": "Cartões coletados: %d",
+  "postcard.done": "Cartão completo: %@!"
 }

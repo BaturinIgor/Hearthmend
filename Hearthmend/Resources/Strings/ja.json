@@ -156,5 +156,13 @@
   "shop.weekend": "週末セット",
   "shop.weekend_hint": "今週末限定",
   "shop.builder": "建築家セット",
-  "shop.builder_hint": "建物用のスターと街灯。一度きりのお得なセット"
+  "shop.builder_hint": "建物用のスターと街灯。一度きりのお得なセット",
+  "boost.on": "ブースト：エネルギー2で1段階上のアイテム",
+  "boost.off": "ブーストオフ",
+  "selected.undo": "元に戻す",
+  "postcard.title": "ポストカード",
+  "postcard.progress": "%d / %d ピース",
+  "postcard.how": "注文ごとにピースが1つ。ポストカードを完成させるとジェム、コイン、デコがもらえます。",
+  "postcard.collected": "集めたポストカード：%d",
+  "postcard.done": "ポストカード完成：%@！"
 }

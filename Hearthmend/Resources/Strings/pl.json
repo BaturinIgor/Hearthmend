@@ -156,5 +156,13 @@
   "shop.weekend": "Pakiet weekendowy",
   "shop.weekend_hint": "Tylko w ten weekend",
   "shop.builder": "Zestaw budowniczego",
-  "shop.builder_hint": "Gwiazdy na budowy i latarnia. Oferta jednorazowa"
+  "shop.builder_hint": "Gwiazdy na budowy i latarnia. Oferta jednorazowa",
+  "boost.on": "Przyspieszenie: 2 energii za przedmiot o poziom wyżej",
+  "boost.off": "Przyspieszenie wyłączone",
+  "selected.undo": "Cofnij",
+  "postcard.title": "Pocztówki",
+  "postcard.progress": "%d z %d kawałków",
+  "postcard.how": "Każde zamówienie daje kawałek. Ułóż pocztówkę, by zdobyć klejnoty, monety i dekorację.",
+  "postcard.collected": "Zebrane pocztówki: %d",
+  "postcard.done": "Pocztówka ułożona: %@!"
 }

@@ -104,6 +104,13 @@ public struct Balance: Equatable {
     public var piggyMax = 300
     public var piggyMin = 120
 
+    /// Ускорение генераторов x2 открывается с этого уровня.
+    public var boostLevel = 6
+    /// Открытки: кусочков в открытке и награда за собранную.
+    public var postcardPieces = 9
+    public var postcardGems = 10
+    public var postcardCoins = 100
+
     /// Опыт до следующего уровня: xpBase * уровень^2.
     public var xpBase = 12
     public var levelUpEnergy = 20
@@ -176,6 +183,11 @@ public struct GameState: Codable, Equatable {
     public var eventPassKey: String?
     public var eventPassClaimed: Int = 0
     public var weekendBundleKey: String?
+    /// Ускорение генераторов x2 включено.
+    public var boostOn: Bool = false
+    /// Открытки: сколько собрано и сколько кусочков у текущей.
+    public var postcardIndex: Int = 0
+    public var postcardPieces: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -203,7 +215,7 @@ public struct GameState: Codable, Equatable {
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
-        case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey
+        case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces
         case tutorialStep
     }
 
@@ -250,6 +262,9 @@ public struct GameState: Codable, Equatable {
         eventPassKey = try c.decodeIfPresent(String.self, forKey: .eventPassKey)
         eventPassClaimed = try c.decodeIfPresent(Int.self, forKey: .eventPassClaimed) ?? 0
         weekendBundleKey = try c.decodeIfPresent(String.self, forKey: .weekendBundleKey)
+        boostOn = try c.decodeIfPresent(Bool.self, forKey: .boostOn) ?? false
+        postcardIndex = try c.decodeIfPresent(Int.self, forKey: .postcardIndex) ?? 0
+        postcardPieces = try c.decodeIfPresent(Int.self, forKey: .postcardPieces) ?? 0
     }
 }
 
