@@ -27,7 +27,8 @@ struct VillageView: View {
                     }
                     .onAppear {
                         if let focus = focusTask {
-                            DispatchQueue.main.async {
+                            // ждем раскладку карты: при запуске сразу в деревню прокрутка раньше не срабатывала
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                                 withAnimation(.easeInOut(duration: 0.6)) { proxy.scrollTo(focus.id, anchor: .center) }
                             }
                         }
