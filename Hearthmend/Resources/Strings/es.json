@@ -178,5 +178,10 @@
   "shop.stamps": "Tarjeta de sellos",
   "shop.stamps_hint": "Cada compra suma un sello. Con %d: 💎 %d y un adorno raro",
   "shop.stamps_done": "¡Tarjeta de sellos completa!",
-  "shop.stamp_added": "Sello %d de %d"
+  "shop.stamp_added": "Sello %d de %d",
+  "season.spring": "Primavera",
+  "season.summer": "Verano",
+  "season.autumn": "Otoño",
+  "season.winter": "Invierno",
+  "village.fog_next": "Siguiente: %@"
 }

@@ -178,5 +178,10 @@
   "shop.stamps": "Tessera timbri",
   "shop.stamps_hint": "Ogni acquisto aggiunge un timbro. Con %d: 💎 %d e una decorazione rara",
   "shop.stamps_done": "Tessera timbri completa!",
-  "shop.stamp_added": "Timbro %d di %d"
+  "shop.stamp_added": "Timbro %d di %d",
+  "season.spring": "Primavera",
+  "season.summer": "Estate",
+  "season.autumn": "Autunno",
+  "season.winter": "Inverno",
+  "village.fog_next": "Prossimo: %@"
 }

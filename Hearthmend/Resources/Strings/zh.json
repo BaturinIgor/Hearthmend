@@ -178,5 +178,10 @@
   "shop.stamps": "集章卡",
   "shop.stamps_hint": "每次购买盖一个章。集满%d个得💎 %d和稀有装饰",
   "shop.stamps_done": "集章卡集满了！",
-  "shop.stamp_added": "第%d个章，共%d个"
+  "shop.stamp_added": "第%d个章，共%d个",
+  "season.spring": "春",
+  "season.summer": "夏",
+  "season.autumn": "秋",
+  "season.winter": "冬",
+  "village.fog_next": "下一站：%@"
 }

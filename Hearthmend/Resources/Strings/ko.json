@@ -178,5 +178,10 @@
   "shop.stamps": "스탬프 카드",
   "shop.stamps_hint": "구매할 때마다 스탬프 1개. %d개 모으면 💎 %d와 희귀 장식",
   "shop.stamps_done": "스탬프 카드 완성!",
-  "shop.stamp_added": "스탬프 %d / %d"
+  "shop.stamp_added": "스탬프 %d / %d",
+  "season.spring": "봄",
+  "season.summer": "여름",
+  "season.autumn": "가을",
+  "season.winter": "겨울",
+  "village.fog_next": "다음: %@"
 }

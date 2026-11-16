@@ -34,6 +34,7 @@ struct VillageView: View {
                     }
                 }
             }
+            SeasonParticles(season: store.season)
             header
             VStack {
                 Spacer()
@@ -87,7 +88,16 @@ struct VillageView: View {
             ForEach(store.state.placedDecor) { decor in
                 DecorPiece(decor: decor, scale: scale)
             }
+            if let row = store.game.fogRow, row > 0 {
+                LockedFog(height: CGFloat(row) * 16 * scale, next: store.game.nextLockedDistrict.map { L10n.t("district.\($0.id)") })
+                    .frame(width: Self.mapSize.width * scale)
+                    .transition(.opacity)
+            }
         }
+        .colorMultiply(store.season.tint)
+        .saturation(store.season.saturation)
+        .overlay(Color.white.opacity(store.season.frost).allowsHitTesting(false))
+        .animation(.easeInOut(duration: 1.2), value: store.game.fogRow)
     }
 
     private var tasksByDepth: [VillageTask] {
@@ -133,6 +143,7 @@ struct VillageView: View {
             HStack {
                 Text(district.map { L10n.t("district.\($0.id)") } ?? L10n.t("village.done"))
                     .font(.system(size: 18, weight: .heavy, design: .rounded))
+                SeasonChip(season: store.season)
                 Spacer()
                 Text("⭐️ \(store.state.stars)")
                     .font(.system(size: 17, weight: .heavy, design: .rounded))
@@ -463,6 +474,49 @@ struct ProgressBar: View {
                     .frame(width: max(8, geo.size.width * min(1, max(0, value))))
                     .animation(.spring(response: 0.5, dampingFraction: 0.8), value: value)
             }
+        }
+    }
+}
+
+/// Туман над закрытыми районами: облака и название района, который откроется следующим.
+private struct LockedFog: View {
+    let height: CGFloat
+    let next: String?
+    @State private var drift = false
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            LinearGradient(stops: [
+                .init(color: Color(red: 0.93, green: 0.95, blue: 0.97), location: 0),
+                .init(color: Color(red: 0.93, green: 0.95, blue: 0.97).opacity(0.92), location: 0.82),
+                .init(color: Color(red: 0.93, green: 0.95, blue: 0.97).opacity(0), location: 1),
+            ], startPoint: .top, endPoint: .bottom)
+            // облака по нижнему краю тумана медленно плывут
+            HStack(spacing: -18) {
+                ForEach(0..<7, id: \.self) { i in
+                    Ellipse()
+                        .fill(Color.white)
+                        .frame(width: 90 + CGFloat(i % 3) * 22, height: 46 + CGFloat(i % 2) * 14)
+                        .offset(y: CGFloat((i * 13) % 20) - 4)
+                }
+            }
+            .blur(radius: 6)
+            .offset(x: drift ? 16 : -16, y: 6)
+            .opacity(0.9)
+            if let next {
+                Label { Text(String(format: L10n.t("village.fog_next"), next)) } icon: { Text("🔒") }
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundColor(Theme.text.opacity(0.75))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Capsule().fill(Color.white.opacity(0.85)))
+                    .padding(.bottom, 40)
+            }
+        }
+        .frame(height: height)
+        .allowsHitTesting(false)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 7).repeatForever(autoreverses: true)) { drift = true }
         }
     }
 }

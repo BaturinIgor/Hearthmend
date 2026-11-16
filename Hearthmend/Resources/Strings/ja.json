@@ -178,5 +178,10 @@
   "shop.stamps": "スタンプカード",
   "shop.stamps_hint": "購入ごとにスタンプ1つ。%d個で💎 %dとレアなデコ",
   "shop.stamps_done": "スタンプカード完成！",
-  "shop.stamp_added": "スタンプ %d / %d"
+  "shop.stamp_added": "スタンプ %d / %d",
+  "season.spring": "春",
+  "season.summer": "夏",
+  "season.autumn": "秋",
+  "season.winter": "冬",
+  "village.fog_next": "次は%@"
 }

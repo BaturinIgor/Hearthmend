@@ -38,6 +38,8 @@ final class GameStore: ObservableObject {
     }
 
     var catalog: Catalog { game.catalog }
+    /// Время года для карты. На скриншотах всегда лето: они висят в App Store круглый год.
+    var season: Season { Shot.name != nil ? .summer : game.season }
     var balance: Balance { game.balance }
 
     private func tick() {

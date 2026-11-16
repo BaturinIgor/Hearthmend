@@ -178,5 +178,10 @@
   "shop.stamps": "Karta pieczątek",
   "shop.stamps_hint": "Każdy zakup to pieczątka. Za %d: 💎 %d i rzadka ozdoba",
   "shop.stamps_done": "Karta pieczątek pełna!",
-  "shop.stamp_added": "Pieczątka %d z %d"
+  "shop.stamp_added": "Pieczątka %d z %d",
+  "season.spring": "Wiosna",
+  "season.summer": "Lato",
+  "season.autumn": "Jesień",
+  "season.winter": "Zima",
+  "village.fog_next": "Dalej: %@"
 }

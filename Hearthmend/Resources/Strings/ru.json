@@ -178,5 +178,10 @@
   "shop.stamps": "Карточка штампов",
   "shop.stamps_hint": "Каждая покупка ставит штамп. За %d штампов: 💎 %d и редкое украшение",
   "shop.stamps_done": "Карточка штампов собрана!",
-  "shop.stamp_added": "Штамп %d из %d"
+  "shop.stamp_added": "Штамп %d из %d",
+  "season.spring": "Весна",
+  "season.summer": "Лето",
+  "season.autumn": "Осень",
+  "season.winter": "Зима",
+  "village.fog_next": "Дальше: %@"
 }

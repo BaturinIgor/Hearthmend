@@ -178,5 +178,10 @@
   "shop.stamps": "Carte de tampons",
   "shop.stamps_hint": "Chaque achat ajoute un tampon. %d tampons : 💎 %d et une déco rare",
   "shop.stamps_done": "Carte de tampons complète !",
-  "shop.stamp_added": "Tampon %d sur %d"
+  "shop.stamp_added": "Tampon %d sur %d",
+  "season.spring": "Printemps",
+  "season.summer": "Été",
+  "season.autumn": "Automne",
+  "season.winter": "Hiver",
+  "village.fog_next": "Ensuite : %@"
 }

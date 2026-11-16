@@ -178,5 +178,10 @@
   "shop.stamps": "Stempelkarte",
   "shop.stamps_hint": "Jeder Kauf gibt einen Stempel. Für %d gibt es 💎 %d und eine seltene Deko",
   "shop.stamps_done": "Stempelkarte voll!",
-  "shop.stamp_added": "Stempel %d von %d"
+  "shop.stamp_added": "Stempel %d von %d",
+  "season.spring": "Frühling",
+  "season.summer": "Sommer",
+  "season.autumn": "Herbst",
+  "season.winter": "Winter",
+  "village.fog_next": "Als Nächstes: %@"
 }
