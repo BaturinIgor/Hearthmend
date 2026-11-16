@@ -19,6 +19,9 @@ final class GameStore: ObservableObject {
 
     /// Сцена перерисовывает поле после изменений, которые сделал не перетаскиванием.
     var onBoardChange: (() -> Void)?
+    var onHighlight: (([Int]) -> Void)?
+    @Published var canUndo = false
+    private var undoTask: Task<Void, Never>?
 
     /// Демо для скриншотов App Store: запуск с аргументом -demo, прогресс не сохраняется.
     static let isDemo = CommandLine.arguments.contains("-demo")
@@ -131,8 +134,37 @@ final class GameStore: ObservableObject {
         guard coins > 0 else { return }
         selected = nil
         show(String(format: L10n.t("toast.sold"), coins))
+        canUndo = true
+        undoTask?.cancel()
+        undoTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run { self?.canUndo = false }
+        }
         commit()
         onBoardChange?()
+    }
+
+    /// Вернуть проданный предмет (кнопка живет 5 секунд после продажи).
+    func undoSale() {
+        canUndo = false
+        guard game.undoSale() != nil else { return }
+        Haptics.light()
+        Audio.shared.play(.drop)
+        commit()
+        onBoardChange?()
+    }
+
+    func toggleBoost() {
+        game.setBoost(!state.boostOn)
+        Haptics.light()
+        show(L10n.t(state.boostOn ? "boost.off" : "boost.on"))
+        commit()
+    }
+
+    /// Подсветить на поле предметы, нужные заказу.
+    func highlight(_ order: Order) {
+        onHighlight?(game.cells(for: order))
     }
 
     func storeSelected() {
@@ -156,13 +188,25 @@ final class GameStore: ObservableObject {
     }
 
     func deliver(_ order: Order) {
+        let piggyBefore = state.piggyGems
         guard game.deliver(orderId: order.id) != nil else { return }
         Haptics.success()
         Audio.shared.play(.coins)
         selected = nil
-        show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        if piggyBefore < balance.piggyMin && state.piggyGems >= balance.piggyMin {
+            show(L10n.t("shop.piggy_ready"))
+        } else if piggyBefore < balance.piggyMax && game.piggyFull {
+            show(L10n.t("shop.piggy_full"))
+        } else {
+            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+        }
         if !game.lastEventRewards.isEmpty {
             eventRewards = game.lastEventRewards
+        }
+        if let card = game.lastPostcard, let view = card.completed {
+            celebrate(Celebration(icon: "🖼️",
+                                  title: String(format: L10n.t("postcard.done"), L10n.t("district.\(view)")),
+                                  subtitle: "💎 \(card.gems)   🪙 \(card.coins)   🪴"))
         }
         if let level = game.lastLevelUps.last {
             celebrate(Celebration(icon: "🎉",

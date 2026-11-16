@@ -70,6 +70,7 @@ struct EventBanner: View {
 /// Экран события: история, выбор жителя и дорожка наград.
 private struct EventSheet: View {
     @EnvironmentObject private var store: GameStore
+    @EnvironmentObject private var shop: StoreManager
     @Environment(\.dismiss) private var dismiss
     let def: EventDef
 
@@ -85,6 +86,7 @@ private struct EventSheet: View {
                         .opacity(0.75)
                         .multilineTextAlignment(.center)
                     choice
+                    passBanner
                     track
                 }
                 .foregroundColor(Theme.text)
@@ -139,6 +141,41 @@ private struct EventSheet: View {
         }
     }
 
+    @ViewBuilder
+    private var passBanner: some View {
+        if !store.game.hasEventPass {
+            VStack(spacing: 6) {
+                Text(L10n.t("shop.pass_hint"))
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .multilineTextAlignment(.center)
+                BuyButton(title: "🎟️ " + (shop.price(Products.eventPass) ?? L10n.t("shop.unavailable")),
+                          busy: shop.purchasing == Products.eventPass) {
+                    Task { await shop.buy(Products.eventPass) }
+                }
+            }
+            .padding(12)
+            .background(RoundedRectangle(cornerRadius: 14).fill(Color.purple.opacity(0.12)))
+        } else {
+            Text("🎟️ " + L10n.t("shop.pass_active"))
+                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .foregroundColor(.purple)
+        }
+    }
+
+    private func passReward(_ i: Int) -> some View {
+        let pass = store.game.hasEventPass
+        let r = Products.eventPassRewards.indices.contains(i) ? Products.eventPassRewards[i] : EventReward()
+        return HStack(spacing: 4) {
+            if let decor = r.decor { DecorIcon(key: decor, size: 22) }
+            Text(EventBanner.describe(r)).font(.system(size: 12, weight: .bold, design: .rounded))
+            if !pass { Image(systemName: "lock.fill").font(.system(size: 11)).opacity(0.6) }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(Capsule().fill(Color.purple.opacity(pass ? 0.18 : 0.08)))
+        .opacity(pass ? 1 : 0.7)
+    }
+
     private var track: some View {
         VStack(spacing: 6) {
             ForEach(Array(def.milestones.enumerated()), id: \.offset) { i, m in
@@ -158,6 +195,7 @@ private struct EventSheet: View {
                     Text(EventBanner.describe(EventReward(gems: m.gems ?? 0, energy: m.energy ?? 0, coins: m.coins ?? 0)))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                     Spacer()
+                    passReward(i)
                     Image(systemName: done ? "checkmark.circle.fill" : "circle")
                         .foregroundColor(done ? Theme.accent : Theme.wood.opacity(0.4))
                 }

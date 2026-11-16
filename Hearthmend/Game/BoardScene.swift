@@ -16,6 +16,10 @@ final class BoardScene: SKScene {
     private var touchStart: CGPoint?
     private var touchIndex: Int?
     private var dragging: SKNode?
+    /// Когда игрок последний раз трогал поле: после паузы подмигивает пара для слияния.
+    private var lastTouch: TimeInterval = 0
+    private var lastHint: TimeInterval = 0
+    private static let idleHintDelay: TimeInterval = 7
 
     override init(size: CGSize) {
         super.init(size: size)
@@ -212,9 +216,49 @@ final class BoardScene: SKScene {
         return label
     }
 
+    // MARK: - Подсказки
+
+    override func update(_ currentTime: TimeInterval) {
+        if lastTouch == 0 { lastTouch = currentTime }
+        guard let store, store.game.tutorial == .done, dragging == nil,
+              currentTime - lastTouch > Self.idleHintDelay,
+              currentTime - lastHint > Self.idleHintDelay,
+              let pair = store.game.mergeHint() else { return }
+        lastHint = currentTime
+        for i in [pair.0, pair.1] { wiggle(at: i) }
+    }
+
+    /// Предметы, нужные заказу: подпрыгивают с рамкой. Если их нет на поле - легкая тряска заказа не нужна,
+    /// просто ничего не подсвечиваем.
+    func highlight(_ cells: [Int]) {
+        for i in cells {
+            guard let node = contentNodes[i] else { continue }
+            node.removeAction(forKey: "hint")
+            node.run(.sequence([.scale(to: 1.25, duration: 0.12), .scale(to: 0.95, duration: 0.1), .scale(to: 1, duration: 0.08)]), withKey: "hint")
+            let ring = SKShapeNode(rectOf: CGSize(width: cellSize - 1, height: cellSize - 1), cornerRadius: cellSize * 0.2)
+            ring.strokeColor = Palette.selected
+            ring.lineWidth = 3
+            ring.glowWidth = 3
+            ring.position = center(of: i)
+            ring.zPosition = 3
+            boardNode.addChild(ring)
+            ring.run(.sequence([.wait(forDuration: 0.6), .fadeOut(withDuration: 0.5), .removeFromParent()]))
+        }
+    }
+
+    private func wiggle(at index: Int) {
+        guard let node = contentNodes[index] else { return }
+        let r: CGFloat = 0.12
+        node.run(.sequence([
+            .rotate(toAngle: r, duration: 0.07), .rotate(toAngle: -r, duration: 0.12),
+            .rotate(toAngle: r, duration: 0.12), .rotate(toAngle: 0, duration: 0.07),
+        ]), withKey: "hint")
+    }
+
     // MARK: - Касания
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        lastTouch = CACurrentMediaTime()
         guard let touch = touches.first else { return }
         let p = touch.location(in: self)
         touchStart = p

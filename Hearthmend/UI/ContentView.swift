@@ -77,6 +77,7 @@ struct ContentView: View {
         .onAppear {
             scene.store = store
             store.onBoardChange = { [weak scene] in scene?.render() }
+            store.onHighlight = { [weak scene] cells in scene?.highlight(cells) }
             scene.render()
         }
         .onChange(of: store.selected) { _ in scene.updateSelection() }
@@ -287,6 +288,11 @@ private struct OrderCard: View {
         .padding(8)
         .background(RoundedRectangle(cornerRadius: 12).fill(Theme.card))
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(ready ? Theme.accent : Theme.wood.opacity(0.4), lineWidth: ready ? 2.5 : 1.5))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            Haptics.light()
+            store.highlight(order)
+        }
     }
 }
 
@@ -305,15 +311,71 @@ private struct SelectedBar: View {
                 ActionButton(title: String(format: L10n.t("selected.sell"), store.game.sellPrice(item))) { store.sellSelected() }
                 ActionButton(title: L10n.t("selected.store")) { store.storeSelected() }
             } else {
-                Text(L10n.t("hint.start"))
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundColor(Theme.text.opacity(0.8))
-                    .fixedSize(horizontal: false, vertical: true)
+                PostcardButton()
+                if store.game.boostUnlocked { BoostToggle() }
+                if store.state.level < 3 {
+                    Text(L10n.t("hint.start"))
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundColor(Theme.text.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 Spacer(minLength: 0)
+                if store.canUndo {
+                    ActionButton(title: "↩︎ " + L10n.t("selected.undo")) { store.undoSale() }
+                        .transition(.scale.combined(with: .opacity))
+                }
             }
         }
         .padding(.horizontal, 12)
         .frame(minHeight: 44)
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: store.canUndo)
+    }
+}
+
+/// Ускорение генераторов x2: тратит вдвое больше энергии на предмет ступенью выше.
+private struct BoostToggle: View {
+    @EnvironmentObject private var store: GameStore
+
+    var body: some View {
+        let on = store.state.boostOn
+        Button { store.toggleBoost() } label: {
+            HStack(spacing: 2) {
+                Text("⚡️")
+                Text("x2").font(.system(size: 14, weight: .heavy, design: .rounded))
+            }
+            .foregroundColor(on ? .white : Theme.text)
+            .padding(.horizontal, 10)
+            .frame(height: 34)
+            .background(Capsule().fill(on ? Color.orange : Theme.card))
+            .overlay(Capsule().stroke(Color.orange.opacity(0.8), lineWidth: 1.5))
+            .shadow(color: on ? .orange.opacity(0.5) : .clear, radius: 6)
+        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: on)
+    }
+}
+
+/// Открытка: сколько кусочков собрано, по тапу - сама открытка.
+private struct PostcardButton: View {
+    @EnvironmentObject private var store: GameStore
+    @State private var open = false
+
+    var body: some View {
+        Button {
+            Haptics.light()
+            open = true
+        } label: {
+            HStack(spacing: 3) {
+                Text("🖼️")
+                Text("\(store.state.postcardPieces)/\(store.balance.postcardPieces)")
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+            }
+            .foregroundColor(Theme.text)
+            .padding(.horizontal, 10)
+            .frame(height: 34)
+            .background(Capsule().fill(Theme.card))
+            .overlay(Capsule().stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        }
+        .sheet(isPresented: $open) { PostcardSheet() }
     }
 }
 

@@ -13,7 +13,11 @@ public final class Game {
     /// Уровни, полученные последним отданным заказом: интерфейс показывает праздник.
     public private(set) var lastLevelUps: [Int] = []
     /// Награды события, открытые последним отданным заказом.
-    public private(set) var lastEventRewards: [EventReward] = []
+    public internal(set) var lastEventRewards: [EventReward] = []
+    /// Последняя продажа: ее можно отменить, пока клетка свободна (не сохраняется).
+    var lastSale: (index: Int, item: Item, coins: Int)?
+    /// Открытки, собранные последним заказом (для интерфейса).
+    public internal(set) var lastPostcard: PostcardReward?
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -197,10 +201,14 @@ public final class Game {
     public func spawn(from index: Int) -> SpawnResult {
         guard case .generator(let gen) = piece(at: index) else { return .notGenerator }
         guard let cell = nearestEmpty(to: index) else { return .boardFull }
-        guard spendEnergy(1) else { return .noEnergy }
+        // ускорение x2: вдвое больше энергии за предмет на ступень выше (та же ценность, меньше тапов)
+        // если на ускорение не хватает, обычный предмет за 1 энергию
+        let boosted = boostActive && spendEnergy(2)
+        guard boosted || spendEnergy(1) else { return .noEnergy }
         var tier = 0
         if Double.random(in: 0..<1, using: &rng) < Double(gen.tier) * balance.generatorUpgradeChance { tier = 1 }
         if Double.random(in: 0..<1, using: &rng) < 0.1 { tier += 1 }
+        if boosted { tier += 1 }
         tier = min(tier, catalog.maxTier(of: gen.chain))
         let item = Item(chain: gen.chain, tier: tier)
         state.cells[cell] = .item(item)
@@ -314,6 +322,7 @@ public final class Game {
         state.cells[index] = nil
         let price = sellPrice(item)
         state.coins += price
+        lastSale = (index, item, price)
         placePendingGenerators()
         return price
     }
@@ -366,6 +375,8 @@ public final class Game {
         advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)
+        fillPiggy()
+        lastPostcard = addPostcardPiece()
         placePendingGenerators()
         refillOrders()
         return order
@@ -414,6 +425,7 @@ extension Game {
     func testSetStars(_ value: Int) { state.stars = value }
     func testSetJar(_ value: Int) { state.jarEnergy = value }
     func testSetXP(_ value: Int) { state.xp = value }
+    func testSetLevel(_ value: Int) { state.level = value }
     func testSetOrders(_ orders: [Order]) {
         state.orders = orders
         refillOrders()
