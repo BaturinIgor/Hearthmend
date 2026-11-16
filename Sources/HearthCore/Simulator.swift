@@ -214,20 +214,33 @@ public enum Simulator {
         return result
     }
 
-    /// Продает самый дешевый предмет, который не нужен заказам и у которого нет пары.
+    /// Продает предмет, который меньше всего пригодится. Сначала то, что не ведет к заказам:
+    /// цепочки без спроса и ступени не ниже нужной. Заготовки для заказов продаются последними.
     private static func sellJunk(_ game: Game, report: inout SimReport) -> Bool {
         let need = demand(game)
+        let target = Dictionary(need.keys.map { ($0.chain, $0.tier) }, uniquingKeysWith: max)
         var counts: [Item: Int] = [:]
         for case .item(let item)? in game.state.cells { counts[item, default: 0] += 1 }
-        let junk = game.state.cells.enumerated().compactMap { i, piece -> (Int, Item)? in
-            guard case .item(let item)? = piece, need[item] == nil else { return nil }
-            return (i, item)
+        var reserved = need
+        var junk: [(index: Int, item: Item, useful: Bool)] = []
+        for (i, piece) in game.state.cells.enumerated() {
+            guard case .item(let item)? = piece else { continue }
+            if let left = reserved[item], left > 0 {
+                reserved[item] = left - 1
+                continue
+            }
+            let useful = item.tier < (target[item.chain] ?? 0)
+            junk.append((i, item, useful))
         }
-        .sorted { ($0.1.tier, counts[$0.1] ?? 0) < ($1.1.tier, counts[$1.1] ?? 0) }
-        guard let (index, item) = junk.first else { return false }
-        report.coinsFromSelling += game.sell(at: index)
+        junk.sort { a, b in
+            if a.useful != b.useful { return !a.useful }
+            let pairA = (counts[a.item] ?? 0) >= 2, pairB = (counts[b.item] ?? 0) >= 2
+            if pairA != pairB { return !pairA }
+            return a.item.tier < b.item.tier
+        }
+        guard let pick = junk.first else { return false }
+        report.coinsFromSelling += game.sell(at: pick.index)
         report.itemsSold += 1
-        _ = item
         return true
     }
 }
