@@ -32,7 +32,7 @@
 ## Сборка
 
 - Тесты ядра (`.github/workflows/tests.yml`) идут на Linux на каждый push и PR
-- `.ipa` (`.github/workflows/build.yml`) собирается на macOS при push в `main` и по кнопке Run workflow, публикуется в Releases. Репозиторий приватный, а минуты macOS считаются x10, поэтому на PR сборка не запускается
+- `.ipa` (`.github/workflows/build.yml`) собирается на macOS при push в `main` и по кнопке Run workflow, публикуется в Releases. Репозиторий приватный, а минуты macOS считаются x10, поэтому на PR сборка идёт только с меткой `build-ipa`
 
 Локально: `xcodegen generate`, затем открыть `Hearthmend.xcodeproj`.
 
