@@ -20,8 +20,11 @@ final class GameStore: ObservableObject {
     /// Сцена перерисовывает поле после изменений, которые сделал не перетаскиванием.
     var onBoardChange: (() -> Void)?
 
+    /// Демо для скриншотов App Store: запуск с аргументом -demo, прогресс не сохраняется.
+    static let isDemo = CommandLine.arguments.contains("-demo")
+
     init() {
-        game = Game(state: Persistence.load())
+        game = Self.isDemo ? Game.demo() : Game(state: Persistence.load())
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()
@@ -49,7 +52,7 @@ final class GameStore: ObservableObject {
 
     private func commit() {
         state = game.state
-        Persistence.save(game.state)
+        if !Self.isDemo { Persistence.save(game.state) }
     }
 
     func show(_ text: String) {

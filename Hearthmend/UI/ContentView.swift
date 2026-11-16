@@ -5,8 +5,8 @@ import HearthCore
 struct ContentView: View {
     @EnvironmentObject private var store: GameStore
     @State private var scene = BoardScene(size: CGSize(width: 350, height: 450))
-    @State private var screen: Screen = .board
-    @State private var showShop = false
+    @State private var screen: Screen = CommandLine.arguments.contains("-village") ? .village : .board
+    @State private var showShop = CommandLine.arguments.contains("-shop")
     @State private var showSettings = false
     @State private var showDaily = false
 

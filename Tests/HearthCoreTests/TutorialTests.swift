@@ -51,3 +51,18 @@ final class TutorialTests: XCTestCase {
         XCTAssertEqual(state.tutorialStep, TutorialStep.done.rawValue)
     }
 }
+
+final class DemoTests: XCTestCase {
+    func testDemoStateIsValid() {
+        let clock = TestClock()
+        let game = Game.demo(now: { clock.date })
+        XCTAssertEqual(game.state.cells.count, game.balance.cellCount)
+        XCTAssertEqual(game.tutorial, .done)
+        XCTAssertTrue(game.state.unlockedChains.contains("apiary"))
+        XCTAssertTrue(game.state.unlockedChains.contains("farm"))
+        XCTAssertTrue(game.state.orders.contains { game.canDeliver($0) }, "на скриншоте есть готовый заказ")
+        for case .item(let item)? in game.state.cells {
+            XCTAssertLessThanOrEqual(item.tier, game.catalog.maxTier(of: item.chain))
+        }
+    }
+}
