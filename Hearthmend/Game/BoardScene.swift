@@ -251,10 +251,10 @@ final class BoardScene: SKScene {
     /// Номер ступени (или цена) в углу клетки: четкие пиксельные цифры со светлой обводкой.
     private func badge(_ text: String, icon: String? = nil) -> SKNode {
         let node = SKNode()
-        let size = max(8, (cellSize * 0.2).rounded())
+        let size = max(10, (cellSize * 0.27).rounded())
         func label(_ color: UIColor, dx: CGFloat, dy: CGFloat) -> SKLabelNode {
             let l = SKLabelNode(text: text)
-            l.fontName = "PressStart2P-Regular"
+            l.fontName = Pixel.fontName
             l.fontSize = size
             l.fontColor = color
             l.horizontalAlignmentMode = .right
@@ -269,7 +269,7 @@ final class BoardScene: SKScene {
         node.addChild(label(Palette.badge, dx: 0, dy: 0))
         node.position = CGPoint(x: cellSize * 0.44, y: -cellSize * 0.44)
         if let icon, let texture = Sprites.texture(icon) {
-            let width = CGFloat(text.count) * size + 2
+            let width = CGFloat(text.count) * size * 0.62 + 2
             let side = Pixel.crisp(size * 1.6, source: 16)
             let sprite = SKSpriteNode(texture: texture, size: CGSize(width: side, height: side))
             sprite.position = CGPoint(x: -width - side * 0.4, y: size * 0.5)

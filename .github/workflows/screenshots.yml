@@ -94,10 +94,11 @@ jobs:
           if [ "${{ inputs.qa }}" = "true" ]; then
             mkdir -p shots/qa
             for lang in ru en ja; do
-              for s in qa_board qa_selected qa_quests qa_album qa_settings qa_daily qa_celebrate qa_toast; do
+              for s in qa_board qa_selected qa_quests qa_album qa_settings qa_daily qa_celebrate qa_toast qa_basket qa_story qa_jar; do
                 shoot $lang shots/qa/${lang}_$s.png -shot $s
               done
               shoot $lang shots/qa/${lang}_qa_village.png -village -shot qa_village
+              shoot $lang shots/qa/${lang}_qa_far.png -village -shot qa_far
               shoot $lang shots/qa/${lang}_qa_shop.png -shop -shot shop
             done
             exit 0

@@ -158,7 +158,7 @@ extension Game {
 
     // MARK: - Украшения на карте
 
-    public static let mapSize = (width: 32.0, height: 94.0)
+    public static let mapSize = (width: 32.0, height: 134.0)
 
     @discardableResult
     public func placeDecor(_ key: String, x: Double, y: Double) -> PlacedDecor? {
@@ -184,6 +184,6 @@ extension Game {
         state.decorOwned[key, default: 0] += 1
     }
 
-    private func clampX(_ x: Double) -> Double { min(max(x, 0.5), Self.mapSize.width - 0.5) }
-    private func clampY(_ y: Double) -> Double { min(max(y, 1), Self.mapSize.height) }
+    func clampX(_ x: Double) -> Double { min(max(x, 0.5), Self.mapSize.width - 0.5) }
+    func clampY(_ y: Double) -> Double { min(max(y, 1), Self.mapSize.height) }
 }

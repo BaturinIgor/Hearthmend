@@ -27,7 +27,7 @@ final class GameStore: ObservableObject {
     static let isDemo = CommandLine.arguments.contains("-demo")
 
     init() {
-        game = Self.isDemo ? Game.demo(late: Shot.isLate, now: Game.demoClock()) : Game(state: Persistence.load())
+        game = Self.isDemo ? Game.demo(late: Shot.isLate, far: Shot.isFar, now: Game.demoClock()) : Game(state: Persistence.load())
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()
@@ -404,6 +404,28 @@ final class GameStore: ObservableObject {
 
     func moveDecor(id: Int, x: Double, y: Double) {
         game.moveDecor(id: id, x: x, y: y)
+        commit()
+    }
+
+    func moveBuilding(_ id: String, x: Double, y: Double) {
+        guard game.moveBuilding(id, x: x, y: y) else { return }
+        Haptics.light()
+        commit()
+    }
+
+    func resetBuilding(_ id: String) {
+        game.resetBuilding(id)
+        Haptics.light()
+        commit()
+    }
+
+    /// Сцена истории, которую пора показать (если игрок не в обучении).
+    var pendingStory: String? {
+        game.tutorial == .done ? game.pendingStory : nil
+    }
+
+    func storySeen(_ id: String) {
+        game.markStorySeen(id)
         commit()
     }
 

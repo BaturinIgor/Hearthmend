@@ -5,7 +5,7 @@ import Foundation
 public struct SimConfig {
     /// Сколько раз в день игрок заходит в игру и тратит всю энергию.
     public var sessionsPerDay = 4
-    public var maxDays = 60
+    public var maxDays = 150
     public var seed: UInt64 = 1
     /// Открывать ли пузыри за кристаллы.
     public var popBubbles = true

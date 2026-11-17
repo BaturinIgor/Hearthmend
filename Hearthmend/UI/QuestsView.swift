@@ -4,12 +4,13 @@ import HearthCore
 /// Кто просит заказ: житель, связанный с цепочкой первого предмета.
 enum Residents {
     static let byChain: [String: String] = [
-        "garden": "tim", "orchard": "mila", "forest": "jack",
-        "quarry": "mike", "apiary": "katy", "farm": "chloe",
+        "garden": "tim", "forest": "jack", "quarry": "mike",
+        "apiary": "mila", "farm": "chloe", "orchard": "katy",
+        "fishing": "fin", "crystal": "bruno",
     ]
 
     static func requester(of order: Order) -> String {
-        byChain[order.needs.first?.chain ?? ""] ?? "fin"
+        byChain[order.needs.first?.chain ?? ""] ?? "tim"
     }
 }
 
@@ -188,7 +189,7 @@ struct AlbumSheet: View {
         let paid = store.state.collectionChains.contains(chain)
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
-                ResidentIcon(id: Residents.byChain[chain] ?? "fin", size: 26)
+                ResidentIcon(id: Residents.byChain[chain] ?? "tim", size: 26)
                 Text(L10n.t("chain.\(chain)")).font(Pixel.font(16))
                 Spacer()
                 if complete && !paid {

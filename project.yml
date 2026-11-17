@@ -47,7 +47,7 @@ targets:
         UIStatusBarHidden: true
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
-        UIAppFonts: [Tiny5-Regular.ttf, PressStart2P-Regular.ttf]
+        UIAppFonts: [HearthPixel-Regular.ttf]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.personal.hearthmend

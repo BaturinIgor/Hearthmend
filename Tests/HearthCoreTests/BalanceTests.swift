@@ -12,6 +12,9 @@ final class BalanceTests: XCTestCase {
         config.seed = seed
         let r = Simulator.run(config)
         print("Бот, зерно \(seed):\n\(r)")
+        // сводка в аннотации CI: сколько дней и уровень на выходе
+        let districts = r.districtDoneDay.sorted { $0.value < $1.value }.map { "\($0.key) \(String(format: "%.1f", $0.value))" }.joined(separator: ", ")
+        print("::notice title=Бот \(seed)::дней \(String(format: "%.1f", r.days)), уровень \(r.level), заказов \(r.orders); \(districts)")
         Self.cache[seed] = r
         return r
     }
@@ -22,9 +25,9 @@ final class BalanceTests: XCTestCase {
         for seed in seeds {
             let r = report(seed: seed)
             XCTAssertTrue(r.villageDone, "зерно \(seed): деревня отстроена за \(SimConfig().maxDays) дней")
-            // не пролетается за пару дней, но и не тянется месяцами
-            XCTAssertGreaterThan(r.days, 10, "зерно \(seed): слишком быстро")
-            XCTAssertLessThan(r.days, 40, "зерно \(seed): слишком долго")
+            // семь районов: игры хватает на месяц-другой, но конец виден
+            XCTAssertGreaterThan(r.days, 30, "зерно \(seed): слишком быстро")
+            XCTAssertLessThan(r.days, 100, "зерно \(seed): слишком долго")
         }
     }
 
@@ -54,6 +57,17 @@ final class BalanceTests: XCTestCase {
                   let e = r.districtDoneDay["hilltop"] else { return XCTFail("зерно \(seed): сад или холм не пройдены") }
             XCTAssertGreaterThan(d - c, 2, "зерно \(seed): сад пролетается слишком быстро")
             XCTAssertLessThan(d - c, e - d + 1, "зерно \(seed): холм не длиннее сада")
+        }
+    }
+
+    /// Шахта и ярмарка проходятся, и каждая дольше холма: поздние районы - главная часть игры.
+    func testFarDistrictsAreReachableAndLonger() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            guard let e = r.districtDoneDay["hilltop"], let m = r.districtDoneDay["mine"], let f = r.districtDoneDay["fair"],
+                  let d = r.districtDoneDay["orchard"] else { return XCTFail("зерно \(seed): шахта или ярмарка не пройдены") }
+            XCTAssertGreaterThan(m - e, (e - d) * 0.8, "зерно \(seed): шахта пролетается")
+            XCTAssertGreaterThan(f - m, (m - e) * 0.8, "зерно \(seed): ярмарка короче шахты")
         }
     }
 

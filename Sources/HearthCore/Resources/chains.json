@@ -137,6 +137,58 @@
       "generator": "gen_orchard",
       "generatorEmoji": "🌳",
       "generatorTiers": 3
+    },
+    {
+      "id": "fishing",
+      "items": [
+        "fishing_minnow",
+        "fishing_perch",
+        "fishing_bream",
+        "fishing_pike",
+        "fishing_carp",
+        "fishing_salmon",
+        "fishing_catfish",
+        "fishing_goldfish"
+      ],
+      "emoji": [
+        "🐟",
+        "🐟",
+        "🐟",
+        "🐟",
+        "🐟",
+        "🐠",
+        "🐡",
+        "🐠"
+      ],
+      "generator": "gen_fishing",
+      "generatorEmoji": "🎣",
+      "generatorTiers": 3
+    },
+    {
+      "id": "crystal",
+      "items": [
+        "crystal_dust",
+        "crystal_shard",
+        "crystal_cluster",
+        "crystal_geode",
+        "crystal_druse",
+        "crystal_spire",
+        "crystal_ingot",
+        "crystal_orb"
+      ],
+      "emoji": [
+        "✨",
+        "💠",
+        "💠",
+        "💠",
+        "💎",
+        "💎",
+        "🔷",
+        "🔮"
+      ],
+      "generator": "gen_crystal",
+      "generatorEmoji": "🪨",
+      "generatorTiers": 3
     }
   ]
 }
