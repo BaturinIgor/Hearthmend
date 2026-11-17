@@ -326,5 +326,20 @@
   "shop.best": "Bester Wert",
   "shop.bonus": "+%d%% mehr",
   "shop.coins": "Münzen",
-  "top.shop": "Laden"
+  "top.shop": "Laden",
+  "adv.title": "Event",
+  "adv.depths.title": "Die Tiefen",
+  "adv.depths.how": "Grabe neben offenen Feldern. Erde kostet 1 Spitzhacke, Stein 2, Granit 3. Funde fallen aufs Feld unten: kombiniere sie und schick sie mit der Lore nach oben für Punkte. Spitzhacken gibt es für Aufträge auf dem Hauptfeld.",
+  "adv.depths.entrance": "Mineneingang",
+  "adv.depths.treasures": "In Tiefe 12, 24 und 36 warten große Schätze. Du siehst jeden 5 Reihen vorher.",
+  "adv.locked": "Events gibt es ab Level %d",
+  "adv.no_moves": "Keine Spitzhacken mehr: erfülle Aufträge auf dem Hauptfeld",
+  "adv.prize": "Belohnung auf dem Feld: %@",
+  "adv.board_full": "Das Feld ist voll: erst Funde kombinieren oder abschicken",
+  "adv.points": "+%d Punkte",
+  "adv.track": "Belohnungen",
+  "adv.track_done": "Alle Belohnungen gesammelt!",
+  "adv.track_hint": "Punkte gibt es für Funde in der Lore. Belohnungen landen auf dem Hauptfeld.",
+  "adv.board_hint": "Tippe einen Fund an, dann einen gleichen zum Kombinieren",
+  "adv.board_selected": "Nochmal tippen zum Abschicken oder anderes Feld wählen"
 }

@@ -326,5 +326,20 @@
   "shop.best": "Più conveniente",
   "shop.bonus": "+%d%% in più",
   "shop.coins": "Monete",
-  "top.shop": "Negozio"
+  "top.shop": "Negozio",
+  "adv.title": "Evento",
+  "adv.depths.title": "Le Profondità",
+  "adv.depths.how": "Scava accanto alle caselle aperte. La terra costa 1 piccone, la pietra 2, il granito 3. I reperti cadono sul tabellone in basso: uniscili e mandali su con il carrello per i punti. I picconi arrivano dagli ordini del tabellone principale.",
+  "adv.depths.entrance": "Ingresso della miniera",
+  "adv.depths.treasures": "Grandi tesori aspettano a profondità 12, 24 e 36. Ognuno si vede 5 file prima.",
+  "adv.locked": "Gli eventi si sbloccano al livello %d",
+  "adv.no_moves": "Picconi finiti: completa ordini sul tabellone principale",
+  "adv.prize": "Premio sul tuo tabellone: %@",
+  "adv.board_full": "Il tabellone è pieno: prima unisci o spedisci i reperti",
+  "adv.points": "+%d punti",
+  "adv.track": "Premi",
+  "adv.track_done": "Tutti i premi raccolti!",
+  "adv.track_hint": "I punti arrivano dai reperti spediti con il carrello. I premi arrivano sul tabellone principale.",
+  "adv.board_hint": "Tocca un reperto, poi uno uguale per unirli",
+  "adv.board_selected": "Tocca di nuovo per spedirlo o scegli un'altra casella"
 }

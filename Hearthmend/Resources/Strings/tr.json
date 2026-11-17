@@ -326,5 +326,20 @@
   "shop.best": "En iyi değer",
   "shop.bonus": "%%%d daha fazla",
   "shop.coins": "Altın",
-  "top.shop": "Dükkân"
+  "top.shop": "Dükkân",
+  "adv.title": "Etkinlik",
+  "adv.depths.title": "Derinlikler",
+  "adv.depths.how": "Açık hücrelerin yanını kaz. Toprak 1 kazma, taş 2, granit 3 ister. Buluntular alttaki tahtaya düşer: birleştir ve puan için vagonla yukarı gönder. Kazmalar ana tahtadaki siparişlerden gelir.",
+  "adv.depths.entrance": "Maden girişi",
+  "adv.depths.treasures": "12, 24 ve 36 derinlikte büyük hazineler var. Her biri 5 sıra önceden görünür.",
+  "adv.locked": "Etkinlikler %d. seviyede açılır",
+  "adv.no_moves": "Kazma kalmadı: ana tahtada sipariş tamamla",
+  "adv.prize": "Ödül tahtanda: %@",
+  "adv.board_full": "Tahta dolu: önce buluntuları birleştir ya da gönder",
+  "adv.points": "+%d puan",
+  "adv.track": "Ödüller",
+  "adv.track_done": "Tüm ödüller toplandı!",
+  "adv.track_hint": "Puanlar vagonla gönderilen buluntulardan gelir. Ödüller ana tahtaya gelir.",
+  "adv.board_hint": "Bir buluntuya, sonra aynısına dokunup birleştir",
+  "adv.board_selected": "Göndermek için tekrar dokun ya da başka hücre seç"
 }

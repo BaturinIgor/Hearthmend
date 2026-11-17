@@ -163,4 +163,17 @@ final class DepthsTests: XCTestCase {
             XCTAssertTrue(r.villageDone)
         }
     }
+
+    func testTreasureMapShowsFiveRowsAhead() {
+        var d = DepthsState.generate(seed: 7)
+        let w = DepthsState.width
+        XCTAssertEqual(d.reached, -1)
+        let row = Depths.treasureRows[0]
+        let col = (0..<w).first { if case .treasure? = d.cells[row * w + $0].content { return true } else { return false } }!
+        XCTAssertFalse(d.treasureVisible(row * w + col))
+        for r in 0...(row - 5) { d.cells[r * w + col].hardness = 0 }
+        XCTAssertEqual(d.reached, row - 5)
+        XCTAssertTrue(d.treasureVisible(row * w + col))
+        XCTAssertTrue(d.diggable((row - 4) * w + col) || d.cells[(row - 4) * w + col].isRock)
+    }
 }

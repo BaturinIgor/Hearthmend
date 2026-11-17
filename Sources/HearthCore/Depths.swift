@@ -66,6 +66,34 @@ public struct DepthsState: Codable, Equatable {
         }
         return DepthsState(cells: cells, board: Array(repeating: nil, count: boardSize))
     }
+
+    static func neighbors(_ index: Int) -> [Int] {
+        let r = index / width, c = index % width
+        var n: [Int] = []
+        if r > 0 { n.append(index - width) }
+        if r < depth - 1 { n.append(index + width) }
+        if c > 0 { n.append(index - 1) }
+        if c < width - 1 { n.append(index + 1) }
+        return n
+    }
+
+    /// Можно ли копать клетку: она закрыта, не скала, и рядом открытая клетка (или это первый ряд).
+    public func diggable(_ index: Int) -> Bool {
+        guard cells.indices.contains(index), cells[index].hardness > 0 else { return false }
+        if index < Self.width { return true }
+        return Self.neighbors(index).contains { cells[$0].isOpen }
+    }
+
+    /// Самый глубокий открытый ряд (-1 - еще ничего не открыто).
+    public var reached: Int {
+        (cells.indices.last { cells[$0].isOpen }).map { $0 / Self.width } ?? -1
+    }
+
+    /// Карта клада: клад становится виден, когда до него осталось 5 рядов.
+    public func treasureVisible(_ index: Int) -> Bool {
+        guard cells.indices.contains(index), case .treasure? = cells[index].content else { return false }
+        return index / Self.width - reached <= 5
+    }
 }
 
 public enum Depths {
@@ -115,36 +143,12 @@ extension Game {
 
     private var depths: DepthsState? { adventure?.depths }
 
-    /// Можно ли копать клетку: она закрыта, не скала, и рядом открытая клетка (или это первый ряд).
-    public func canDig(_ index: Int) -> Bool {
-        guard let d = depths, d.cells.indices.contains(index) else { return false }
-        let cell = d.cells[index]
-        guard cell.hardness > 0 else { return false }
-        if index < DepthsState.width { return true }
-        return depthNeighbors(index).contains { d.cells[$0].isOpen }
-    }
-
-    func depthNeighbors(_ index: Int) -> [Int] {
-        let w = DepthsState.width, r = index / w, c = index % w
-        var n: [Int] = []
-        if r > 0 { n.append(index - w) }
-        if r < DepthsState.depth - 1 { n.append(index + w) }
-        if c > 0 { n.append(index - 1) }
-        if c < w - 1 { n.append(index + 1) }
-        return n
-    }
+    public func canDig(_ index: Int) -> Bool { depths?.diggable(index) ?? false }
 
     /// Самый глубокий открытый ряд (-1 - еще ничего не открыто).
-    public var depthsReached: Int {
-        guard let d = depths else { return -1 }
-        return (d.cells.indices.filter { d.cells[$0].isOpen }.map { $0 / DepthsState.width }.max()) ?? -1
-    }
+    public var depthsReached: Int { depths?.reached ?? -1 }
 
-    /// Карта клада: следующий клад становится виден, когда до него осталось 5 рядов.
-    public func depthTreasureVisible(_ index: Int) -> Bool {
-        guard let d = depths, case .treasure? = d.cells[index].content else { return false }
-        return index / DepthsState.width - depthsReached <= 5
-    }
+    public func depthTreasureVisible(_ index: Int) -> Bool { depths?.treasureVisible(index) ?? false }
 
     public func dig(_ index: Int) -> DigResult {
         guard canDig(index) else { return .invalid }

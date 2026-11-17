@@ -326,5 +326,20 @@
   "shop.best": "Best value",
   "shop.bonus": "+%d%% more",
   "shop.coins": "Coins",
-  "top.shop": "Shop"
+  "top.shop": "Shop",
+  "adv.title": "Event",
+  "adv.depths.title": "The Depths",
+  "adv.depths.how": "Dig next to open cells. Earth takes 1 pickaxe, stone 2, granite 3. Finds drop onto the board below: merge them and send them up in the minecart for points. Pickaxes come from orders on the main board.",
+  "adv.depths.entrance": "Mine entrance",
+  "adv.depths.treasures": "Big treasure chests wait at depth 12, 24 and 36. You'll see each one 5 rows ahead.",
+  "adv.locked": "Events open at level %d",
+  "adv.no_moves": "Out of pickaxes: complete orders on the main board",
+  "adv.prize": "Reward on your board: %@",
+  "adv.board_full": "The board is full: merge or send finds first",
+  "adv.points": "+%d points",
+  "adv.track": "Rewards",
+  "adv.track_done": "All rewards collected!",
+  "adv.track_hint": "Points come from finds sent in the minecart. Rewards land on your main board.",
+  "adv.board_hint": "Tap a find, then a matching one to merge",
+  "adv.board_selected": "Tap again to send it, or tap another cell"
 }

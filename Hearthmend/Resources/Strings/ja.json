@@ -326,5 +326,20 @@
   "shop.best": "いちばんお得",
   "shop.bonus": "%d%%お得",
   "shop.coins": "コイン",
-  "top.shop": "ショップ"
+  "top.shop": "ショップ",
+  "adv.title": "イベント",
+  "adv.depths.title": "地底の鉱山",
+  "adv.depths.how": "開いたマスのとなりを掘ろう。土はつるはし1本、石は2本、花崗岩は3本。見つけた物は下のボードに落ちるよ。合成してトロッコで送るとポイントに。つるはしはメインボードの注文でもらえるよ。",
+  "adv.depths.entrance": "鉱山の入口",
+  "adv.depths.treasures": "深さ12、24、36に大きな宝箱。5段手前から見えるよ。",
+  "adv.locked": "イベントはレベル%dから",
+  "adv.no_moves": "つるはしがない：メインボードで注文をこなそう",
+  "adv.prize": "ボードにごほうび：%@",
+  "adv.board_full": "ボードがいっぱい：先に合成するか送ろう",
+  "adv.points": "+%dポイント",
+  "adv.track": "ごほうび",
+  "adv.track_done": "ごほうびを全部ゲット！",
+  "adv.track_hint": "トロッコで送った見つけ物がポイントに。ごほうびはメインボードに届くよ。",
+  "adv.board_hint": "見つけ物をタップして、同じ物をタップで合成",
+  "adv.board_selected": "もう一度タップで送る、または別のマスへ"
 }

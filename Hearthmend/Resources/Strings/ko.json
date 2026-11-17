@@ -326,5 +326,20 @@
   "shop.best": "최고 가치",
   "shop.bonus": "%d%% 더",
   "shop.coins": "코인",
-  "top.shop": "상점"
+  "top.shop": "상점",
+  "adv.title": "이벤트",
+  "adv.depths.title": "깊은 광산",
+  "adv.depths.how": "열린 칸 옆을 파세요. 흙은 곡괭이 1개, 돌은 2개, 화강암은 3개. 발견물은 아래 보드로 떨어져요: 합쳐서 광차로 보내면 점수! 곡괭이는 메인 보드 주문으로 받아요.",
+  "adv.depths.entrance": "광산 입구",
+  "adv.depths.treasures": "깊이 12, 24, 36에 큰 보물이 있어요. 5줄 전부터 보여요.",
+  "adv.locked": "이벤트는 레벨 %d부터",
+  "adv.no_moves": "곡괭이가 없어요: 메인 보드에서 주문을 완료하세요",
+  "adv.prize": "보드에 보상: %@",
+  "adv.board_full": "보드가 가득 찼어요: 먼저 합치거나 보내세요",
+  "adv.points": "+%d점",
+  "adv.track": "보상",
+  "adv.track_done": "모든 보상 획득!",
+  "adv.track_hint": "광차로 보낸 발견물이 점수가 돼요. 보상은 메인 보드로 와요.",
+  "adv.board_hint": "발견물을 누르고 같은 것을 눌러 합치세요",
+  "adv.board_selected": "다시 누르면 보내기, 또는 다른 칸 선택"
 }

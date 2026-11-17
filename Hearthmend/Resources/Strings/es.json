@@ -326,5 +326,20 @@
   "shop.best": "Mejor precio",
   "shop.bonus": "+%d%% más",
   "shop.coins": "Monedas",
-  "top.shop": "Tienda"
+  "top.shop": "Tienda",
+  "adv.title": "Evento",
+  "adv.depths.title": "Las Profundidades",
+  "adv.depths.how": "Cava junto a casillas abiertas. La tierra cuesta 1 pico, la piedra 2, el granito 3. Los hallazgos caen al tablero de abajo: combínalos y súbelos en la vagoneta por puntos. Los picos se ganan con pedidos del tablero principal.",
+  "adv.depths.entrance": "Entrada de la mina",
+  "adv.depths.treasures": "Grandes tesoros esperan a 12, 24 y 36 de profundidad. Cada uno se ve 5 filas antes.",
+  "adv.locked": "Los eventos se abren en el nivel %d",
+  "adv.no_moves": "Sin picos: completa pedidos en el tablero principal",
+  "adv.prize": "Premio en tu tablero: %@",
+  "adv.board_full": "El tablero está lleno: combina o envía hallazgos primero",
+  "adv.points": "+%d puntos",
+  "adv.track": "Premios",
+  "adv.track_done": "¡Todos los premios conseguidos!",
+  "adv.track_hint": "Los puntos vienen de los hallazgos enviados en la vagoneta. Los premios llegan al tablero principal.",
+  "adv.board_hint": "Toca un hallazgo y luego uno igual para combinar",
+  "adv.board_selected": "Toca otra vez para enviarlo o elige otra casilla"
 }
