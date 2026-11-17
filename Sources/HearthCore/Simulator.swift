@@ -75,6 +75,10 @@ public struct SimReport: CustomStringConvertible {
     public var adventureProgress: [Double] = []
     public var adventureValue = 0.0
     public var adventureDepth: [Int] = []
+    public var islandFogLeft: [Int] = []
+    public var adventureKinds: [AdventureKind] = []
+    public var islandMerges = 0
+    public var islandWashed = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -403,7 +407,15 @@ public enum Simulator {
         let track = game.adventureTrack(a.kind)
         guard !track.isEmpty else { return }
         report.adventureProgress.append(Double(a.claimed) / Double(track.count))
+        report.adventureKinds.append(a.kind)
         report.adventureValue += track.prefix(a.claimed).reduce(0) { $0 + prizeValue($1.prize) }
+        if let s = a.island {
+            report.islandFogLeft.append(s.fogLeft)
+            // клады, которые открылись
+            for (n, prize) in Island.treasures.enumerated() where !s.cells.contains(where: { $0.fog && $0.secret == .treasure(n) }) {
+                report.adventureValue += prizeValue(prize)
+            }
+        }
         if let d = a.depths {
             let deepest = d.cells.indices.filter { d.cells[$0].isOpen }.map { $0 / DepthsState.width }.max() ?? -1
             report.adventureDepth.append(deepest + 1)
@@ -419,9 +431,15 @@ public enum Simulator {
             finishAdventure(last, game: game, report: &report)
             lastState = nil
         }
-        guard let a = current, a.kind == .depths else { return }
+        guard let a = current else { return }
         lastKey = a.key
         game.claimAdventureDaily()
+        if a.kind == .island {
+            playIsland(game, report: &report)
+            lastState = game.adventure
+            return
+        }
+        guard a.kind == .depths else { return }
         for _ in 0..<3000 {
             if mergeFinds(game) { continue }
             if deliverFinds(game, all: false) { continue }
@@ -434,6 +452,63 @@ public enum Simulator {
             while deliverFinds(game, all: true) {}
         }
         lastState = game.adventure
+    }
+
+    /// Остров: сводит одинаковые предметы к самой большой группе (лучше у тумана),
+    /// при тесноте смывает лишнее, иначе зовет прилив.
+    private static func playIsland(_ game: Game, report: inout SimReport) {
+        for _ in 0..<4000 {
+            guard let s = game.adventure?.island else { return }
+            if case let (from, to)? = islandMergeMove(s) {
+                if let r = game.moveOnIsland(from: from, to: to) {
+                    report.islandMerges += r.merges.count
+                    continue
+                }
+            }
+            switch game.tide() {
+            case .placed: continue
+            case .noMoves: return
+            case .noRoom:
+                // смывает предмет, которому не с кем слиться
+                var counts: [Item: Int] = [:]
+                for c in s.cells where !c.fog { if let item = c.item { counts[item, default: 0] += 1 } }
+                let lonely = s.cells.indices.filter { i in
+                    guard !s.cells[i].fog, let item = s.cells[i].item else { return false }
+                    return (counts[item] ?? 0) < 3
+                }.min { (s.cells[$0].item?.tier ?? 0, $0) < (s.cells[$1].item?.tier ?? 0, $1) }
+                guard let i = lonely ?? s.cells.indices.first(where: { !s.cells[$0].fog && s.cells[$0].item != nil }) else { return }
+                game.washAway(i)
+                report.islandWashed += 1
+            }
+        }
+    }
+
+    /// Ход, после которого сольются хотя бы 3 предмета: предмет того же вида ставится рядом с группой.
+    static func islandMergeMove(_ s: IslandState) -> (Int, Int)? {
+        var best: (from: Int, to: Int, score: Int)?
+        var done: Set<Int> = []
+        for i in s.cells.indices where !done.contains(i) {
+            guard !s.cells[i].fog, let item = s.cells[i].item, item.tier < Island.maxTier else { continue }
+            let group = s.group(at: i)
+            done.formUnion(group)
+            let members = Set(group)
+            // свободные или чужие клетки вокруг группы
+            let around = Set(group.flatMap(IslandState.neighbors)).subtracting(members).filter { !s.cells[$0].fog }
+            for to in around.sorted() {
+                // вместе с соседними группами того же вида
+                var merged = members
+                for n in IslandState.neighbors(to) where !s.cells[n].fog && s.cells[n].item == item { merged.formUnion(s.group(at: n)) }
+                guard merged.count + 1 >= 3 else { continue }
+                guard let from = s.cells.indices.first(where: { j in
+                    !merged.contains(j) && j != to && !s.cells[j].fog && s.cells[j].item == item
+                }) else { continue }
+                let fog = IslandState.neighbors(to).filter { s.cells[$0].fog }.count
+                    + group.flatMap(IslandState.neighbors).filter { s.cells[$0].fog }.count
+                let score = (merged.count + 1) * 10 + fog * 3 + item.tier * 5
+                if best == nil || score > best!.score { best = (from, to, score) }
+            }
+        }
+        return best.map { ($0.from, $0.to) }
     }
 
     private static func mergeFinds(_ game: Game) -> Bool {

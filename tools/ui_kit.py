@@ -612,6 +612,51 @@ def mine_open():
     return im
 
 
+def shell():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.pieslice((2, 3, 13, 14), 180, 360, fill=(250, 196, 180, 255))
+    d.rectangle((2, 8, 13, 10), fill=(250, 196, 180, 255))
+    d.polygon([(6, 10), (9, 10), (10, 13), (5, 13)], fill=(236, 160, 150, 255))
+    for x in (4, 6, 8, 10):
+        d.line((7.5, 10, x, 4), fill=(222, 140, 130, 255))
+    d.point((5, 5), fill=(255, 236, 226, 255))
+    return outlined(im)
+
+
+def wave():
+    import math
+    im = canvas(); px = im.load()
+    for row, color in ((4, (150, 210, 245, 255)), (8, (80, 160, 230, 255)), (12, (50, 120, 200, 255))):
+        for x in range(2, 14):
+            y = row + round(math.sin(x / 1.6) * 1.2)
+            px[x, y] = color
+            px[x, y + 1] = color
+    return outlined(im)
+
+
+def fog_tile():
+    import random
+    rnd = random.Random(9)
+    im = Image.new("RGBA", (16, 16), (214, 222, 230, 255))
+    px = im.load()
+    for _ in range(14):
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        px[x, y] = (236, 240, 246, 255) if rnd.random() < 0.6 else (196, 204, 216, 255)
+    for i in range(16):
+        px[i, 15] = (190, 198, 212, 255)
+    return im
+
+
+def water_tile():
+    im = Image.new("RGBA", (16, 16), (92, 168, 214, 255))
+    px = im.load()
+    for x in range(2, 7):
+        px[x, 4] = (150, 206, 236, 255)
+    for x in range(9, 14):
+        px[x, 11] = (150, 206, 236, 255)
+    return im
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "Hearthmend/Resources/UI"
     os.makedirs(out, exist_ok=True)
@@ -645,6 +690,7 @@ def main():
         "ui_mine_2": mine_tile((150, 146, 140, 255), (186, 182, 176, 255), (112, 108, 104, 255), 2, 12),
         "ui_mine_3": mine_tile((104, 96, 112, 255), (150, 140, 160, 255), (70, 64, 80, 255), 3, 16),
         "ui_mine_open": mine_open(),
+        "ui_shell": shell(), "ui_wave": wave(), "ui_fog": fog_tile(), "ui_water": water_tile(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),
     }

@@ -341,5 +341,14 @@
   "adv.track_done": "Toutes les récompenses obtenues !",
   "adv.track_hint": "Les points viennent des trouvailles envoyées dans le wagonnet. Les récompenses arrivent sur le plateau principal.",
   "adv.board_hint": "Touche une trouvaille, puis une identique pour fusionner",
-  "adv.board_selected": "Touche encore pour l'envoyer, ou choisis une case"
+  "adv.board_selected": "Touche encore pour l'envoyer, ou choisis une case",
+  "adv.island.title": "L'Île",
+  "adv.island.how": "Les coquillages appellent la marée : elle apporte un objet sur la plage. Déplacer les objets est gratuit. 3 identiques côte à côte fusionnent en 1, 5 en 2. Les fusions au bord dissipent le brouillard, et des cadeaux s'y cachent.",
+  "adv.island.treasures": "Trois trésors se cachent dans le brouillard. Chacun apparaît quand la plage s'en approche.",
+  "adv.island.fog": "Brouillard : fusionne à côté pour le dissiper",
+  "adv.island.wash": "Emporter",
+  "adv.island.hint": "Touche un objet, puis une case près des mêmes",
+  "adv.island.tide": "Marée",
+  "adv.island.full": "Plus de place sur la plage : fusionne ou fais emporter un objet",
+  "adv.no_shells": "Plus de coquillages : remplis des commandes sur le plateau principal"
 }

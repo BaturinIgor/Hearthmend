@@ -166,6 +166,22 @@ for i, spec in enumerate([(RES, 3, 3, 1, 1), (RES, 4, 3, 1, 1), (RES, 5, 3, 1, 1
 for i, spec in enumerate([(RES, 1, 4, 1, 1), (RES, 3, 4, 1, 1), (RES, 3, 5, 1, 1), (RES, 2, 5, 1, 1), (RES, 4, 1, 1, 1)]):
     EXTRA[f"depth_fossil_{i}"] = spec
 EXTRA["depth_rock"] = (RES, 0, 5, 1, 1)
+# предметы события «Остров»: цветы, голубые и янтарные кристаллы по 6 ступеней
+FLOWERS = "Outdoor decoration/Flowers.png"
+ISLAND = {
+    "island_flower": [(FLOWERS, 2, 0, 1, 1), (FLOWERS, 2, 8, 1, 1), (FLOWERS, 2, 2, 1, 1),
+                      (FLOWERS, 2, 4, 1, 1), (FLOWERS, 2, 6, 1, 1), (FLOWERS, 7, 6, 1, 1)],
+    "island_gem": [(ORES, 5, 4, 1, 1), (ORES, 6, 4, 1, 1), (ORES, 3, 4, 1, 1),
+                   (ORES, 2, 4, 1, 1), (ORES, 1, 4, 1, 1), (ORES, 4, 4, 1, 1)],
+    "island_amber": [(ORES, 5, 2, 1, 1), (ORES, 6, 2, 1, 1), (ORES, 3, 2, 1, 1),
+                     (ORES, 2, 2, 1, 1), (ORES, 1, 2, 1, 1), (ORES, 4, 2, 1, 1)],
+}
+ISLAND_OUTLINE = set()
+for chain, specs in ISLAND.items():
+    for i, spec in enumerate(specs):
+        EXTRA[f"{chain}_{i}"] = spec
+        if spec[0] == FLOWERS or spec[1] < 5:
+            ISLAND_OUTLINE.add(f"{chain}_{i}")
 for kind, row in {"coins": 0, "gems": 1, "energy": 3, "items": 4}.items():
     EXTRA[f"chest_3_{kind}"] = (JEWEL, 0, row, 1, 1)
     EXTRA[f"chest_3_{kind}_open"] = (JEWEL, 4, row, 1, 1)
@@ -215,7 +231,7 @@ def main():
         images[key] = im
     for key, spec in EXTRA.items():
         im = cut(pack, spec)
-        if spec[0] == "px":
+        if spec[0] == "px" or key in ISLAND_OUTLINE:
             im = outline(im)
         if im.getbbox() is None:
             sys.exit(f"{key}: пустая клетка")

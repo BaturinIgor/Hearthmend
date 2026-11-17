@@ -341,5 +341,14 @@
   "adv.track_done": "Tutti i premi raccolti!",
   "adv.track_hint": "I punti arrivano dai reperti spediti con il carrello. I premi arrivano sul tabellone principale.",
   "adv.board_hint": "Tocca un reperto, poi uno uguale per unirli",
-  "adv.board_selected": "Tocca di nuovo per spedirlo o scegli un'altra casella"
+  "adv.board_selected": "Tocca di nuovo per spedirlo o scegli un'altra casella",
+  "adv.island.title": "L'Isola",
+  "adv.island.how": "Le conchiglie chiamano la marea: porta un nuovo oggetto sulla spiaggia. Spostare gli oggetti è gratis. 3 uguali vicini diventano 1, 5 diventano 2. Le unioni sul bordo diradano la nebbia, e sotto ci sono regali.",
+  "adv.island.treasures": "Tre tesori sono nascosti nella nebbia. Ognuno si vede quando la spiaggia si avvicina.",
+  "adv.island.fog": "Nebbia: unisci oggetti accanto per diradarla",
+  "adv.island.wash": "Porta via",
+  "adv.island.hint": "Tocca un oggetto, poi una casella vicino a quelli uguali",
+  "adv.island.tide": "Marea",
+  "adv.island.full": "Niente spazio sulla spiaggia: unisci o porta via qualcosa",
+  "adv.no_shells": "Conchiglie finite: completa ordini sul tabellone principale"
 }

@@ -273,7 +273,8 @@ final class GameStore: ObservableObject {
         } else if piggyBefore < balance.piggyMax && game.piggyFull {
             show(L10n.t("shop.piggy_full"))
         } else {
-            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars) + (movesBefore != nil && movesGot > 0 ? "  ⛏️\(movesGot)" : ""))
+            let moveIcon = game.adventure?.kind == .island ? "🐚" : "⛏️"
+            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars) + (movesBefore != nil && movesGot > 0 ? "  \(moveIcon)\(movesGot)" : ""))
         }
         if let up = game.lastFriendLevelUp {
             show(String(format: L10n.t("friends.level_up"), L10n.t("resident.\(up.resident)"), up.level))
@@ -600,12 +601,59 @@ final class GameStore: ObservableObject {
         commit()
     }
 
-    func claimAdventureDaily() {
+    func claimAdventureDaily(icon: String = "ui_pickaxe") {
         let n = game.claimAdventureDaily()
         guard n > 0 else { return }
         Haptics.success()
         Audio.shared.play(.coins)
-        show("⛏️ +\(n)")
+        show((icon == "ui_shell" ? "🐚" : "⛏️") + " +\(n)")
+        commit()
+    }
+
+    // MARK: - Остров
+
+    @discardableResult
+    func tide() -> Game.TideResult {
+        let r = game.tide()
+        switch r {
+        case .noMoves:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.no_shells"))
+        case .noRoom:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.island.full"))
+        case .placed:
+            Haptics.light()
+            Audio.shared.play(.spawn)
+        }
+        commit()
+        return r
+    }
+
+    @discardableResult
+    func moveOnIsland(from: Int, to: Int) -> Game.IslandMove? {
+        guard let r = game.moveOnIsland(from: from, to: to) else { return nil }
+        if r.merges.isEmpty {
+            Haptics.light()
+            Audio.shared.play(.drop)
+        } else {
+            Haptics.success()
+            Audio.shared.play(r.merges.count > 1 || r.merges.contains { $0.made > 1 } ? .sparkle : .merge)
+            if !r.prizes.isEmpty {
+                show(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))
+                onBoardChange?()
+            } else if r.points > 0 {
+                show(String(format: L10n.t("adv.points"), r.points))
+            }
+        }
+        commit()
+        return r
+    }
+
+    func washAway(_ index: Int) {
+        guard game.washAway(index) else { return }
+        Haptics.light()
+        Audio.shared.play(.drop)
         commit()
     }
 

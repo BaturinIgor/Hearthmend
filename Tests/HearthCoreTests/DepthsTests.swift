@@ -13,6 +13,8 @@ final class DepthsTests: XCTestCase {
         let clock = TestClock()
         clock.date = monday()
         let game = Game(seed: 4, now: { clock.date })
+        // события чередуются по неделям: берем ближайший понедельник с «Глубинами»
+        while game.adventureSchedule(at: clock.date)?.kind != .depths { clock.advance(7 * 86_400) }
         game.state.level = level
         return (game, clock)
     }

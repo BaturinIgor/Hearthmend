@@ -341,5 +341,14 @@
   "adv.track_done": "Alle Belohnungen gesammelt!",
   "adv.track_hint": "Punkte gibt es für Funde in der Lore. Belohnungen landen auf dem Hauptfeld.",
   "adv.board_hint": "Tippe einen Fund an, dann einen gleichen zum Kombinieren",
-  "adv.board_selected": "Nochmal tippen zum Abschicken oder anderes Feld wählen"
+  "adv.board_selected": "Nochmal tippen zum Abschicken oder anderes Feld wählen",
+  "adv.island.title": "Die Insel",
+  "adv.island.how": "Muscheln rufen die Flut: Sie bringt einen neuen Gegenstand an den Strand. Gegenstände verschieben ist gratis. 3 gleiche nebeneinander werden zu 1, 5 zu 2. Kombinationen am Rand lichten den Nebel, darunter liegen Geschenke.",
+  "adv.island.treasures": "Drei Schätze liegen im Nebel. Du siehst jeden, wenn der Strand nah genug ist.",
+  "adv.island.fog": "Nebel: kombiniere daneben, um ihn zu lichten",
+  "adv.island.wash": "Wegspülen",
+  "adv.island.hint": "Tippe einen Gegenstand an, dann ein Feld neben gleichen",
+  "adv.island.tide": "Flut",
+  "adv.island.full": "Kein Platz am Strand: kombiniere oder spül etwas weg",
+  "adv.no_shells": "Keine Muscheln mehr: erfülle Aufträge auf dem Hauptfeld"
 }
