@@ -27,6 +27,7 @@ enum AdventureArt {
     static func icon(_ kind: AdventureKind) -> String {
         switch kind {
         case .depths: return "ui_pickaxe"
+        case .island: return "ui_shell"
         default: return "ui_gift"
         }
     }
@@ -45,6 +46,7 @@ struct AdventureSheet: View {
     var body: some View {
         switch store.state.adventure?.kind {
         case .depths?: DepthsView()
+        case .island?: IslandView()
         default: PixelSheet(L10n.t("adv.title")) { Spacer() }
         }
     }
@@ -72,87 +74,18 @@ struct DepthsView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 8)
         }
-        .sheet(isPresented: $showTrack) { DepthsTrack() }
+        .sheet(isPresented: $showTrack) { AdventureTrackSheet(icon: "🚃", note: "adv.depths.treasures") }
         .onAppear {
             if store.state.adventure?.depths?.cells.contains(where: \.isOpen) == false { showHelp = true }
         }
     }
 
-    // MARK: - Шапка
-
     private var header: some View {
-        let g = store.game
-        let moves = store.state.adventure?.moves ?? 0
-        return HStack(spacing: 8) {
-            HStack(spacing: 4) {
-                PixelIcon(key: "ui_pickaxe", size: 26)
-                Text("\(moves)").font(Pixel.digits(20))
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
-            if g.adventureDailyReady {
-                Button { store.claimAdventureDaily() } label: {
-                    HStack(spacing: 4) {
-                        PixelIcon(key: "ui_gift", size: 20)
-                        PixelText("+\(Balance.adventureDailyMoves)", size: 14)
-                    }
-                }
-                .buttonStyle(PixelButtonStyle(kind: .pink, size: 14, compact: true))
-                .overlay(alignment: .topTrailing) { RedDot().offset(x: 4, y: -4) }
-            }
-            Spacer()
-            if let ends = g.adventureEndsAt {
-                PixelText("⏳ " + AdventureArt.timeLeft(ends, now: g.now()), size: 13).opacity(0.75)
-            }
-            Button { showHelp.toggle() } label: { PixelIcon(key: "ui_question", size: 24) }
-        }
-        .overlay(alignment: .top) {
-            if showHelp {
-                PixelText(L10n.t("adv.depths.how"), size: 13)
-                    .multilineTextAlignment(.center)
-                    .padding(12)
-                    .background(PixelSlice(key: "ui_paper_gold", inset: 4))
-                    .offset(y: 40)
-                    .onTapGesture { withAnimation { showHelp = false } }
-                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                    .zIndex(2)
-            }
-        }
-        .zIndex(2)
+        AdventureHeader(movesIcon: "ui_pickaxe", help: "adv.depths.how", showHelp: $showHelp)
     }
 
     private var trackBar: some View {
-        let a = store.state.adventure
-        let track = store.game.adventureTrack(a?.kind ?? .depths)
-        let claimed = a?.claimed ?? 0
-        let points = a?.points ?? 0
-        let prev = claimed > 0 ? track[min(claimed, track.count) - 1].points : 0
-        let next = claimed < track.count ? track[claimed] : nil
-        return Button { showTrack = true } label: {
-            HStack(spacing: 8) {
-                PixelIcon(key: "ui_minecart", size: 26)
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack {
-                        PixelText(L10n.t("adv.track"), size: 12)
-                        Spacer()
-                        if let next = next {
-                            PixelText("\(points)/\(next.points)", size: 12)
-                        } else {
-                            PixelText(L10n.t("adv.track_done"), size: 12)
-                        }
-                    }
-                    ProgressBar(value: next.map { Double(points - prev) / Double(max(1, $0.points - prev)) } ?? 1, fill: "ui_bar_fill")
-                        .frame(height: 12)
-                        .animation(.easeOut(duration: 0.4), value: points)
-                }
-                if let next = next { PrizeIcon(prize: next.prize, size: 30) }
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(PixelSlice(key: "ui_paper", inset: 4))
-        }
-        .buttonStyle(.plain)
+        AdventureTrackBar(icon: "ui_minecart") { showTrack = true }
     }
 
     // MARK: - Шахта
@@ -345,6 +278,95 @@ struct DepthsView: View {
     }
 }
 
+/// Шапка события: ходы, подарок дня с красной точкой, таймер и подсказка.
+struct AdventureHeader: View {
+    @EnvironmentObject private var store: GameStore
+    let movesIcon: String
+    let help: String
+    @Binding var showHelp: Bool
+
+    var body: some View {
+        let g = store.game
+        let moves = store.state.adventure?.moves ?? 0
+        HStack(spacing: 8) {
+            HStack(spacing: 4) {
+                PixelIcon(key: movesIcon, size: 26)
+                Text("\(moves)").font(Pixel.digits(20))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
+            if g.adventureDailyReady {
+                Button { store.claimAdventureDaily(icon: movesIcon) } label: {
+                    HStack(spacing: 4) {
+                        PixelIcon(key: "ui_gift", size: 20)
+                        PixelText("+\(Balance.adventureDailyMoves)", size: 14)
+                    }
+                }
+                .buttonStyle(PixelButtonStyle(kind: .pink, size: 14, compact: true))
+                .overlay(alignment: .topTrailing) { RedDot().offset(x: 4, y: -4) }
+            }
+            Spacer()
+            if let ends = g.adventureEndsAt {
+                PixelText("⏳ " + AdventureArt.timeLeft(ends, now: g.now()), size: 13).opacity(0.75)
+            }
+            Button { withAnimation { showHelp.toggle() } } label: { PixelIcon(key: "ui_question", size: 24) }
+        }
+        .overlay(alignment: .top) {
+            if showHelp {
+                PixelText(L10n.t(help), size: 13)
+                    .multilineTextAlignment(.center)
+                    .padding(12)
+                    .background(PixelSlice(key: "ui_paper_gold", inset: 4))
+                    .offset(y: 40)
+                    .onTapGesture { withAnimation { showHelp = false } }
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+            }
+        }
+        .zIndex(2)
+    }
+}
+
+/// Полоска дорожки наград: очки до следующей награды и сама награда.
+struct AdventureTrackBar: View {
+    @EnvironmentObject private var store: GameStore
+    let icon: String
+    let action: () -> Void
+
+    var body: some View {
+        let a = store.state.adventure
+        let track = store.game.adventureTrack(a?.kind ?? .depths)
+        let claimed = a?.claimed ?? 0
+        let points = a?.points ?? 0
+        let prev = claimed > 0 ? track[min(claimed, track.count) - 1].points : 0
+        let next = claimed < track.count ? track[claimed] : nil
+        Button(action: action) {
+            HStack(spacing: 8) {
+                PixelIcon(key: icon, size: 26)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack {
+                        PixelText(L10n.t("adv.track"), size: 12)
+                        Spacer()
+                        if let next = next {
+                            PixelText("\(points)/\(next.points)", size: 12)
+                        } else {
+                            PixelText(L10n.t("adv.track_done"), size: 12)
+                        }
+                    }
+                    ProgressBar(value: next.map { Double(points - prev) / Double(max(1, $0.points - prev)) } ?? 1, fill: "ui_bar_fill")
+                        .frame(height: 12)
+                        .animation(.easeOut(duration: 0.4), value: points)
+                }
+                if let next = next { PrizeIcon(prize: next.prize, size: 30) }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(PixelSlice(key: "ui_paper", inset: 4))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 /// Находка события: спрайт из пака.
 struct FindIcon: View {
     let item: Item
@@ -385,8 +407,10 @@ struct PrizeIcon: View {
 }
 
 /// Дорожка наград целиком.
-struct DepthsTrack: View {
+struct AdventureTrackSheet: View {
     @EnvironmentObject private var store: GameStore
+    let icon: String
+    let note: String
 
     var body: some View {
         let a = store.state.adventure
@@ -401,7 +425,7 @@ struct DepthsTrack: View {
                     ForEach(Array(track.enumerated()), id: \.offset) { i, m in
                         let done = i < (a?.claimed ?? 0)
                         HStack(spacing: 10) {
-                            PixelText("🚃 \(m.points)", size: 15).frame(width: 80, alignment: .leading)
+                            PixelText("\(icon) \(m.points)", size: 15).frame(width: 80, alignment: .leading)
                             PrizeIcon(prize: m.prize, size: 30)
                             PixelText(GameStore.describe(m.prize), size: 13)
                             Spacer()
@@ -411,7 +435,7 @@ struct DepthsTrack: View {
                         .padding(10)
                         .background(PixelSlice(key: done ? "ui_paper_green" : "ui_paper", inset: 4))
                     }
-                    PixelText(L10n.t("adv.depths.treasures"), size: 13)
+                    PixelText(L10n.t(note), size: 13)
                         .multilineTextAlignment(.center)
                         .opacity(0.8)
                         .padding(.top, 6)

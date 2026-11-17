@@ -341,5 +341,14 @@
   "adv.track_done": "All rewards collected!",
   "adv.track_hint": "Points come from finds sent in the minecart. Rewards land on your main board.",
   "adv.board_hint": "Tap a find, then a matching one to merge",
-  "adv.board_selected": "Tap again to send it, or tap another cell"
+  "adv.board_selected": "Tap again to send it, or tap another cell",
+  "adv.island.title": "The Island",
+  "adv.island.how": "Shells call the tide: it brings a new item to the shore. Move items for free. 3 alike side by side merge into 1, 5 merge into 2. Merges at the edge clear the fog, and gifts hide under it.",
+  "adv.island.treasures": "Three treasures hide in the fog. You'll see each one when the shore comes close.",
+  "adv.island.fog": "Fog: merge items next to it to clear it",
+  "adv.island.wash": "Wash away",
+  "adv.island.hint": "Tap an item, then a cell next to the same ones",
+  "adv.island.tide": "Tide",
+  "adv.island.full": "No room on the shore: merge or wash something away",
+  "adv.no_shells": "Out of shells: complete orders on the main board"
 }

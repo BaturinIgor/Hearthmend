@@ -341,5 +341,14 @@
   "adv.track_done": "Wszystkie nagrody zebrane!",
   "adv.track_hint": "Punkty dają znaleziska wysłane wagonikiem. Nagrody trafiają na główną planszę.",
   "adv.board_hint": "Stuknij znalezisko, potem takie samo, by połączyć",
-  "adv.board_selected": "Stuknij ponownie, by wysłać, albo wybierz pole"
+  "adv.board_selected": "Stuknij ponownie, by wysłać, albo wybierz pole",
+  "adv.island.title": "Wyspa",
+  "adv.island.how": "Muszle wzywają przypływ: przynosi na brzeg nowy przedmiot. Przesuwanie przedmiotów jest darmowe. 3 takie same obok siebie łączą się w 1, a 5 w 2. Łączenie przy krawędzi rozwiewa mgłę, a pod nią są prezenty.",
+  "adv.island.treasures": "We mgle są ukryte trzy skarby. Każdy zobaczysz, gdy brzeg się zbliży.",
+  "adv.island.fog": "Mgła: połącz przedmioty obok, by ją rozwiać",
+  "adv.island.wash": "Zmyj",
+  "adv.island.hint": "Stuknij przedmiot, potem pole obok takich samych",
+  "adv.island.tide": "Przypływ",
+  "adv.island.full": "Brak miejsca na brzegu: połącz lub zmyj coś",
+  "adv.no_shells": "Brak muszli: realizuj zamówienia na głównej planszy"
 }

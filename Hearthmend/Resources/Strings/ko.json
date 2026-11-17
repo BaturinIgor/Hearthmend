@@ -341,5 +341,14 @@
   "adv.track_done": "모든 보상 획득!",
   "adv.track_hint": "광차로 보낸 발견물이 점수가 돼요. 보상은 메인 보드로 와요.",
   "adv.board_hint": "발견물을 누르고 같은 것을 눌러 합치세요",
-  "adv.board_selected": "다시 누르면 보내기, 또는 다른 칸 선택"
+  "adv.board_selected": "다시 누르면 보내기, 또는 다른 칸 선택",
+  "adv.island.title": "섬",
+  "adv.island.how": "조개로 밀물을 부르면 해변에 새 아이템이 와요. 아이템 이동은 무료. 같은 것 3개가 붙으면 1개로, 5개면 2개로 합쳐져요. 가장자리에서 합치면 안개가 걷히고, 그 아래 선물이 있어요.",
+  "adv.island.treasures": "안개 속에 보물 3개가 숨어 있어요. 해변이 가까워지면 보여요.",
+  "adv.island.fog": "안개: 옆에서 합치면 걷혀요",
+  "adv.island.wash": "파도로 보내기",
+  "adv.island.hint": "아이템을 누르고 같은 것 옆 칸을 누르세요",
+  "adv.island.tide": "밀물",
+  "adv.island.full": "해변에 자리가 없어요: 합치거나 파도로 보내세요",
+  "adv.no_shells": "조개가 없어요: 메인 보드에서 주문을 완료하세요"
 }

@@ -341,5 +341,14 @@
   "adv.track_done": "¡Todos los premios conseguidos!",
   "adv.track_hint": "Los puntos vienen de los hallazgos enviados en la vagoneta. Los premios llegan al tablero principal.",
   "adv.board_hint": "Toca un hallazgo y luego uno igual para combinar",
-  "adv.board_selected": "Toca otra vez para enviarlo o elige otra casilla"
+  "adv.board_selected": "Toca otra vez para enviarlo o elige otra casilla",
+  "adv.island.title": "La Isla",
+  "adv.island.how": "Las conchas llaman a la marea: trae un objeto nuevo a la orilla. Mover objetos es gratis. 3 iguales juntos se combinan en 1, y 5 en 2. Las combinaciones en el borde disipan la niebla, y debajo hay regalos.",
+  "adv.island.treasures": "Hay tres tesoros en la niebla. Verás cada uno cuando la orilla se acerque.",
+  "adv.island.fog": "Niebla: combina objetos al lado para disiparla",
+  "adv.island.wash": "Arrastrar al mar",
+  "adv.island.hint": "Toca un objeto y luego una casilla junto a otros iguales",
+  "adv.island.tide": "Marea",
+  "adv.island.full": "No hay sitio en la orilla: combina o arrastra algo al mar",
+  "adv.no_shells": "Sin conchas: completa pedidos en el tablero principal"
 }

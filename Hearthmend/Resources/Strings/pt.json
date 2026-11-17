@@ -341,5 +341,14 @@
   "adv.track_done": "Todos os prêmios coletados!",
   "adv.track_hint": "Os pontos vêm dos achados enviados no carrinho. Os prêmios chegam ao tabuleiro principal.",
   "adv.board_hint": "Toque num achado e depois num igual para combinar",
-  "adv.board_selected": "Toque de novo para enviar ou escolha outra casa"
+  "adv.board_selected": "Toque de novo para enviar ou escolha outra casa",
+  "adv.island.title": "A Ilha",
+  "adv.island.how": "As conchas chamam a maré: ela traz um item novo para a praia. Mover itens é grátis. 3 iguais lado a lado viram 1, e 5 viram 2. Combinações na borda dissipam a névoa, e embaixo há presentes.",
+  "adv.island.treasures": "Três tesouros estão escondidos na névoa. Cada um aparece quando a praia chega perto.",
+  "adv.island.fog": "Névoa: combine itens ao lado para dissipá-la",
+  "adv.island.wash": "Levar ao mar",
+  "adv.island.hint": "Toque num item e depois numa casa ao lado de iguais",
+  "adv.island.tide": "Maré",
+  "adv.island.full": "Sem espaço na praia: combine ou leve algo ao mar",
+  "adv.no_shells": "Sem conchas: complete pedidos no tabuleiro principal"
 }

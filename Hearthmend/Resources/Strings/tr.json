@@ -341,5 +341,14 @@
   "adv.track_done": "Tüm ödüller toplandı!",
   "adv.track_hint": "Puanlar vagonla gönderilen buluntulardan gelir. Ödüller ana tahtaya gelir.",
   "adv.board_hint": "Bir buluntuya, sonra aynısına dokunup birleştir",
-  "adv.board_selected": "Göndermek için tekrar dokun ya da başka hücre seç"
+  "adv.board_selected": "Göndermek için tekrar dokun ya da başka hücre seç",
+  "adv.island.title": "Ada",
+  "adv.island.how": "Deniz kabukları gelgiti çağırır: kıyıya yeni bir eşya getirir. Eşyaları taşımak ücretsiz. Yan yana 3 aynı eşya 1'e, 5'i 2'ye birleşir. Kenardaki birleşmeler sisi dağıtır, altında hediyeler var.",
+  "adv.island.treasures": "Siste üç hazine saklı. Kıyı yaklaştıkça her biri görünür.",
+  "adv.island.fog": "Sis: dağıtmak için yanında birleştir",
+  "adv.island.wash": "Dalgaya ver",
+  "adv.island.hint": "Bir eşyaya, sonra aynılarının yanındaki hücreye dokun",
+  "adv.island.tide": "Gelgit",
+  "adv.island.full": "Kıyıda yer yok: birleştir ya da dalgaya ver",
+  "adv.no_shells": "Kabuk kalmadı: ana tahtada sipariş tamamla"
 }

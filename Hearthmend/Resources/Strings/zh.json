@@ -341,5 +341,14 @@
   "adv.track_done": "所有奖励已领取！",
   "adv.track_hint": "用矿车送出的发现物算积分。奖励会送到主棋盘。",
   "adv.board_hint": "点一个发现物，再点相同的来合成",
-  "adv.board_selected": "再点一次送走，或选择别的格子"
+  "adv.board_selected": "再点一次送走，或选择别的格子",
+  "adv.island.title": "小岛",
+  "adv.island.how": "贝壳能召来潮水，把新物品冲上岸。移动物品免费。3个相同的相邻合成1个，5个合成2个。在边缘合成能驱散迷雾，雾下藏着礼物。",
+  "adv.island.treasures": "迷雾里藏着三个宝藏。海岸靠近时就能看到。",
+  "adv.island.fog": "迷雾：在旁边合成来驱散它",
+  "adv.island.wash": "冲走",
+  "adv.island.hint": "点一个物品，再点相同物品旁边的格子",
+  "adv.island.tide": "潮水",
+  "adv.island.full": "岸上没位置了：合成或冲走一些",
+  "adv.no_shells": "贝壳用完了：去主棋盘完成订单"
 }
