@@ -71,7 +71,7 @@ final class IslandTests: XCTestCase {
         XCTAssertEqual(r.merges[0].made, 1)
         let items = game.adventure!.island!.cells.compactMap(\.item)
         XCTAssertEqual(items.filter { $0 == Item(chain: flower.chain, tier: 1) }.count, 1)
-        XCTAssertFalse(items.contains(flower))
+        XCTAssertFalse([top, top + w, center, center + 1].contains { game.adventure!.island!.cells[$0].item == flower })
         XCTAssertEqual(game.adventure!.island!.cells[center].item, Item(chain: flower.chain, tier: 1), "новый встает куда положили")
         XCTAssertFalse(r.cleared.isEmpty, "слияние у края очищает туман")
         XCTAssertLessThan(game.adventure!.island!.fogLeft, fogBefore)
@@ -91,7 +91,8 @@ final class IslandTests: XCTestCase {
         // из тумана могли выйти подарки, считаем только то, что получилось из самоцветов
         let items = game.adventure!.island!.cells.compactMap(\.item)
         XCTAssertEqual(items.filter { $0 == Item(chain: gem.chain, tier: 1) }.count, 2)
-        XCTAssertFalse(items.contains(gem))
+        let spots = [center - 2, center - 1, center, center + 1, center + 2, center + w]
+        XCTAssertFalse(spots.contains { game.adventure!.island!.cells[$0].item == gem })
     }
 
     func testCascadeAndTopTierBecomesPoints() {
