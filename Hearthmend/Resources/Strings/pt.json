@@ -326,5 +326,20 @@
   "shop.best": "Melhor valor",
   "shop.bonus": "+%d%% a mais",
   "shop.coins": "Moedas",
-  "top.shop": "Loja"
+  "top.shop": "Loja",
+  "adv.title": "Evento",
+  "adv.depths.title": "As Profundezas",
+  "adv.depths.how": "Cave ao lado das casas abertas. Terra custa 1 picareta, pedra 2, granito 3. Os achados caem no tabuleiro abaixo: combine e envie no carrinho por pontos. As picaretas vêm dos pedidos do tabuleiro principal.",
+  "adv.depths.entrance": "Entrada da mina",
+  "adv.depths.treasures": "Grandes tesouros esperam a 12, 24 e 36 de profundidade. Cada um aparece 5 fileiras antes.",
+  "adv.locked": "Eventos abrem no nível %d",
+  "adv.no_moves": "Sem picaretas: complete pedidos no tabuleiro principal",
+  "adv.prize": "Prêmio no seu tabuleiro: %@",
+  "adv.board_full": "O tabuleiro está cheio: combine ou envie achados antes",
+  "adv.points": "+%d pontos",
+  "adv.track": "Prêmios",
+  "adv.track_done": "Todos os prêmios coletados!",
+  "adv.track_hint": "Os pontos vêm dos achados enviados no carrinho. Os prêmios chegam ao tabuleiro principal.",
+  "adv.board_hint": "Toque num achado e depois num igual para combinar",
+  "adv.board_selected": "Toque de novo para enviar ou escolha outra casa"
 }

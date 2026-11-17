@@ -16,6 +16,7 @@ struct TopIcons: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 TopIcon(icon: "ui_bag", label: L10n.t("top.shop"), dot: g.shopGiftReady, action: openShop)
+                AdventureIcon()
                 if g.dailyRewardReady {
                     TopIcon(icon: "ui_gift", label: L10n.t("top.daily"), dot: true, action: openDaily)
                 }

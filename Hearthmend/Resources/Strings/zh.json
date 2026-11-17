@@ -326,5 +326,20 @@
   "shop.best": "最划算",
   "shop.bonus": "多 %d%%",
   "shop.coins": "金币",
-  "top.shop": "商店"
+  "top.shop": "商店",
+  "adv.title": "活动",
+  "adv.depths.title": "地下深处",
+  "adv.depths.how": "在已打开的格子旁边挖。泥土要1把镐，石头2把，花岗岩3把。发现的东西会落到下方的板上：合成后用矿车送上去换积分。镐子来自主棋盘的订单。",
+  "adv.depths.entrance": "矿井入口",
+  "adv.depths.treasures": "深度12、24和36处藏着大宝箱。提前5行就能看到。",
+  "adv.locked": "活动在%d级开放",
+  "adv.no_moves": "镐子用完了：去主棋盘完成订单",
+  "adv.prize": "奖励已放到棋盘：%@",
+  "adv.board_full": "板已满：先合成或送走发现物",
+  "adv.points": "+%d 积分",
+  "adv.track": "奖励",
+  "adv.track_done": "所有奖励已领取！",
+  "adv.track_hint": "用矿车送出的发现物算积分。奖励会送到主棋盘。",
+  "adv.board_hint": "点一个发现物，再点相同的来合成",
+  "adv.board_selected": "再点一次送走，或选择别的格子"
 }

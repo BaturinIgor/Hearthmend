@@ -326,5 +326,20 @@
   "shop.best": "Meilleure offre",
   "shop.bonus": "+%d%% en plus",
   "shop.coins": "Pièces",
-  "top.shop": "Boutique"
+  "top.shop": "Boutique",
+  "adv.title": "Événement",
+  "adv.depths.title": "Les Profondeurs",
+  "adv.depths.how": "Creuse à côté des cases ouvertes. La terre coûte 1 pioche, la pierre 2, le granit 3. Les trouvailles tombent sur le plateau en bas : fusionne-les et envoie-les dans le wagonnet pour des points. Les pioches viennent des commandes du plateau principal.",
+  "adv.depths.entrance": "Entrée de la mine",
+  "adv.depths.treasures": "De grands trésors attendent à 12, 24 et 36 de profondeur. Chacun apparaît 5 rangées avant.",
+  "adv.locked": "Les événements s'ouvrent au niveau %d",
+  "adv.no_moves": "Plus de pioches : remplis des commandes sur le plateau principal",
+  "adv.prize": "Récompense sur ton plateau : %@",
+  "adv.board_full": "Le plateau est plein : fusionne ou envoie d'abord",
+  "adv.points": "+%d points",
+  "adv.track": "Récompenses",
+  "adv.track_done": "Toutes les récompenses obtenues !",
+  "adv.track_hint": "Les points viennent des trouvailles envoyées dans le wagonnet. Les récompenses arrivent sur le plateau principal.",
+  "adv.board_hint": "Touche une trouvaille, puis une identique pour fusionner",
+  "adv.board_selected": "Touche encore pour l'envoyer, ou choisis une case"
 }

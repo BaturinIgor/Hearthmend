@@ -49,6 +49,8 @@ final class GameStore: ObservableObject {
     var balance: Balance { game.balance }
 
     private func tick() {
+        let adventureKey = game.state.adventure?.key
+        if game.adventure?.key != adventureKey { commit() }
         if game.state.questDay != game.questDay {
             game.ensureQuests()
             commit()
@@ -260,7 +262,9 @@ final class GameStore: ObservableObject {
 
     func deliver(_ order: Order) {
         let piggyBefore = state.piggyGems
+        let movesBefore = game.adventure?.moves
         guard game.deliver(orderId: order.id) != nil else { return }
+        let movesGot = (game.adventure?.moves ?? 0) - (movesBefore ?? 0)
         Haptics.success()
         Audio.shared.play(.coins)
         selected = nil
@@ -269,7 +273,7 @@ final class GameStore: ObservableObject {
         } else if piggyBefore < balance.piggyMax && game.piggyFull {
             show(L10n.t("shop.piggy_full"))
         } else {
-            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
+            show(String(format: L10n.t("toast.order_done"), order.coins, order.stars) + (movesBefore != nil && movesGot > 0 ? "  ⛏️\(movesGot)" : ""))
         }
         if let up = game.lastFriendLevelUp {
             show(String(format: L10n.t("friends.level_up"), L10n.t("resident.\(up.resident)"), up.level))
@@ -524,6 +528,100 @@ final class GameStore: ObservableObject {
         Haptics.success()
         if !rewards.isEmpty { eventRewards = rewards }
         commit()
+    }
+
+    // MARK: - Большое событие
+
+    /// Копает клетку шахты. Возвращает результат, чтобы экран проиграл анимацию.
+    @discardableResult
+    func dig(_ index: Int) -> Game.DigResult {
+        let result = game.dig(index)
+        switch result {
+        case .invalid:
+            Haptics.light()
+        case .noMoves:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.no_moves"))
+        case .chipped:
+            Haptics.light()
+            Audio.shared.play(.drop)
+        case .opened(let found, let prizes, let opened):
+            Haptics.success()
+            Audio.shared.play(opened.count > 1 || !prizes.isEmpty ? .sparkle : .spawn)
+            if !prizes.isEmpty {
+                show(String(format: L10n.t("adv.prize"), prizes.map(Self.describe).joined(separator: " ")))
+            } else if found.isEmpty, opened.count == 1, case .find? = game.adventure?.depths?.cells[index].content {
+                show(L10n.t("adv.board_full"))
+            }
+            onBoardChange?()
+        }
+        commit()
+        return result
+    }
+
+    /// Тап по открытой клетке, где ждет находка.
+    func collectDepth(_ index: Int) {
+        if game.collectDepth(index) != nil {
+            Haptics.light()
+            Audio.shared.play(.spawn)
+        } else {
+            show(L10n.t("adv.board_full"))
+        }
+        commit()
+    }
+
+    /// Перенос находки на поле события. true - если находки слились.
+    @discardableResult
+    func moveFind(from: Int, to: Int) -> Bool {
+        let a = game.state.adventure?.depths?.board[from] ?? nil
+        let b = game.state.adventure?.depths?.board[to] ?? nil
+        guard game.moveFind(from: from, to: to) else { return false }
+        let merged = a != nil && a == b && (game.state.adventure?.depths?.board[from] ?? nil) == nil
+        if merged {
+            Haptics.success()
+            Audio.shared.play(.merge)
+        } else {
+            Haptics.light()
+        }
+        commit()
+        return merged
+    }
+
+    func deliverFind(_ slot: Int) {
+        guard let r = game.deliverFind(slot) else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        if r.prizes.isEmpty {
+            show(String(format: L10n.t("adv.points"), r.points))
+        } else {
+            show(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))
+            onBoardChange?()
+        }
+        commit()
+    }
+
+    func claimAdventureDaily() {
+        let n = game.claimAdventureDaily()
+        guard n > 0 else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        show("⛏️ +\(n)")
+        commit()
+    }
+
+    /// Награда события одной строкой: ящики и ресурсы значками, генератор, украшение.
+    static func describe(_ prize: AdventurePrize) -> String {
+        switch prize {
+        case .chest(let c):
+            switch c.kind {
+            case .coins: return "🪙\(c.amount)"
+            case .energy: return "⚡️\(c.amount)"
+            case .gems: return "💎\(c.amount)"
+            case .items: return "🧰"
+            }
+        case .generator: return "🛠"
+        case .decor: return "🪴"
+        }
     }
 
     func placeDecor(_ key: String, x: Double, y: Double) {

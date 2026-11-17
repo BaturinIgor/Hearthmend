@@ -552,6 +552,66 @@ def wagon():
     return outlined(im)
 
 
+def pickaxe():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.line((4, 13, 10, 5), fill=WOOD_L, width=2)
+    d.line((5, 13, 11, 5), fill=WOOD_D)
+    d.arc((2, 1, 15, 12), 200, 340, fill=(170, 170, 184, 255), width=2)
+    d.point((4, 4), fill=(225, 225, 235, 255)); d.point((13, 4), fill=(225, 225, 235, 255))
+    return outlined(im)
+
+
+def lantern():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.arc((5, 1, 10, 5), 180, 360, fill=(90, 80, 80, 255))
+    d.rectangle((4, 4, 11, 5), fill=(90, 80, 80, 255))
+    d.rectangle((5, 6, 10, 12), fill=(255, 214, 96, 255))
+    d.rectangle((7, 8, 8, 10), fill=(255, 250, 210, 255))
+    d.line((5, 6, 5, 12), fill=(90, 80, 80, 255)); d.line((10, 6, 10, 12), fill=(90, 80, 80, 255))
+    d.rectangle((4, 13, 11, 13), fill=(90, 80, 80, 255))
+    return outlined(im)
+
+
+def minecart():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(1, 5), (14, 5), (12, 11), (3, 11)], fill=(150, 150, 164, 255))
+    d.line((1, 5, 14, 5), fill=(205, 205, 215, 255))
+    d.line((3, 8, 12, 8), fill=(120, 120, 134, 255))
+    for x, c in ((4, (250, 200, 70, 255)), (7, (230, 120, 200, 255)), (10, (250, 200, 70, 255))):
+        d.ellipse((x - 1, 2, x + 2, 5), fill=c)
+    d.ellipse((3, 10, 6, 13), fill=(70, 60, 60, 255)); d.ellipse((9, 10, 12, 13), fill=(70, 60, 60, 255))
+    return outlined(im)
+
+
+def mine_tile(base, light, dark, seed, specks):
+    """Клетка шахты 16x16: порода с крапинками и объемом, чем тверже, тем темнее и пестрее."""
+    import random
+    rnd = random.Random(seed)
+    im = Image.new("RGBA", (16, 16), base)
+    px = im.load()
+    for _ in range(specks):
+        x, y = rnd.randrange(2, 14), rnd.randrange(2, 14)
+        px[x, y] = light if rnd.random() < 0.4 else dark
+        if rnd.random() < 0.5 and x < 13:
+            px[x + 1, y] = dark
+    for i in range(16):
+        px[i, 0] = light; px[0, i] = light
+        px[i, 15] = dark; px[15, i] = dark
+    return im
+
+
+def mine_open():
+    import random
+    rnd = random.Random(5)
+    im = Image.new("RGBA", (16, 16), (74, 52, 44, 255))
+    px = im.load()
+    for _ in range(6):
+        px[rnd.randrange(16), rnd.randrange(16)] = (64, 44, 38, 255)
+    for i in range(16):
+        px[i, 0] = (52, 36, 30, 255)
+    return im
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "Hearthmend/Resources/UI"
     os.makedirs(out, exist_ok=True)
@@ -580,6 +640,11 @@ def main():
         "ui_hammer": hammer(), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
         "ui_confetti": confetti(), "ui_plant": plant(), "ui_book": book(),
         "ui_trophy": trophy(), "ui_wagon": wagon(),
+        "ui_pickaxe": pickaxe(), "ui_lantern": lantern(), "ui_minecart": minecart(),
+        "ui_mine_1": mine_tile((176, 124, 82, 255), (202, 152, 106, 255), (140, 96, 62, 255), 1, 8),
+        "ui_mine_2": mine_tile((150, 146, 140, 255), (186, 182, 176, 255), (112, 108, 104, 255), 2, 12),
+        "ui_mine_3": mine_tile((104, 96, 112, 255), (150, 140, 160, 255), (70, 64, 80, 255), 3, 16),
+        "ui_mine_open": mine_open(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),
     }

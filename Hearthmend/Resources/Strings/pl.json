@@ -326,5 +326,20 @@
   "shop.best": "Najkorzystniej",
   "shop.bonus": "+%d%% więcej",
   "shop.coins": "Monety",
-  "top.shop": "Sklep"
+  "top.shop": "Sklep",
+  "adv.title": "Wydarzenie",
+  "adv.depths.title": "Głębiny",
+  "adv.depths.how": "Kop obok otwartych pól. Ziemia kosztuje 1 kilof, kamień 2, granit 3. Znaleziska spadają na planszę na dole: łącz je i wysyłaj wagonikiem po punkty. Kilofy dostajesz za zamówienia na głównej planszy.",
+  "adv.depths.entrance": "Wejście do kopalni",
+  "adv.depths.treasures": "Na głębokości 12, 24 i 36 czekają wielkie skarby. Każdy widać 5 rzędów wcześniej.",
+  "adv.locked": "Wydarzenia od poziomu %d",
+  "adv.no_moves": "Brak kilofów: realizuj zamówienia na głównej planszy",
+  "adv.prize": "Nagroda na planszy: %@",
+  "adv.board_full": "Plansza pełna: najpierw połącz lub wyślij znaleziska",
+  "adv.points": "+%d pkt",
+  "adv.track": "Nagrody",
+  "adv.track_done": "Wszystkie nagrody zebrane!",
+  "adv.track_hint": "Punkty dają znaleziska wysłane wagonikiem. Nagrody trafiają na główną planszę.",
+  "adv.board_hint": "Stuknij znalezisko, potem takie samo, by połączyć",
+  "adv.board_selected": "Stuknij ponownie, by wysłać, albo wybierz pole"
 }

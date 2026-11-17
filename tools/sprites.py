@@ -156,6 +156,16 @@ EXTRA = {
 for lvl, sheet in enumerate([CHEST, METAL, GOLD]):
     EXTRA[f"chest_{lvl}"] = (sheet, 0, 0, 1, 1)
     EXTRA[f"chest_{lvl}_open"] = (sheet, 4, 0, 1, 1)
+# находки события «Глубины»: руда, самоцветы, окаменелости по 5 уровней
+for i, spec in enumerate([(RES, 0, 1, 1, 1), (RES, 1, 1, 1, 1), (RES, 2, 1, 1, 1), (RES, 2, 2, 1, 1),
+                          ("px", "Outdoor decoration/Minecrats.png", 16, 109, 32, 125)]):
+    EXTRA[f"depth_ore_{i}"] = spec
+for i, spec in enumerate([(RES, 3, 3, 1, 1), (RES, 4, 3, 1, 1), (RES, 5, 3, 1, 1), (RES, 5, 4, 1, 1),
+                          ("px", "Outdoor decoration/Minecrats.png", 16, 269, 32, 285)]):
+    EXTRA[f"depth_gem_{i}"] = spec
+for i, spec in enumerate([(RES, 1, 4, 1, 1), (RES, 3, 4, 1, 1), (RES, 3, 5, 1, 1), (RES, 2, 5, 1, 1), (RES, 4, 1, 1, 1)]):
+    EXTRA[f"depth_fossil_{i}"] = spec
+EXTRA["depth_rock"] = (RES, 0, 5, 1, 1)
 for kind, row in {"coins": 0, "gems": 1, "energy": 3, "items": 4}.items():
     EXTRA[f"chest_3_{kind}"] = (JEWEL, 0, row, 1, 1)
     EXTRA[f"chest_3_{kind}_open"] = (JEWEL, 4, row, 1, 1)
@@ -205,6 +215,8 @@ def main():
         images[key] = im
     for key, spec in EXTRA.items():
         im = cut(pack, spec)
+        if spec[0] == "px":
+            im = outline(im)
         if im.getbbox() is None:
             sys.exit(f"{key}: пустая клетка")
         im.save(os.path.join(out, key + ".png"))
