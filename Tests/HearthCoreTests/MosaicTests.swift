@@ -23,6 +23,16 @@ final class MosaicTests: XCTestCase {
         }
     }
 
+    func testEveryTrackGrows() {
+        let (game, _) = makeGame()
+        for kind in AdventureKind.rotation {
+            let track = game.adventureTrack(kind)
+            XCTAssertEqual(track.count, 12, "\(kind)")
+            XCTAssertEqual(track.map(\.points), track.map(\.points).sorted(), "\(kind)")
+            XCTAssertEqual(Set(track.map(\.points)).count, track.count, "\(kind)")
+        }
+    }
+
     func testWindowIsSharedAndEveryRegionIsOneColor() {
         let a = MosaicState.generate(seed: 42), b = MosaicState.generate(seed: 42)
         XCTAssertEqual(a, b)
