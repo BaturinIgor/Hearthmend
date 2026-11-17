@@ -1,28 +1,23 @@
 import SwiftUI
 import UIKit
 
-/// Пиксельный интерфейс: шрифт Tiny5, иконки валют вместо эмодзи, деревянные рамки и кнопки
-/// (картинки из tools/ui_kit.py, лежат в Resources/UI). Всё увеличивается без сглаживания.
+/// Пиксельный интерфейс: один пиксельный шрифт Hearth Pixel на все тексты и цифры (жирная версия
+/// Galmuri11 с латиницей, кириллицей, каной, хангылем и иероглифами), иконки вместо эмодзи,
+/// деревянные рамки и кнопки (картинки из tools/ui_kit.py, лежат в Resources/UI).
 @MainActor
 enum Pixel {
-    /// Мельче этого пиксельный шрифт читается плохо: такой текст набирается округлым системным.
-    static let pixelMin: CGFloat = 15
+    static let fontName = "HearthPixel-Regular"
 
-    /// Пиксельный шрифт для заголовков и кнопок. Мелкий текст (подсказки, описания) идет
-    /// округлым системным полужирным: так его легко читать. Иероглифы iOS дорисует системным шрифтом.
+    /// Единственный шрифт интерфейса. Размер чуть меньше номинального: у шрифта крупные строчные.
     static func font(_ size: CGFloat) -> Font {
-        size < pixelMin ? body(size) : .custom("Tiny5", size: size * 1.12)
+        .custom(fontName, size: (size * 0.95).rounded())
     }
 
-    /// Читаемый текст: описания, подсказки, мелкие подписи.
-    static func body(_ size: CGFloat) -> Font {
-        .system(size: size + 1, weight: .bold, design: .rounded)
-    }
+    /// Описания и подсказки: тот же пиксельный шрифт.
+    static func body(_ size: CGFloat) -> Font { font(size + 1) }
 
-    /// Цифры: крупный пиксельный шрифт с четкими 8, 6, 9 (Press Start 2P).
-    static func digits(_ size: CGFloat) -> Font {
-        .custom("PressStart2P-Regular", size: (size * 0.74).rounded())
-    }
+    /// Цифры: тот же шрифт, у него четкие 8, 6, 9 и 0.
+    static func digits(_ size: CGFloat) -> Font { font(size + 1) }
 
     /// Сторона пиксельной картинки в точках, кратная пикселю исходника: все пиксели одинаковые.
     static func crisp(_ size: CGFloat, source: CGFloat) -> CGFloat {
@@ -64,7 +59,6 @@ enum Pixel {
 
     /// Текст с иконками: "💎 120  ⚡️ 30" -> пиксельные кристалл и молния, числа крупным пиксельным шрифтом.
     static func text(_ string: String, size: CGFloat) -> Text {
-        let small = size < pixelMin
         var result = Text("")
         var buffer = ""
         var number = ""
@@ -73,7 +67,7 @@ enum Pixel {
         }
         func flushNumber() {
             if !number.isEmpty {
-                result = result + Text(number).font(small ? body(size) : digits(size))
+                result = result + Text(number).font(digits(size))
                 number = ""
             }
         }

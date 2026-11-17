@@ -12,11 +12,14 @@ enum Shot {
     }()
 
     static var isLate: Bool { name == "north" }
+    static var isFar: Bool { name == "qa_far" || name == "qa_story" }
+    static var isActive: Bool { name != nil }
     /// Постройка в центре кадра на скриншотах деревни: самое живое место.
     static var focus: String? {
         switch name {
         case "village": return "square_stalls"
         case "north": return "orchard_market"
+        case "qa_far": return "mine_crystals"
         default: return nil
         }
     }
@@ -37,6 +40,10 @@ struct QAScreen: View {
         case "qa_settings": SettingsView()
         case "qa_daily":
             ZStack { ContentView(); DailyRewardView {} }
+        case "qa_basket": BasketSheet()
+        case "qa_jar": JarSheet()
+        case "qa_story":
+            ZStack { ContentView(); StoryView(scene: "mine.intro") {} }
         default:
             ContentView()
                 .onAppear {
@@ -71,7 +78,7 @@ struct ShotFrame: View {
                         // кусок карты вокруг площади, 2 точки на пиксель
                         Image(uiImage: map).resizable().interpolation(.none)
                             .frame(width: map.size.width * 2, height: map.size.height * 2)
-                            .offset(x: width / 2 - map.size.width, y: full / 2 - 72 * 16 * 2)
+                            .offset(x: width / 2 - map.size.width, y: full / 2 - 112 * 16 * 2)
                             .frame(width: width, height: full, alignment: .topLeading)
                             .clipped()
                     } else {

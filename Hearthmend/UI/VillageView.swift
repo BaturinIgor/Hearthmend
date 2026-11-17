@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import HearthCore
 
 /// Карта деревни: фон из тайлов пака, готовые постройки, стройплощадки текущего района.
@@ -9,9 +10,10 @@ struct VillageView: View {
     @State private var picked: VillageTask?
     @State private var justBuilt: String?
     @State private var showDecor = false
+    @State private var moveHint = false
 
-    /// Размер карты в пикселях пака (tools/village_map.py: 32 x 94 клеток по 16).
-    static let mapSize = CGSize(width: 512, height: 1504)
+    /// Размер карты в пикселях пака (tools/village_map.py: 32 x 134 клеток по 16).
+    static let mapSize = CGSize(width: 512, height: 2144)
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -27,6 +29,8 @@ struct VillageView: View {
                             .frame(width: Self.mapSize.width * scale, height: Self.mapSize.height * scale)
                             .padding(.top, 70)
                             .padding(.bottom, 120)
+                            // без «резинки» по краям: карта не уезжает за край
+                            .background(ScrollBounceOff())
                     }
                     .onAppear {
                         if let focus = focusTask {
@@ -39,7 +43,19 @@ struct VillageView: View {
                 }
             }
             SeasonParticles(season: store.season)
-            header
+            VStack(spacing: 6) {
+                header
+                if moveHint {
+                    Label { Text(L10n.t("village.move_hint")) } icon: { PixelIcon(key: "ui_hammer", size: 18) }
+                        .font(Pixel.font(14))
+                        .foregroundColor(Theme.text)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(PixelSlice(key: "ui_paper_gold", inset: 4, scale: 2))
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .onTapGesture { withAnimation { moveHint = false } }
+                }
+            }
             VStack {
                 Spacer()
                 if let task = picked {
@@ -66,6 +82,14 @@ struct VillageView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 12)
         }
+        .onAppear {
+            // один раз подсказать, что постройки можно двигать
+            let key = "moveHintShown"
+            guard !Shot.isActive, store.state.completedTasks.count >= 4, !UserDefaults.standard.bool(forKey: key) else { return }
+            UserDefaults.standard.set(true, forKey: key)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { withAnimation(.spring(response: 0.4)) { moveHint = true } }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 8) { withAnimation(.easeOut) { moveHint = false } }
+        }
     }
 
     // MARK: - Карта
@@ -76,14 +100,17 @@ struct VillageView: View {
                 .frame(width: Self.mapSize.width * scale, height: Self.mapSize.height * scale)
                 .background(Color(red: 0.45, green: 0.66, blue: 0.33))
             ForEach(tasksByDepth) { task in
+                let mode = buildState(task)
                 BuildingView(task: task,
-                             state: buildState(task),
+                             state: mode,
+                             spot: store.game.spot(of: task),
                              scale: scale,
                              affordable: store.state.stars >= task.cost,
                              celebrate: justBuilt == task.id)
                     .id(task.id)
+                    .modifier(BuildingMover(task: task, enabled: mode == .built, scale: scale))
                     .onTapGesture {
-                        guard buildState(task) == .site else { return }
+                        guard mode == .site else { return }
                         Haptics.light()
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { picked = task }
                     }
@@ -116,7 +143,7 @@ struct VillageView: View {
     }
 
     private var tasksByDepth: [VillageTask] {
-        store.game.village.allTasks.sorted { $0.y < $1.y }
+        store.game.village.allTasks.sorted { store.game.spot(of: $0).y < store.game.spot(of: $1).y }
     }
 
     private func buildState(_ task: VillageTask) -> BuildingView.Mode {
@@ -276,6 +303,7 @@ struct BuildingView: View {
 
     let task: VillageTask
     let mode: Mode
+    let spot: (x: Double, y: Double)
     let scale: CGFloat
     let affordable: Bool
     let celebrate: Bool
@@ -283,9 +311,10 @@ struct BuildingView: View {
     @State private var spin = false
     @State private var dust = false
 
-    init(task: VillageTask, state: Mode, scale: CGFloat, affordable: Bool, celebrate: Bool) {
+    init(task: VillageTask, state: Mode, spot: (x: Double, y: Double), scale: CGFloat, affordable: Bool, celebrate: Bool) {
         self.task = task
         self.mode = state
+        self.spot = spot
         self.scale = scale
         self.affordable = affordable
         self.celebrate = celebrate
@@ -299,8 +328,8 @@ struct BuildingView: View {
     var body: some View {
         let s = size
         // x, y в village.json - середина нижнего края постройки в клетках по 16 пикселей
-        let left = CGFloat(task.x) * 16 * scale - s.width / 2
-        let top = CGFloat(task.y) * 16 * scale - s.height
+        let left = CGFloat(spot.x) * 16 * scale - s.width / 2
+        let top = CGFloat(spot.y) * 16 * scale - s.height
         ZStack {
             if mode != .hidden {
                 building(s)
@@ -365,6 +394,73 @@ struct BuildingView: View {
         .background(PixelSlice(key: affordable ? "ui_btn_green" : "ui_btn_wood", inset: 5, scale: 2))
         .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
         .scaleEffect(affordable ? 1.1 : 0.95)
+    }
+}
+
+/// Готовую постройку можно передвинуть: удержать и тащить пальцем. Двойной тап по
+/// поднятой постройке не нужен: отпустил - встала на новое место.
+private struct BuildingMover: ViewModifier {
+    @EnvironmentObject private var store: GameStore
+    let task: VillageTask
+    let enabled: Bool
+    let scale: CGFloat
+    @State private var drag: CGSize = .zero
+    @State private var lifted = false
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content
+                .scaleEffect(lifted ? 1.08 : 1, anchor: .bottom)
+                .shadow(color: .black.opacity(lifted ? 0.35 : 0), radius: 6, y: 4)
+                .offset(drag)
+                .zIndex(lifted ? 10 : 0)
+                .gesture(
+                    LongPressGesture(minimumDuration: 0.35)
+                        .sequenced(before: DragGesture(minimumDistance: 0))
+                        .onChanged { value in
+                            guard case .second(true, let d) = value else { return }
+                            if !lifted {
+                                Haptics.light()
+                                withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) { lifted = true }
+                            }
+                            drag = d?.translation ?? .zero
+                        }
+                        .onEnded { value in
+                            if case .second(true, let d?) = value {
+                                let cell = 16 * scale
+                                let spot = store.game.spot(of: task)
+                                store.moveBuilding(task.id, x: spot.x + Double(d.translation.width / cell),
+                                                   y: spot.y + Double(d.translation.height / cell))
+                            }
+                            drag = .zero
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { lifted = false }
+                        }
+                )
+        } else {
+            content
+        }
+    }
+}
+
+/// Находит UIScrollView, в котором лежит, и выключает у него пружинку по краям.
+private struct ScrollBounceOff: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        let v = UIView()
+        v.isUserInteractionEnabled = false
+        return v
+    }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        DispatchQueue.main.async {
+            var v = view.superview
+            while let current = v {
+                if let scroll = current as? UIScrollView {
+                    scroll.bounces = false
+                    break
+                }
+                v = current.superview
+            }
+        }
     }
 }
 

@@ -4,7 +4,7 @@ import Foundation
 /// кристаллы, монеты и украшение, и начинается следующая открытка. Виды идут по кругу.
 public enum Postcards {
     /// Виды деревни: картинки postcard_<id> собирает tools/village_map.py.
-    public static let views = ["square", "farmstead", "riverside", "orchard", "hilltop"]
+    public static let views = ["square", "farmstead", "riverside", "orchard", "hilltop", "mine", "fair"]
     /// Украшение за каждую открытку, по кругу.
     public static let decor = ["decor_bush", "decor_flowers_red", "decor_mushroom", "decor_nest",
                                "decor_flowers_purple", "decor_logs", "decor_bench", "decor_trough"]

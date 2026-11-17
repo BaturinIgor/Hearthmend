@@ -72,6 +72,26 @@ SPRITES = {
     "orchard_grapes": (FOOD, 0, 5, 1, 1),
     "orchard_melon": (FOOD, 6, 7, 1, 1),
     "gen_orchard": ("Crops/Apple_Tree.png", 0, 0, 2, 4),
+    # рыбалка
+    "fishing_minnow": (FOOD, 1, 2, 1, 1),
+    "fishing_perch": (FOOD, 0, 2, 1, 1),
+    "fishing_bream": (FOOD, 2, 2, 1, 1),
+    "fishing_pike": (FOOD, 3, 2, 1, 1),
+    "fishing_carp": (FOOD, 4, 2, 1, 1),
+    "fishing_salmon": (FOOD, 5, 2, 1, 1),
+    "fishing_catfish": (FOOD, 7, 2, 1, 1),
+    "fishing_goldfish": (FOOD, 6, 2, 1, 1),
+    "gen_fishing": (TOOLS, 7, 0, 1, 1),
+    # кристаллы
+    "crystal_dust": (ORES, 5, 4, 1, 1),
+    "crystal_shard": (ORES, 6, 4, 1, 1),
+    "crystal_cluster": (ORES, 3, 4, 1, 1),
+    "crystal_geode": (ORES, 2, 4, 1, 1),
+    "crystal_druse": (ORES, 1, 4, 1, 1),
+    "crystal_spire": (ORES, 4, 4, 1, 1),
+    "crystal_ingot": (ORES, 7, 4, 1, 1),
+    "crystal_orb": (RES, 5, 4, 1, 1),
+    "gen_crystal": (ORES, 0, 4, 1, 1),
     # завал
     "debris": (DECOR, 3, 6, 1, 1),
 }

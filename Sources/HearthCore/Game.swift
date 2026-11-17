@@ -41,6 +41,7 @@ public final class Game {
         } else {
             self.state = Game.newState(catalog: catalog, balance: balance, now: now())
         }
+        migrateVillage()
         migrateCollection()
         refillOrders()
     }

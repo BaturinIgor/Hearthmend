@@ -202,6 +202,13 @@ public struct GameState: Codable, Equatable {
     public var discovered: [String] = []
     public var collectionClaimed: [String] = []
     public var collectionChains: [String] = []
+    /// Версия раскладки карты: в версии 1 сверху добавлены шахта и ярмарка, все сдвинулось на 40 клеток вниз.
+    /// Новая игра сразу в последней версии (Game.mapRevision), старые сохранения переводятся в migrateVillage().
+    public var mapRev: Int = Game.mapRevision
+    /// Постройки, которые игрок передвинул: id задачи -> [x, y] в клетках.
+    public var buildingSpots: [String: [Double]] = [:]
+    /// Показанные сцены истории деревни.
+    public var storySeen: [String] = []
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -231,6 +238,7 @@ public struct GameState: Codable, Equatable {
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
         case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces, stamps, stampCards
         case tutorialStep, questDay, quests, questChestClaimed, discovered, collectionClaimed, collectionChains
+        case mapRev, buildingSpots, storySeen
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -287,6 +295,9 @@ public struct GameState: Codable, Equatable {
         discovered = try c.decodeIfPresent([String].self, forKey: .discovered) ?? []
         collectionClaimed = try c.decodeIfPresent([String].self, forKey: .collectionClaimed) ?? []
         collectionChains = try c.decodeIfPresent([String].self, forKey: .collectionChains) ?? []
+        mapRev = try c.decodeIfPresent(Int.self, forKey: .mapRev) ?? 0
+        buildingSpots = try c.decodeIfPresent([String: [Double]].self, forKey: .buildingSpots) ?? [:]
+        storySeen = try c.decodeIfPresent([String].self, forKey: .storySeen) ?? []
     }
 }
 

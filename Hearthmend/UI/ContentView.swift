@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var showShop = CommandLine.arguments.contains("-shop")
     @State private var showSettings = false
     @State private var showDaily = false
+    @State private var story: String?
 
     var body: some View {
         ZStack {
@@ -30,17 +31,39 @@ struct ContentView: View {
                 .transition(.scale(scale: 0.6).combined(with: .opacity))
                 .zIndex(2)
             }
+            if let scene = story {
+                StoryView(scene: scene) {
+                    store.storySeen(scene)
+                    story = nil
+                    checkStory()
+                }
+                .zIndex(4)
+            }
         }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: screen)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showDaily)
         .sheet(isPresented: $showShop) { ShopView() }
         .background(EmptyView().sheet(isPresented: $showSettings) { SettingsView() })
         .onAppear {
-            if store.game.dailyRewardReady, store.game.tutorial == .done {
+            if store.game.dailyRewardReady, store.game.tutorial == .done, !Shot.isActive {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { showDaily = true }
             }
+            checkStory()
         }
+        .onChange(of: store.celebration) { c in if c == nil { checkStory() } }
+        .onChange(of: showDaily) { open in if !open { checkStory() } }
+        .onChange(of: store.state.completedTasks.count) { _ in checkStory() }
+        .onChange(of: store.state.tutorialStep) { _ in checkStory() }
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: store.celebration)
+    }
+
+    /// Сцена истории всплывает, когда ничего другого на экране нет.
+    private func checkStory() {
+        guard !Shot.isActive else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            guard story == nil, store.celebration == nil, !showDaily, let scene = store.pendingStory else { return }
+            withAnimation(.spring(response: 0.4)) { story = scene }
+        }
     }
 
     private var board: some View {
@@ -56,7 +79,7 @@ struct ContentView: View {
                     .background(PixelSlice(key: "ui_panel", inset: 6, scale: 2))
                     .padding(.horizontal, 6)
                 SelectedBar()
-                BasketBar()
+                    .padding(.bottom, 6)
             }
             .padding(.top, 4)
             TutorialTip(openVillage: { screen = .village })
@@ -320,6 +343,8 @@ private struct SelectedBar: View {
                 ActionButton(title: String(format: L10n.t("selected.sell"), store.game.sellPrice(item))) { store.sellSelected() }
                 ActionButton(title: L10n.t("selected.store")) { store.storeSelected() }
             } else {
+                JarButton()
+                BasketButton()
                 PostcardButton()
                 BadgeButton(icon: "ui_ticket", count: store.game.questsClaimable) { showQuests = true }
                 BadgeButton(icon: "ui_book", count: store.game.collectionClaimable) { showAlbum = true }
@@ -402,41 +427,78 @@ private struct ActionButton: View {
     }
 }
 
-private struct BasketBar: View {
+/// Корзина одной кнопкой: сколько занято, по тапу окно с полками.
+private struct BasketButton: View {
+    @EnvironmentObject private var store: GameStore
+    @State private var open = false
+
+    var body: some View {
+        let used = store.state.basket.count
+        Button {
+            Haptics.light()
+            open = true
+        } label: {
+            HStack(spacing: 3) {
+                PixelIcon(key: "ui_basket", size: 22)
+                Text("\(used)/\(store.state.basketSize)").font(Pixel.font(13))
+            }
+            .foregroundColor(Theme.text)
+            .padding(.horizontal, 8)
+            .frame(height: 34)
+            .background(PixelSlice(key: used > 0 ? "ui_paper_gold" : "ui_paper", inset: 4, scale: 2))
+        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: used)
+        .sheet(isPresented: $open) { BasketSheet() }
+    }
+}
+
+/// Окно корзины: полки с предметами, тап возвращает предмет на поле.
+struct BasketSheet: View {
     @EnvironmentObject private var store: GameStore
 
     var body: some View {
-        HStack(spacing: 6) {
-            JarButton()
-            ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-            PixelIcon(key: "ui_basket", size: 26)
-            if store.state.basket.isEmpty {
-                Text(L10n.t("basket.hint"))
-                    .font(Pixel.body(11))
-                    .foregroundColor(Theme.text.opacity(0.65))
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(width: 96, alignment: .leading)
-            }
-            ForEach(0..<store.state.basketSize, id: \.self) { i in
-                let item = i < store.state.basket.count ? store.state.basket[i] : nil
-                Button {
-                    store.retrieve(i)
-                } label: {
-                    Group {
-                        if let item { ItemIcon(item: item, size: 26) } else { Color.clear }
+        PixelSheet(L10n.t("basket.title")) {
+            ScrollView {
+                VStack(spacing: 14) {
+                    Text(L10n.t("basket.about"))
+                        .font(Pixel.font(14))
+                        .multilineTextAlignment(.center)
+                        .opacity(0.8)
+                        .fixedSize(horizontal: false, vertical: true)
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 10) {
+                        ForEach(0..<store.state.basketSize, id: \.self) { i in
+                            let item = i < store.state.basket.count ? store.state.basket[i] : nil
+                            Button {
+                                store.retrieve(i)
+                            } label: {
+                                ZStack(alignment: .bottomTrailing) {
+                                    if let item {
+                                        ItemIcon(item: item, size: 40)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        TierBadge(tier: item.tier).padding(4)
+                                    }
+                                }
+                                .frame(height: 66)
+                                .frame(maxWidth: .infinity)
+                                .background(PixelSlice(key: item == nil ? "ui_paper" : "ui_paper_gold", inset: 4))
+                            }
+                            .disabled(item == nil)
+                            .transition(.scale)
+                        }
                     }
-                        .frame(width: 38, height: 38)
-                        .background(PixelSlice(key: "ui_paper", inset: 4))
+                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: store.state.basket)
+                    if let price = store.game.basketSlotPrice {
+                        Button {
+                            store.buyBasketSlot()
+                        } label: {
+                            PixelText(String(format: L10n.t("basket.more"), price), size: 16)
+                        }
+                        .buttonStyle(PixelButtonStyle(kind: .green, size: 16))
+                    }
                 }
-                .disabled(item == nil)
-            }
-            }
+                .padding(16)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.bottom, 8)
     }
 }
 

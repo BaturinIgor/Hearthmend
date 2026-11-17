@@ -11,9 +11,11 @@ import json, os, random, sys
 from PIL import Image
 
 CELL = 16
-MAP_W, MAP_H = 32, 94
+# TOP клеток сверху - шахта и ярмарочный луг (районы 7 и 8), ниже холм, сад, река, площадь
+TOP = 40
+MAP_W, MAP_H = 32, 94 + TOP
 # северный берег (сад и холм) над рекой; старые районы ниже на NORTH клеток
-NORTH = 44
+NORTH = 44 + TOP
 
 B = "Buildings/Buildings/"
 U = B + "Unique_Buildings/"
@@ -59,6 +61,20 @@ BUILDINGS = {
     "bld_library": (B + "Houses/Limestone/House_3_Limestone_Base_Blue.png", None),
     "bld_manor": (B + "Houses/Stone/House_5_Stone_Red_Blue.png", None),
     "bld_bell": (U + "Church/Church_Blue.png", 336, 0, 112, 144),
+    # старая шахта
+    "bld_camp": (B + "Tent/Tent_Small.png", None),
+    "bld_carts": (OD + "Minecrats.png", 0, 160, 32, 32),
+    "bld_forge": (U + "Blacksmith_House/Blacksmith_House_Black.png", None),
+    "bld_lodge": (B + "Houses/Stone/House_4_Stone_Base_Black.png", None),
+    "bld_crystals": (OD + "Cave_Decorations.png", 0, 16, 64, 16),
+    "bld_mine_hall": (B + "Houses/Stone/House_5_Stone_Base_Black.png", None),
+    # ярмарочный луг
+    "bld_big_tent": (B + "Tent/Tent_Big.png", None),
+    "bld_fair_stalls": (U + "Stalls/Market_Stalls.png", 0, 0, 96, 48),
+    "bld_fair_barn": (U + "Barn/Barn_Green_Blue.png", None),
+    "bld_fair_house": (B + "Houses/Wood/House_3_Wood_Green_Blue.png", None),
+    "bld_town_hall": (U + "Inn/Inn_Blue.png", None),
+    "bld_tower": (U + "Church/Church_Black.png", 336, 0, 112, 144),
 }
 
 # украшения из событий: ставятся на карту куда угодно
@@ -169,9 +185,9 @@ def compose_background(pack):
     grass_sheet = load(pack, "Tiles/Grass/Grass_Tiles_1.png")
     dirt_fill = tile(grass_sheet, 1, 6)
     path = set()
-    for y in list(range(10, NORTH)) + list(range(NORTH + 6, NORTH + 41)):
+    for y in list(range(4, NORTH)) + list(range(NORTH + 6, NORTH + 41)):
         path |= {(15, y), (16, y)}
-    for y0 in (13, 28, NORTH + 20, NORTH + 39):
+    for y0 in (12, 26, TOP + 13, TOP + 28, NORTH + 20, NORTH + 39):
         path |= {(x, y) for x in range(2, 30) for y in (y0, y0 + 1)}
     # площадь вокруг фонтана
     path |= {(x, y) for x in range(8, 15) for y in range(NORTH + 22, NORTH + 28)}

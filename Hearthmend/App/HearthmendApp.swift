@@ -21,6 +21,7 @@ struct HearthmendApp: App {
                 .environmentObject(store)
                 .environmentObject(shop)
                 .preferredColorScheme(.light)
+                .font(Pixel.font(16))
                 .onAppear {
                     shop.attach(store)
                     Audio.shared.startMusic()

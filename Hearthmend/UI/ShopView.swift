@@ -378,20 +378,19 @@ struct JarButton: View {
     }
 }
 
-private struct JarSheet: View {
+struct JarSheet: View {
     @EnvironmentObject private var store: GameStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        PixelSheet(L10n.t("jar.title")) {
         VStack(spacing: 14) {
-            PixelIcon(key: "ui_jar", size: (56) * 1.1)
-            Text(L10n.t("jar.title")).font(Pixel.font(22))
+            PixelIcon(key: "ui_jar", size: 60)
             Text(L10n.t("jar.about"))
                 .font(Pixel.font(14))
                 .multilineTextAlignment(.center)
                 .opacity(0.8)
-            PixelText("⚡️ \(store.state.jarEnergy) / \(store.balance.jarCapacity)", size: 14)
-                .font(Pixel.font(20))
+            PixelText("⚡️ \(store.state.jarEnergy) / \(store.balance.jarCapacity)", size: 20)
             if let left = store.game.jarFreeIn {
                 Text(String(format: L10n.t("jar.free_in"), Self.format(left)))
                     .font(Pixel.font(14))
@@ -406,14 +405,23 @@ private struct JarSheet: View {
                             .background(PixelSlice(key: "ui_btn_green", inset: 5))
                     }
                 }
+            } else if store.state.jarEnergy > 0 {
+                Button {
+                    store.openJar(paid: false)
+                    dismiss()
+                } label: {
+                    PixelText(L10n.t("jar.open_free"), size: 17)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 48)
+                        .background(PixelSlice(key: "ui_btn_green", inset: 5))
+                }
             } else {
                 Text(L10n.t("jar.empty")).font(Pixel.font(14)).opacity(0.8)
             }
         }
-        .foregroundColor(Theme.text)
         .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(PixelTile(key: "ui_bg").ignoresSafeArea())
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        }
     }
 
     static func format(_ t: TimeInterval) -> String {
@@ -435,22 +443,30 @@ struct DailyRewardView: View {
             Color.black.opacity(0.35).ignoresSafeArea()
             VStack(spacing: 14) {
                 Text(L10n.t("daily.title")).font(Pixel.font(22))
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
-                    ForEach(Array(Balance.dailyRewards.enumerated()), id: \.offset) { i, reward in
-                        VStack(spacing: 2) {
-                            Text(String(format: L10n.t("daily.day"), i + 1))
-                                .font(Pixel.font(11))
-                            // каждая часть награды своей строкой: «⚡100» и «💎20» не рвутся посередине
-                            ForEach(Self.short(reward).split(separator: " ").map(String.init), id: \.self) { part in
-                                PixelText(part, size: 13).lineLimit(1).fixedSize()
-                            }
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 56)
-                        .background(PixelSlice(key: i == today ? "ui_paper_green" : "ui_paper", inset: 4))
-                        .opacity(i < today ? 0.5 : 1)
-                        .scaleEffect(i == today && claimed != nil ? 1.12 : 1)
+                let days = Balance.dailyRewards
+                // шесть одинаковых карточек и седьмая - большой подарок во всю ширину
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                    ForEach(0..<(days.count - 1), id: \.self) { i in
+                        dayCard(i, days[i], today: today)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 70)
                     }
                 }
+                let last = days.count - 1
+                HStack(spacing: 12) {
+                    PixelIcon(key: "ui_chest", size: 40)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(String(format: L10n.t("daily.day"), last + 1)).font(Pixel.font(14))
+                        PixelText(Self.short(days[last]), size: 16).lineLimit(1).fixedSize()
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 14)
+                .frame(maxWidth: .infinity)
+                .frame(height: 70)
+                .background(PixelSlice(key: last == today ? "ui_paper_green" : "ui_paper_gold", inset: 4))
+                .opacity(last < today ? 0.5 : 1)
+                .scaleEffect(last == today && claimed != nil ? 1.06 : 1)
                 Button {
                     if claimed == nil {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) { claimed = store.claimDaily() }
@@ -475,6 +491,18 @@ struct DailyRewardView: View {
             .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
             .padding(20)
         }
+    }
+
+    private func dayCard(_ i: Int, _ reward: ProductReward, today: Int) -> some View {
+        VStack(spacing: 4) {
+            Text(String(format: L10n.t("daily.day"), i + 1)).font(Pixel.font(13))
+            PixelText(Self.short(reward), size: 16).lineLimit(1).fixedSize()
+        }
+        .background(Color.clear)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(PixelSlice(key: i == today ? "ui_paper_green" : "ui_paper", inset: 4))
+        .opacity(i < today ? 0.5 : 1)
+        .scaleEffect(i == today && claimed != nil ? 1.12 : 1)
     }
 
     static func short(_ r: ProductReward) -> String {
