@@ -18,6 +18,8 @@ public struct SimConfig {
     public var claimQuests = true
     /// Включать ускорение генераторов x2, как только оно откроется.
     public var useBoost = false
+    /// Выполнять заказы странствующего торговца.
+    public var serveMerchant = true
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -48,6 +50,13 @@ public struct SimReport: CustomStringConvertible {
     public var gemsFromCollection = 0
     public var coinsFromCollection = 0
     public var coinsSpent = 0
+    public var gemsFromFriends = 0
+    public var energyFromFriends = 0
+    public var gemsFromAchievements = 0
+    public var merchantsServed = 0
+    public var gemsFromMerchant = 0
+    public var energyFromMerchant = 0
+    public var bestFriends = 0
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -65,7 +74,8 @@ public struct SimReport: CustomStringConvertible {
         заказов \(orders), звезд \(starsEarned), задач \(tasksDone), уровень \(level)
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
         пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), с заданий \(energyFromQuests), застреваний \(stalledSessions)
-        кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection); монеты из альбома \(coinsFromCollection)
+        кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection), дружба \(gemsFromFriends), достижения \(gemsFromAchievements), торговец \(gemsFromMerchant); монеты из альбома \(coinsFromCollection)
+        торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends)
         районы: \(districts)
         """
     }
@@ -87,6 +97,7 @@ public enum Simulator {
             }
             game.refreshEnergy()
             game.expireBubbles()
+            if config.serveMerchant { game.updateMerchant() }
             if config.openJar { report.energyFromJar += game.openJar() }
             if config.claimDaily { game.claimDaily() }
             while config.buyCoinEnergy, let price = game.coinEnergyPrice, game.state.coins >= price, game.buyEnergyWithCoins() {
@@ -111,6 +122,8 @@ public enum Simulator {
         }
         report.level = game.state.level
         report.tasksDone = game.state.completedTasks.count
+        report.bestFriends = game.bestFriends
+        report.merchantsServed = game.state.merchantsServed
         report.bestTier = game.state.bestTier
         return report
     }
@@ -119,6 +132,11 @@ public enum Simulator {
     /// а поле забито так, что потратить ее некуда.
     private static func playSession(_ game: Game, config: SimConfig, report: inout SimReport) -> Bool {
         for _ in 0..<5000 {
+            if config.serveMerchant, let visit = game.deliverMerchant() {
+                report.gemsFromMerchant += visit.gems
+                report.energyFromMerchant += visit.energy
+                continue
+            }
             if deliverOrder(game, report: &report) { continue }
             if completeTask(game, report: &report) { continue }
             if mergeSomething(game, report: &report) { continue }
@@ -161,6 +179,15 @@ public enum Simulator {
         for chain in game.catalog.chains {
             if let gems = game.claimChain(chain.id) { report.gemsFromCollection += gems }
         }
+        for resident in Friends.all {
+            while let r = game.claimFriend(resident) {
+                report.gemsFromFriends += r.gems
+                report.energyFromFriends += r.energy
+            }
+        }
+        for kind in AchievementKind.allCases {
+            while let r = game.claimAchievement(kind) { report.gemsFromAchievements += r.gems }
+        }
     }
 
     private static func deliverOrder(_ game: Game, report: inout SimReport) -> Bool {
@@ -193,6 +220,7 @@ public enum Simulator {
         for order in game.state.orders {
             for need in order.needs { result[need, default: 0] += 1 }
         }
+        for need in game.state.merchant?.needs ?? [] { result[need, default: 0] += 1 }
         return result
     }
 

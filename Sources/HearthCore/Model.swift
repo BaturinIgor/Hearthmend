@@ -209,6 +209,15 @@ public struct GameState: Codable, Equatable {
     public var buildingSpots: [String: [Double]] = [:]
     /// Показанные сцены истории деревни.
     public var storySeen: [String] = []
+    /// Дружба: сердечки каждого жителя и сколько подарков уже забрано.
+    public var friendHearts: [String: Int] = [:]
+    public var friendClaimed: [String: Int] = [:]
+    /// Странствующий торговец: кто сейчас в деревне, когда приедет следующий, сколько раз ему помогли.
+    public var merchant: MerchantVisit?
+    public var merchantNextAt: Date?
+    public var merchantsServed: Int = 0
+    /// Достижения: сколько ступеней каждого уже забрано.
+    public var achievementsClaimed: [String: Int] = [:]
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -239,6 +248,7 @@ public struct GameState: Codable, Equatable {
         case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces, stamps, stampCards
         case tutorialStep, questDay, quests, questChestClaimed, discovered, collectionClaimed, collectionChains
         case mapRev, buildingSpots, storySeen
+        case friendHearts, friendClaimed, merchant, merchantNextAt, merchantsServed, achievementsClaimed
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -298,6 +308,12 @@ public struct GameState: Codable, Equatable {
         mapRev = try c.decodeIfPresent(Int.self, forKey: .mapRev) ?? 0
         buildingSpots = try c.decodeIfPresent([String: [Double]].self, forKey: .buildingSpots) ?? [:]
         storySeen = try c.decodeIfPresent([String].self, forKey: .storySeen) ?? []
+        friendHearts = try c.decodeIfPresent([String: Int].self, forKey: .friendHearts) ?? [:]
+        friendClaimed = try c.decodeIfPresent([String: Int].self, forKey: .friendClaimed) ?? [:]
+        merchant = try c.decodeIfPresent(MerchantVisit.self, forKey: .merchant)
+        merchantNextAt = try c.decodeIfPresent(Date.self, forKey: .merchantNextAt)
+        merchantsServed = try c.decodeIfPresent(Int.self, forKey: .merchantsServed) ?? 0
+        achievementsClaimed = try c.decodeIfPresent([String: Int].self, forKey: .achievementsClaimed) ?? [:]
     }
 }
 
