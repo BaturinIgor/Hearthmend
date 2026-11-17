@@ -276,5 +276,22 @@
   "resident.merchant": "상인",
   "story.merchant.intro.1": "안녕! 나는 마차를 끌고 골짜기를 떠돌아. 이 마을이 다시 살아난다고 들었지.",
   "story.merchant.intro.2": "내가 떠나기 전에 세 가지를 가져다주면 넉넉히 줄게. 세 번에 한 번은 희귀한 것도 가져올게!",
-  "story.friends.intro.1": "우리 주민들은 네 주문을 하나하나 기억해. 일지를 열어 봐. 누가 너를 좋아하게 됐는지 보이고, 선물도 기다리고 있어!"
+  "story.friends.intro.1": "우리 주민들은 네 주문을 하나하나 기억해. 일지를 열어 봐. 누가 너를 좋아하게 됐는지 보이고, 선물도 기다리고 있어!",
+  "pet.chicken": "닭",
+  "pet.sheep": "양",
+  "pet.duck": "오리",
+  "pet.frog": "개구리",
+  "pet.pig": "돼지",
+  "pet.goose": "거위",
+  "pet.cow": "소",
+  "pet.swan": "백조",
+  "pet.horse": "말",
+  "pet.mouse": "생쥐",
+  "pets.title": "동물",
+  "pets.hint": "코인으로 동물을 데려오세요. 자기 구역을 돌아다니고, 하루에 한 번 작은 선물을 줘요. 지도에서 눌러 보세요.",
+  "pets.locked": "열리는 곳: %@",
+  "pets.daily": "매일: %@",
+  "pets.home": "마을을 산책 중",
+  "pets.adopted": "%@이(가) 마을에 왔어요!",
+  "achievements.pets": "마을의 동물: %d"
 }

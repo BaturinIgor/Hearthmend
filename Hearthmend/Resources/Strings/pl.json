@@ -276,5 +276,22 @@
   "resident.merchant": "Kupiec",
   "story.merchant.intro.1": "Witaj! Jeżdżę wozem po dolinach. Słyszałem, że twoja wioska wraca do życia.",
   "story.merchant.intro.2": "Przynieś mi trzy rzeczy, zanim odjadę, a dobrze zapłacę. Co trzeci raz przywiozę coś rzadkiego!",
-  "story.friends.intro.1": "My, mieszkańcy, pamiętamy każde zamówienie. Zajrzyj do dziennika: zobaczysz, kto cię polubił, a prezenty już czekają!"
+  "story.friends.intro.1": "My, mieszkańcy, pamiętamy każde zamówienie. Zajrzyj do dziennika: zobaczysz, kto cię polubił, a prezenty już czekają!",
+  "pet.chicken": "Kura",
+  "pet.sheep": "Owca",
+  "pet.duck": "Kaczka",
+  "pet.frog": "Żabka",
+  "pet.pig": "Świnka",
+  "pet.goose": "Gęś",
+  "pet.cow": "Krowa",
+  "pet.swan": "Łabędź",
+  "pet.horse": "Koń",
+  "pet.mouse": "Myszka",
+  "pets.title": "Zwierzęta",
+  "pets.hint": "Weź zwierzęta za monety. Spacerują po swojej dzielnicy, a każde raz dziennie ma mały prezent: dotknij je na mapie.",
+  "pets.locked": "Otworzy się z: %@",
+  "pets.daily": "Codziennie: %@",
+  "pets.home": "Spaceruje po wiosce",
+  "pets.adopted": "%@ zamieszkało w wiosce!",
+  "achievements.pets": "Zwierzęta w wiosce: %d"
 }

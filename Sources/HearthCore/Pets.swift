@@ -68,3 +68,15 @@ extension Game {
         return pet.gift
     }
 }
+
+extension Game {
+    /// Где гуляет животное: прямоугольник вокруг построек его района, в клетках карты.
+    public func petArea(_ id: String) -> (minX: Double, maxX: Double, minY: Double, maxY: Double)? {
+        guard let pet = Pets.def(id), let district = village.districts.first(where: { $0.id == pet.district }) else { return nil }
+        let spots = district.tasks.map { spot(of: $0) }
+        guard let minX = spots.map(\.x).min(), let maxX = spots.map(\.x).max(),
+              let minY = spots.map(\.y).min(), let maxY = spots.map(\.y).max() else { return nil }
+        return (max(2, minX - 2), min(Game.mapSize.width - 2, maxX + 2),
+                max(2, minY - 2), min(Game.mapSize.height - 1, maxY + 1.5))
+    }
+}

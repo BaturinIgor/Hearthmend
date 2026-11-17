@@ -418,6 +418,23 @@ final class GameStore: ObservableObject {
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
+    // MARK: - Животные
+
+    func adoptPet(_ id: String) {
+        guard game.adoptPet(id) else { return }
+        Haptics.success()
+        Audio.shared.play(.levelup)
+        show(String(format: L10n.t("pets.adopted"), L10n.t("pet.\(id)")))
+        commit()
+    }
+
+    @discardableResult
+    func collectPet(_ id: String) -> Bool {
+        guard let r = game.collectPet(id) else { return false }
+        rewarded(r)
+        return true
+    }
+
     private func rewarded(_ r: ProductReward) {
         Haptics.success()
         Audio.shared.play(.coins)

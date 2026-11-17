@@ -82,6 +82,10 @@ extension Game {
                                             leavesAt: now().addingTimeInterval(2 * 3600 + 41 * 60),
                                             coins: 48, gems: 6, energy: 20, decor: nil)
         game.state.merchantNextAt = now()
+        // животные: курица и овца гуляют по хутору, у курицы ждет подарок
+        game.state.petsOwned = far ? ["chicken", "sheep", "duck", "frog", "pig", "cow", "horse"] : ["chicken", "sheep"]
+        for pet in game.state.petsOwned { game.state.petGiftDay[pet] = game.questDay }
+        game.state.petGiftDay["chicken"] = game.questDay - 1
         game.lastDiscovery = nil
         return game
     }

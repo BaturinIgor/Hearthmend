@@ -276,5 +276,22 @@
   "resident.merchant": "Händler",
   "story.merchant.intro.1": "Hallo! Ich ziehe mit meinem Wagen durch die Täler. Man sagt, dein Dorf erwacht wieder zum Leben.",
   "story.merchant.intro.2": "Bring mir drei Dinge, bevor ich weiterziehe, und ich zahle gut. Jedes dritte Mal bringe ich etwas Seltenes mit!",
-  "story.friends.intro.1": "Wir Bewohner merken uns jeden Auftrag. Schau ins Tagebuch: Dort siehst du, wer dich ins Herz geschlossen hat, und Geschenke warten!"
+  "story.friends.intro.1": "Wir Bewohner merken uns jeden Auftrag. Schau ins Tagebuch: Dort siehst du, wer dich ins Herz geschlossen hat, und Geschenke warten!",
+  "pet.chicken": "Huhn",
+  "pet.sheep": "Schaf",
+  "pet.duck": "Ente",
+  "pet.frog": "Frosch",
+  "pet.pig": "Schweinchen",
+  "pet.goose": "Gans",
+  "pet.cow": "Kuh",
+  "pet.swan": "Schwan",
+  "pet.horse": "Pferd",
+  "pet.mouse": "Maus",
+  "pets.title": "Tiere",
+  "pets.hint": "Hol dir Tiere für Münzen. Sie streifen durch ihr Viertel, und jedes hat einmal am Tag ein kleines Geschenk: Tippe es auf der Karte an.",
+  "pets.locked": "Öffnet mit: %@",
+  "pets.daily": "Jeden Tag: %@",
+  "pets.home": "Streift durchs Dorf",
+  "pets.adopted": "%@ wohnt jetzt im Dorf!",
+  "achievements.pets": "Tiere im Dorf: %d"
 }

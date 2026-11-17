@@ -276,5 +276,22 @@
   "resident.merchant": "Tüccar",
   "story.merchant.intro.1": "Merhaba! Arabamla vadileri dolaşırım. Köyünün yeniden canlandığını duydum.",
   "story.merchant.intro.2": "Ben gitmeden üç şey getir, iyi öderim. Her üç seferde bir nadir bir şey getireceğim!",
-  "story.friends.intro.1": "Biz köylüler her siparişini hatırlarız. Günlüğü aç: kimin seni sevdiğini görürsün, hediyeler de seni bekliyor!"
+  "story.friends.intro.1": "Biz köylüler her siparişini hatırlarız. Günlüğü aç: kimin seni sevdiğini görürsün, hediyeler de seni bekliyor!",
+  "pet.chicken": "Tavuk",
+  "pet.sheep": "Koyun",
+  "pet.duck": "Ördek",
+  "pet.frog": "Kurbağa",
+  "pet.pig": "Domuzcuk",
+  "pet.goose": "Kaz",
+  "pet.cow": "İnek",
+  "pet.swan": "Kuğu",
+  "pet.horse": "At",
+  "pet.mouse": "Fare",
+  "pets.title": "Hayvanlar",
+  "pets.hint": "Altınla hayvan sahiplen. Kendi bölgelerinde gezerler ve her biri günde bir küçük hediye verir: haritada ona dokun.",
+  "pets.locked": "Açılacağı yer: %@",
+  "pets.daily": "Her gün: %@",
+  "pets.home": "Köyde geziniyor",
+  "pets.adopted": "%@ artık köyde yaşıyor!",
+  "achievements.pets": "Köydeki hayvanlar: %d"
 }

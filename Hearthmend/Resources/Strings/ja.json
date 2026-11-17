@@ -276,5 +276,22 @@
   "resident.merchant": "行商人",
   "story.merchant.intro.1": "やあ！荷馬車で谷をめぐっているんだ。この村がよみがえっていると聞いてね。",
   "story.merchant.intro.2": "帰る前に3つの品を届けてくれたら、たっぷり払うよ。3回に1回は珍しいものも持ってくるさ！",
-  "story.friends.intro.1": "わたしたち住人は、届けてくれた注文をぜんぶ覚えているよ。日誌を開いてみて。誰と仲良くなったか分かるし、プレゼントも待ってる！"
+  "story.friends.intro.1": "わたしたち住人は、届けてくれた注文をぜんぶ覚えているよ。日誌を開いてみて。誰と仲良くなったか分かるし、プレゼントも待ってる！",
+  "pet.chicken": "ニワトリ",
+  "pet.sheep": "ヒツジ",
+  "pet.duck": "アヒル",
+  "pet.frog": "カエル",
+  "pet.pig": "ブタ",
+  "pet.goose": "ガチョウ",
+  "pet.cow": "ウシ",
+  "pet.swan": "ハクチョウ",
+  "pet.horse": "ウマ",
+  "pet.mouse": "ネズミ",
+  "pets.title": "どうぶつ",
+  "pets.hint": "コインでどうぶつを迎えよう。自分の地区をのんびり歩き、1日1回ちいさなプレゼントをくれます。地図でタップしてね。",
+  "pets.locked": "開放：%@",
+  "pets.daily": "毎日：%@",
+  "pets.home": "村をおさんぽ中",
+  "pets.adopted": "%@が村にやってきた！",
+  "achievements.pets": "村のどうぶつ：%d"
 }

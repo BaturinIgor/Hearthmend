@@ -276,5 +276,22 @@
   "resident.merchant": "Merchant",
   "story.merchant.intro.1": "Hello there! I travel the valleys with my wagon. I heard your village is coming back to life.",
   "story.merchant.intro.2": "Bring me three things before I move on and I'll pay you well. Every third time I'll bring something rare!",
-  "story.friends.intro.1": "We residents remember every order you fill for us. Open the journal: you'll see who's grown fond of you, and gifts are waiting!"
+  "story.friends.intro.1": "We residents remember every order you fill for us. Open the journal: you'll see who's grown fond of you, and gifts are waiting!",
+  "pet.chicken": "Chicken",
+  "pet.sheep": "Sheep",
+  "pet.duck": "Duck",
+  "pet.frog": "Frog",
+  "pet.pig": "Pig",
+  "pet.goose": "Goose",
+  "pet.cow": "Cow",
+  "pet.swan": "Swan",
+  "pet.horse": "Horse",
+  "pet.mouse": "Mouse",
+  "pets.title": "Animals",
+  "pets.hint": "Take animals into the village for coins. They roam their district, and once a day each one has a small gift: tap it on the map.",
+  "pets.locked": "Opens with: %@",
+  "pets.daily": "Every day: %@",
+  "pets.home": "Roams the village",
+  "pets.adopted": "%@ moved into the village!",
+  "achievements.pets": "Animals in the village: %d"
 }

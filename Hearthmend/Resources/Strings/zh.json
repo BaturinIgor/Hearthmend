@@ -276,5 +276,22 @@
   "resident.merchant": "商人",
   "story.merchant.intro.1": "你好！我赶着马车走遍山谷。听说你们的村子正在复苏。",
   "story.merchant.intro.2": "在我离开前带来三样东西，我会好好付钱。每三次我还会带来稀罕物！",
-  "story.friends.intro.1": "我们居民记得你完成的每个订单。打开日志看看：谁和你亲近一目了然，还有礼物在等你！"
+  "story.friends.intro.1": "我们居民记得你完成的每个订单。打开日志看看：谁和你亲近一目了然，还有礼物在等你！",
+  "pet.chicken": "小鸡",
+  "pet.sheep": "绵羊",
+  "pet.duck": "鸭子",
+  "pet.frog": "青蛙",
+  "pet.pig": "小猪",
+  "pet.goose": "大鹅",
+  "pet.cow": "奶牛",
+  "pet.swan": "天鹅",
+  "pet.horse": "马",
+  "pet.mouse": "小老鼠",
+  "pets.title": "动物",
+  "pets.hint": "用金币领养动物。它们会在自己的区域散步，每天都有一份小礼物：在地图上点一下它。",
+  "pets.locked": "开放区域：%@",
+  "pets.daily": "每天：%@",
+  "pets.home": "在村里散步",
+  "pets.adopted": "%@住进了村子！",
+  "achievements.pets": "村里的动物：%d"
 }

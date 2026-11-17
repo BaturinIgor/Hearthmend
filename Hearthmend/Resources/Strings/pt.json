@@ -276,5 +276,22 @@
   "resident.merchant": "Mercador",
   "story.merchant.intro.1": "Olá! Viajo pelos vales com minha carroça. Dizem que sua vila está voltando à vida.",
   "story.merchant.intro.2": "Traga três coisas antes que eu parta e pagarei bem. A cada três vezes, trarei algo raro!",
-  "story.friends.intro.1": "Nós, moradores, lembramos de cada pedido. Abra o diário: lá você vê quem se apegou a você, e há presentes esperando!"
+  "story.friends.intro.1": "Nós, moradores, lembramos de cada pedido. Abra o diário: lá você vê quem se apegou a você, e há presentes esperando!",
+  "pet.chicken": "Galinha",
+  "pet.sheep": "Ovelha",
+  "pet.duck": "Pato",
+  "pet.frog": "Sapo",
+  "pet.pig": "Porquinho",
+  "pet.goose": "Ganso",
+  "pet.cow": "Vaca",
+  "pet.swan": "Cisne",
+  "pet.horse": "Cavalo",
+  "pet.mouse": "Ratinho",
+  "pets.title": "Animais",
+  "pets.hint": "Adote animais com moedas. Eles passeiam pelo bairro deles, e cada um tem um presentinho por dia: toque nele no mapa.",
+  "pets.locked": "Abre com: %@",
+  "pets.daily": "Todo dia: %@",
+  "pets.home": "Passeia pela vila",
+  "pets.adopted": "%@ agora mora na vila!",
+  "achievements.pets": "Animais na vila: %d"
 }

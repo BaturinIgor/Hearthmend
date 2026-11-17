@@ -276,5 +276,22 @@
   "resident.merchant": "Marchand",
   "story.merchant.intro.1": "Bonjour ! Je parcours les vallées avec ma roulotte. On dit que ton village reprend vie.",
   "story.merchant.intro.2": "Apporte-moi trois choses avant que je reparte et je paierai bien. Une fois sur trois, j'apporterai quelque chose de rare !",
-  "story.friends.intro.1": "Nous, les habitants, nous souvenons de chaque commande. Ouvre le journal : tu verras qui s'est attaché à toi, et des cadeaux t'attendent !"
+  "story.friends.intro.1": "Nous, les habitants, nous souvenons de chaque commande. Ouvre le journal : tu verras qui s'est attaché à toi, et des cadeaux t'attendent !",
+  "pet.chicken": "Poule",
+  "pet.sheep": "Mouton",
+  "pet.duck": "Canard",
+  "pet.frog": "Grenouille",
+  "pet.pig": "Cochon",
+  "pet.goose": "Oie",
+  "pet.cow": "Vache",
+  "pet.swan": "Cygne",
+  "pet.horse": "Cheval",
+  "pet.mouse": "Souris",
+  "pets.title": "Animaux",
+  "pets.hint": "Adopte des animaux contre des pièces. Ils se promènent dans leur quartier et chacun a un petit cadeau par jour : touche-le sur la carte.",
+  "pets.locked": "S'ouvre avec : %@",
+  "pets.daily": "Chaque jour : %@",
+  "pets.home": "Se promène au village",
+  "pets.adopted": "%@ vit maintenant au village !",
+  "achievements.pets": "Animaux au village : %d"
 }
