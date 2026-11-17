@@ -26,8 +26,8 @@ final class BalanceTests: XCTestCase {
             let r = report(seed: seed)
             XCTAssertTrue(r.villageDone, "зерно \(seed): деревня отстроена за \(SimConfig().maxDays) дней")
             // семь районов: игры хватает на месяц-другой, но конец виден
-            XCTAssertGreaterThan(r.days, 30, "зерно \(seed): слишком быстро")
-            XCTAssertLessThan(r.days, 100, "зерно \(seed): слишком долго")
+            XCTAssertGreaterThan(r.days, 40, "зерно \(seed): слишком быстро")
+            XCTAssertLessThan(r.days, 85, "зерно \(seed): слишком долго")
         }
     }
 

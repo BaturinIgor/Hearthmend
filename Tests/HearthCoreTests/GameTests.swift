@@ -35,7 +35,7 @@ final class GameTests: XCTestCase {
 
     func testCatalogLoadsAllChains() {
         let catalog = Catalog.bundled
-        XCTAssertEqual(catalog.chains.map(\.id), ["garden", "forest", "quarry", "apiary", "farm", "orchard"])
+        XCTAssertEqual(catalog.chains.map(\.id), ["garden", "forest", "quarry", "apiary", "farm", "orchard", "fishing", "crystal"])
         for chain in catalog.chains {
             XCTAssertEqual(chain.items.count, chain.emoji.count, "у \(chain.id) эмодзи на каждую ступень")
             XCTAssertGreaterThanOrEqual(chain.items.count, 6, "\(chain.id): цепочка хотя бы из 6 ступеней")
