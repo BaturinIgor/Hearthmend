@@ -87,7 +87,7 @@ jobs:
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0"><dict>
             <key>method</key><string>app-store-connect</string>
-            <key>destination</key><string>upload</string>
+            <key>destination</key><string>export</string>
             <key>signingStyle</key><string>automatic</string>
             <key>teamID</key><string>$TEAM_ID</string>
             <key>uploadSymbols</key><true/>
@@ -107,6 +107,17 @@ jobs:
               exit 1
             }
           tail -10 export.log
+          IPA=$(ls build/export/*.ipa | head -1)
+          # выгрузка отдельно через altool: у него понятные ошибки, и он не скачивает сведения о приложении
+          export API_PRIVATE_KEYS_DIR="$RUNNER_TEMP/keys"
+          xcrun altool --upload-app --type ios -f "$IPA" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format normal > upload.log 2>&1 || {
+              grep -iE "error|fail|invalid|denied|already|agreement|version" upload.log | sort -u | head -30 | while IFS= read -r line; do echo "::error::${line}"; done
+              tail -30 upload.log
+              exit 1
+            }
+          tail -10 upload.log
+          rm -rf build/export
           echo "::notice::Сборка ${{ github.run_number }} загружена, через 10-30 минут появится в TestFlight"
 
       - name: Logs
@@ -117,6 +128,7 @@ jobs:
           path: |
             archive.log
             export.log
+            upload.log
           if-no-files-found: ignore
 
       - name: Remove key
