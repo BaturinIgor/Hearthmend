@@ -71,6 +71,17 @@ extension Game {
         game.progressQuest(quests[1].kind, by: quests[1].target / 2)
         game.progressQuest(quests[2].kind, by: quests[2].target)
         game.state.quests[2].claimed = true
+        // дружба, торговец и достижения: у кого-то подарок ждет, кто-то уже лучший друг
+        game.state.friendHearts = ["tim": 31, "jack": 14, "mike": 100, "mila": 6, "chloe": 2]
+        game.state.friendClaimed = ["tim": 2, "jack": 2, "mike": 5, "mila": 1]
+        game.state.mergesTotal = 640
+        game.state.ordersTotal = 214
+        game.state.merchantsServed = 4
+        game.state.achievementsClaimed = ["merges": 1, "buildings": 1]
+        game.state.merchant = MerchantVisit(needs: [Item(chain: "garden", tier: 3), Item(chain: "forest", tier: 2), Item(chain: "apiary", tier: 2)],
+                                            leavesAt: now().addingTimeInterval(2 * 3600 + 41 * 60),
+                                            coins: 48, gems: 6, energy: 20, decor: nil)
+        game.state.merchantNextAt = now()
         game.lastDiscovery = nil
         return game
     }

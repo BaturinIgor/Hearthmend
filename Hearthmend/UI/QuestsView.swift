@@ -3,15 +3,9 @@ import HearthCore
 
 /// Кто просит заказ: житель, связанный с цепочкой первого предмета.
 enum Residents {
-    static let byChain: [String: String] = [
-        "garden": "tim", "forest": "jack", "quarry": "mike",
-        "apiary": "mila", "farm": "chloe", "orchard": "katy",
-        "fishing": "fin", "crystal": "bruno",
-    ]
+    static var byChain: [String: String] { Friends.byChain }
 
-    static func requester(of order: Order) -> String {
-        byChain[order.needs.first?.chain ?? ""] ?? "tim"
-    }
+    static func requester(of order: Order) -> String { Friends.requester(of: order) }
 }
 
 /// Кнопка внизу поля со значком и красной точкой, если есть что забрать.
@@ -52,25 +46,23 @@ struct BadgeButton: View {
 }
 
 /// Задания дня: три задачи с полосками, награда за каждую и сундук за все.
-struct QuestsSheet: View {
+struct QuestsPage: View {
     @EnvironmentObject private var store: GameStore
     @State private var now: Date?
     private let timer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        PixelSheet(L10n.t("quests.title")) {
-            ScrollView {
-                VStack(spacing: 12) {
-                    Text(String(format: L10n.t("quests.reset"), timeLeft))
-                        .font(Pixel.body(13))
-                        .opacity(0.7)
-                    ForEach(Array(store.quests.enumerated()), id: \.offset) { i, q in
-                        row(i, q)
-                    }
-                    chest
+        ScrollView {
+            VStack(spacing: 12) {
+                Text(String(format: L10n.t("quests.reset"), timeLeft))
+                    .font(Pixel.body(13))
+                    .opacity(0.7)
+                ForEach(Array(store.quests.enumerated()), id: \.offset) { i, q in
+                    row(i, q)
                 }
-                .padding(16)
+                chest
             }
+            .padding(16)
         }
         .onReceive(timer) { _ in now = store.game.now() }
     }
@@ -162,23 +154,21 @@ enum ShopRewardText {
 
 /// Альбом: все предметы по цепочкам. Найденные видны, ненайденные - силуэтом,
 /// за новую находку тап по карточке дает награду.
-struct AlbumSheet: View {
+struct AlbumPage: View {
     @EnvironmentObject private var store: GameStore
 
     var body: some View {
-        PixelSheet(L10n.t("album.title")) {
-            ScrollView {
-                VStack(spacing: 12) {
-                    Text(L10n.t("album.hint"))
-                        .font(Pixel.body(13))
-                        .multilineTextAlignment(.center)
-                        .opacity(0.75)
-                    ForEach(store.catalog.chains, id: \.id) { chain in
-                        chainRow(chain.id)
-                    }
+        ScrollView {
+            VStack(spacing: 12) {
+                Text(L10n.t("album.hint"))
+                    .font(Pixel.body(13))
+                    .multilineTextAlignment(.center)
+                    .opacity(0.75)
+                ForEach(store.catalog.chains, id: \.id) { chain in
+                    chainRow(chain.id)
                 }
-                .padding(16)
             }
+            .padding(16)
         }
     }
 

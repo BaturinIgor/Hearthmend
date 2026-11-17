@@ -14,7 +14,7 @@ final class BalanceTests: XCTestCase {
         print("Бот, зерно \(seed):\n\(r)")
         // сводка в аннотации CI: сколько дней и уровень на выходе
         let districts = r.districtDoneDay.sorted { $0.value < $1.value }.map { "\($0.key) \(String(format: "%.1f", $0.value))" }.joined(separator: ", ")
-        print("::notice title=Бот \(seed)::дней \(String(format: "%.1f", r.days)), уровень \(r.level), заказов \(r.orders); \(districts)")
+        print("::notice title=Бот \(seed)::дней \(String(format: "%.1f", r.days)), уровень \(r.level), заказов \(r.orders); \(districts); торговец \(r.merchantsServed), друзей \(r.bestFriends), кр. дружба \(r.gemsFromFriends) достижения \(r.gemsFromAchievements) торговец \(r.gemsFromMerchant)")
         Self.cache[seed] = r
         return r
     }
@@ -166,6 +166,24 @@ final class BalanceTests: XCTestCase {
             XCTAssertGreaterThan(r.coinsFromCollection, 0, "зерно \(seed): находки оплачиваются")
             XCTAssertLessThan(r.gemsFromCollection, 250, "зерно \(seed)")
             XCTAssertLessThan(r.coinsFromCollection, r.coinsFromOrders / 5, "зерно \(seed): альбом не заменяет заказы")
+        }
+    }
+
+    func testParallelLinesAreReachable() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.merchantsServed, 10, "зерно \(seed): торговец приходит и его заказы выполнимы")
+            XCTAssertGreaterThanOrEqual(r.bestFriends, 3, "зерно \(seed): до лучших друзей можно дойти")
+            XCTAssertGreaterThan(r.gemsFromAchievements, 0, "зерно \(seed): достижения открываются")
+        }
+    }
+
+    func testParallelRewardsAreABonus() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            let gems = r.gemsFromFriends + r.gemsFromAchievements + r.gemsFromMerchant
+            let energy = r.energyFromFriends + r.energyFromMerchant + gems * SimConfig().balance.energyPerGem
+            XCTAssertLessThanOrEqual(Double(energy), Double(r.energySpent) * 0.12, "зерно \(seed): параллельные линии не заменяют энергию")
         }
     }
 }

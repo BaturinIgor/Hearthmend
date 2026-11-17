@@ -9,7 +9,7 @@ public final class Game {
     public let events: EventsDef
     public let balance: Balance
     public var now: () -> Date
-    private var rng: SplitMix64
+    var rng: SplitMix64
     /// Уровни, полученные последним отданным заказом: интерфейс показывает праздник.
     public private(set) var lastLevelUps: [Int] = []
     /// Награды события, открытые последним отданным заказом.
@@ -22,6 +22,8 @@ public final class Game {
     public internal(set) var lastStamp: StampReward?
     /// Последний впервые найденный предмет: интерфейс показывает «Новое в альбоме».
     public internal(set) var lastDiscovery: Item?
+    /// Житель, с которым последний заказ поднял дружбу на новый уровень.
+    public internal(set) var lastFriendLevelUp: FriendLevelUp?
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -386,6 +388,7 @@ public final class Game {
         state.stars += order.stars
         state.ordersTotal += 1
         progressQuest(.deliver)
+        lastFriendLevelUp = addFriendship(for: order)
         advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)

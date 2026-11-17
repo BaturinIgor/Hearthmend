@@ -94,6 +94,20 @@ DECOR = {
     "decor_lamp_hanging": (OD + "Lanter_Posts.png", 0, 288, 32, 48),
     "decor_pond": (OD + "Fountain.png", 0, 0, 32, 40),
     "decor_lamp_double": (OD + "Lanter_Posts.png", 0, 96, 16, 48),
+    # подарки лучших друзей
+    "decor_friend_tim": (OD + "barrels.png", 48, 32, 16, 32),
+    "decor_friend_jack": (OD + "Camp_Decor.png", 16, 0, 16, 16),
+    "decor_friend_mike": (OD + "Well.png", 0, 0, 32, 48),
+    "decor_friend_mila": (OD + "barrels.png", 16, 32, 16, 32),
+    "decor_friend_chloe": (OD + "Hay_Bales.png", 17, 0, 31, 16),
+    "decor_friend_katy": (OD + "barrels.png", 0, 0, 16, 32),
+    "decor_friend_fin": (OD + "Boat.png", 0, 0, 48, 48),
+    "decor_friend_bruno": (OD + "barrels.png", 80, 32, 16, 32),
+    # странствующий торговец
+    "decor_picnic": (OD + "Picnic_Basket.png", 0, 0, 16, 16),
+    "decor_lantern": (OD + "Lantern.png", 0, 0, 16, 16),
+    "decor_barrel_green": (OD + "barrels.png", 0, 32, 16, 32),
+    "decor_barrel_red": (OD + "barrels.png", 64, 32, 16, 32),
 }
 BUILDINGS.update(DECOR)
 

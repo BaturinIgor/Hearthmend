@@ -31,6 +31,7 @@ final class GameStore: ObservableObject {
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()
+        if !Self.isDemo { game.updateMerchant() }
         commit()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
@@ -45,6 +46,10 @@ final class GameStore: ObservableObject {
     private func tick() {
         if game.state.questDay != game.questDay {
             game.ensureQuests()
+            commit()
+        }
+        if !Self.isDemo, game.updateMerchant() || (game.state.merchant == nil) != (state.merchant == nil) {
+            if game.state.merchant != nil { show(L10n.t("merchant.arrived")) }
             commit()
         }
         let energy = game.state.energy
@@ -222,6 +227,9 @@ final class GameStore: ObservableObject {
         } else {
             show(String(format: L10n.t("toast.order_done"), order.coins, order.stars))
         }
+        if let up = game.lastFriendLevelUp {
+            show(String(format: L10n.t("friends.level_up"), L10n.t("resident.\(up.resident)"), up.level))
+        }
         if !game.lastEventRewards.isEmpty {
             eventRewards = game.lastEventRewards
         }
@@ -373,6 +381,42 @@ final class GameStore: ObservableObject {
         show(ShopRewardText.short(ProductReward(gems: gems)))
         commit()
     }
+
+    // MARK: - Дружба, торговец, достижения
+
+    func claimFriend(_ resident: String) {
+        guard let r = game.claimFriend(resident) else { return }
+        if r.decor != nil {
+            Audio.shared.play(.levelup)
+            celebrate(Celebration(icon: "npc:\(resident)",
+                                  title: String(format: L10n.t("friends.best"), L10n.t("resident.\(resident)")),
+                                  subtitle: ShopRewardText.short(r) + "   🪴"))
+            Haptics.success()
+            commit()
+        } else {
+            rewarded(r)
+        }
+    }
+
+    func claimAchievement(_ kind: AchievementKind) {
+        guard let r = game.claimAchievement(kind) else { return }
+        Audio.shared.play(.levelup)
+        rewarded(r)
+    }
+
+    func deliverMerchant() {
+        guard let visit = game.deliverMerchant() else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        selected = nil
+        var parts = ShopRewardText.short(ProductReward(gems: visit.gems, energy: visit.energy, coins: visit.coins))
+        if visit.decor != nil { parts += "   🪴" }
+        celebrate(Celebration(icon: "🛒", title: L10n.t("merchant.thanks"), subtitle: parts))
+        commit()
+        onBoardChange?()
+    }
+
+    var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
     private func rewarded(_ r: ProductReward) {
         Haptics.success()
