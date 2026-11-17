@@ -67,6 +67,7 @@ public struct SimReport: CustomStringConvertible {
     public var coinsFromPets = 0
     public var petsAllDay: Double?
     public var chestsOpened = 0
+    public var energyFromShopGift = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
     public var gemsFromChests = 0
@@ -117,7 +118,10 @@ public enum Simulator {
             game.expireBubbles()
             if config.serveMerchant { game.updateMerchant() }
             if config.openJar { report.energyFromJar += game.openJar() }
-            if config.claimDaily { game.claimDaily() }
+            if config.claimDaily {
+                game.claimDaily()
+                if let gift = game.claimShopGift() { report.energyFromShopGift += gift.energy }
+            }
             while config.buyCoinEnergy, let price = game.coinEnergyPrice, game.state.coins >= price, game.buyEnergyWithCoins() {
                 report.energyFromCoins += game.balance.coinEnergyAmount
                 report.coinsSpent += price

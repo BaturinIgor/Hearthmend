@@ -6,56 +6,175 @@ enum Links {
     static let privacy = URL(string: "https://baturinigor.github.io/hearthmend-legal/privacy.html")!
 }
 
-/// Магазин: VIP, стартовый набор, кристаллы за деньги, энергия за кристаллы и монеты, корзина.
+/// Разделы лавки. На вкладке красная точка, если там есть что забрать бесплатно.
+enum ShopTab: String, CaseIterable, Identifiable {
+    case offers, gems, resources, vip
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .offers: return "ui_gift"
+        case .gems: return "ui_gem"
+        case .resources: return "ui_energy"
+        case .vip: return "ui_crown"
+        }
+    }
+
+    var title: String { L10n.t("shop.tab.\(rawValue)") }
+}
+
+/// Лавка: вкладки «Выгодно», «Кристаллы», «Ресурсы», «VIP». Сверху кошелек, снизу восстановление покупок.
 struct ShopView: View {
     @EnvironmentObject private var store: GameStore
     @EnvironmentObject private var shop: StoreManager
     @Environment(\.dismiss) private var dismiss
+    @State var tab: ShopTab = .offers
 
     var body: some View {
         PixelSheet(L10n.t("shop.title")) {
-            ScrollView {
-                VStack(spacing: 14) {
-                    wallet
-                    offers
-                    if !store.game.isVIP { vipCard } else { vipActive }
-                    if !store.game.hasBought(Products.starter) { starterCard }
-                    StampCard()
-                    section(L10n.t("shop.gems")) {
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            gemPack(Products.gemsSmall, icon: "💎")
-                            gemPack(Products.gemsMedium, icon: "💎💎")
-                            gemPack(Products.gemsLarge, icon: "👝")
-                            gemPack(Products.gemsChest, icon: "🧰")
-                            gemPack(Products.gemsHuge, icon: "💰")
-                            gemPack(Products.gemsMega, icon: "🏰")
+            VStack(spacing: 8) {
+                wallet
+                tabs.padding(.horizontal, 14)
+                ScrollView {
+                    VStack(spacing: 14) {
+                        switch tab {
+                        case .offers: offersTab
+                        case .gems: gemsTab
+                        case .resources: resourcesTab
+                        case .vip: vipTab
                         }
+                        footer
                     }
-                    section(L10n.t("shop.energy")) {
-                        VStack(spacing: 8) {
-                            ShopRow(icon: "⚡️", title: "+\(store.balance.energyPack)",
-                                    button: "💎 \(store.game.energyPackGems)") { store.buyEnergyWithGems() }
-                            if let price = store.game.coinEnergyPrice {
-                                ShopRow(icon: "⚡️", title: "+\(store.balance.coinEnergyAmount)",
-                                        subtitle: L10n.t("shop.coin_energy_hint"),
-                                        button: "🪙 \(price)") { store.buyEnergyWithCoins() }
-                            } else {
-                                ShopRow(icon: "⚡️", title: "+\(store.balance.coinEnergyAmount)",
-                                        subtitle: L10n.t("shop.coin_energy_tomorrow"), button: nil) {}
-                            }
-                        }
-                    }
-                    if let price = store.game.basketSlotPrice {
-                        section(L10n.t("shop.basket")) {
-                            ShopRow(icon: "🧺", title: String(format: L10n.t("shop.basket_slot"), store.state.basketSize + 1),
-                                    button: "🪙 \(price)") { store.buyBasketSlot() }
-                        }
-                    }
-                    footer
+                    .padding(14)
+                    .id(tab)
+                    .transition(.opacity)
                 }
-                .padding(14)
+            }
+            .animation(.easeInOut(duration: 0.18), value: tab)
+        }
+    }
+
+    private func dot(_ t: ShopTab) -> Bool {
+        switch t {
+        case .offers: return store.game.shopGiftReady || store.game.piggyFull
+        case .resources: return store.game.coinEnergyPrice.map { store.state.coins >= $0 && store.state.energy < 10 } ?? false
+        case .gems, .vip: return false
+        }
+    }
+
+    private var tabs: some View {
+        HStack(spacing: 6) {
+            ForEach(ShopTab.allCases) { t in
+                Button {
+                    Haptics.light()
+                    tab = t
+                } label: {
+                    VStack(spacing: 2) {
+                        PixelIcon(key: t.icon, size: 22)
+                        Text(t.title).font(Pixel.font(11)).lineLimit(1).minimumScaleFactor(0.7)
+                    }
+                    .foregroundColor(Theme.text)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .background(PixelSlice(key: t == tab ? "ui_paper_gold" : "ui_paper", inset: 4, scale: 2))
+                    .scaleEffect(t == tab ? 1.04 : 1)
+                    .overlay(alignment: .topTrailing) {
+                        if dot(t) {
+                            Circle().fill(Color(red: 0.86, green: 0.25, blue: 0.3))
+                                .frame(width: 12, height: 12)
+                                .overlay(Circle().stroke(.white, lineWidth: 1.5))
+                                .offset(x: 3, y: -3)
+                        }
+                    }
+                }
+                .accessibilityLabel(t.title)
             }
         }
+    }
+
+    // MARK: - Вкладки
+
+    @ViewBuilder
+    private var offersTab: some View {
+        giftCard
+        offers
+        if !store.game.hasBought(Products.starter) { starterCard }
+        StampCard()
+    }
+
+    private var gemsTab: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+            gemPack(Products.gemsSmall, icon: "💎")
+            gemPack(Products.gemsMedium, icon: "💎💎", badge: L10n.t("shop.popular"))
+            gemPack(Products.gemsLarge, icon: "👝")
+            gemPack(Products.gemsChest, icon: "🧰")
+            gemPack(Products.gemsHuge, icon: "💰")
+            gemPack(Products.gemsMega, icon: "🏰", badge: L10n.t("shop.best"))
+        }
+    }
+
+    @ViewBuilder
+    private var resourcesTab: some View {
+        section(L10n.t("shop.energy")) {
+            VStack(spacing: 8) {
+                ShopRow(icon: "⚡️", title: "+\(store.balance.energyPack)",
+                        button: "💎 \(store.game.energyPackGems)") { store.buyEnergyWithGems() }
+                if let price = store.game.coinEnergyPrice {
+                    ShopRow(icon: "⚡️", title: "+\(store.balance.coinEnergyAmount)",
+                            subtitle: L10n.t("shop.coin_energy_hint"),
+                            button: "🪙 \(price)") { store.buyEnergyWithCoins() }
+                } else {
+                    ShopRow(icon: "⚡️", title: "+\(store.balance.coinEnergyAmount)",
+                            subtitle: L10n.t("shop.coin_energy_tomorrow"), button: nil) {}
+                }
+            }
+        }
+        section(L10n.t("shop.coins")) {
+            VStack(spacing: 8) {
+                ForEach(Balance.coinPacks, id: \.gems) { pack in
+                    ShopRow(icon: "🪙", title: "+\(pack.coins)", button: "💎 \(pack.gems)") { store.buyCoins(pack) }
+                }
+            }
+        }
+        if let price = store.game.basketSlotPrice {
+            section(L10n.t("shop.basket")) {
+                ShopRow(icon: "🧺", title: String(format: L10n.t("shop.basket_slot"), store.state.basketSize + 1),
+                        button: "🪙 \(price)") { store.buyBasketSlot() }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var vipTab: some View {
+        if !store.game.isVIP { vipCard } else { vipActive }
+    }
+
+    /// Бесплатный подарок дня: повод заглянуть в лавку каждый день.
+    private var giftCard: some View {
+        let ready = store.game.shopGiftReady
+        let gift = store.game.shopGift
+        return HStack(spacing: 12) {
+            PixelIcon(key: "ui_gift", size: 40)
+                .scaleEffect(ready ? 1.06 : 1)
+                .animation(ready ? .easeInOut(duration: 0.6).repeatForever(autoreverses: true) : .default, value: ready)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L10n.t("shop.gift")).font(Pixel.font(17))
+                Text(ready ? L10n.t("shop.gift_hint") : L10n.t("shop.gift_tomorrow"))
+                    .font(Pixel.font(12)).opacity(0.75)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer()
+            if ready {
+                Button { store.claimShopGift() } label: {
+                    PixelText(ShopRewardText.short(gift), size: 15).lineLimit(1).fixedSize()
+                }
+                .buttonStyle(PixelButtonStyle(kind: .green, size: 15, compact: true))
+            } else {
+                PixelIcon(key: "ui_check", size: 26)
+            }
+        }
+        .foregroundColor(Theme.text)
+        .padding(14)
+        .background(PixelSlice(key: ready ? "ui_paper_gold" : "ui_paper", inset: 4))
     }
 
     private var wallet: some View {
@@ -196,18 +315,35 @@ struct ShopView: View {
         .background(PixelSlice(key: "ui_paper_green", inset: 4))
     }
 
-    private func gemPack(_ id: String, icon: String) -> some View {
-        VStack(spacing: 6) {
+    private func gemPack(_ id: String, icon: String, badge: String? = nil) -> some View {
+        let bonus = Products.gemBonus(id)
+        return VStack(spacing: 6) {
             PixelText(icon, size: 26)
             Text("\(Products.rewards[id]?.gems ?? 0)")
                 .font(Pixel.font(18))
                 .foregroundColor(Theme.text)
+            Text(bonus > 0 ? String(format: L10n.t("shop.bonus"), bonus) : " ")
+                .font(Pixel.font(12))
+                .foregroundColor(Color(red: 0.2, green: 0.55, blue: 0.25))
             BuyButton(title: priceTitle(id), busy: shop.purchasing == id) {
                 Task { await shop.buy(id) }
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(10)
-        .background(PixelSlice(key: "ui_paper", inset: 4))
+        .background(PixelSlice(key: badge != nil ? "ui_paper_gold" : "ui_paper", inset: 4))
+        .overlay(alignment: .top) {
+            if let badge {
+                Text(badge)
+                    .font(Pixel.font(11))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Capsule().fill(Color(red: 0.86, green: 0.25, blue: 0.3)))
+                    .offset(y: -9)
+            }
+        }
+        .padding(.top, badge != nil ? 6 : 0)
     }
 
     private func priceTitle(_ id: String, suffix: String = "") -> String {

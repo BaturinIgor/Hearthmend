@@ -314,5 +314,17 @@
   "thicket.hint": "同じアイテムをここに置こう：%@ レベル%d",
   "thicket.hidden": "しげみに何かが隠れています。まず隣のマスを開けよう",
   "chest.items": "もう一度タップでアイテムを取り出す。残り：%d",
-  "chest.open": "もう一度タップで受け取る：%@"
+  "chest.open": "もう一度タップで受け取る：%@",
+  "shop.tab.offers": "お得",
+  "shop.tab.gems": "ジェム",
+  "shop.tab.resources": "資源",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "今日のプレゼント",
+  "shop.gift_hint": "1日1回無料",
+  "shop.gift_tomorrow": "明日また新しいプレゼント",
+  "shop.popular": "人気",
+  "shop.best": "いちばんお得",
+  "shop.bonus": "%d%%お得",
+  "shop.coins": "コイン",
+  "top.shop": "ショップ"
 }

@@ -319,3 +319,45 @@ extension Game {
         return true
     }
 }
+
+// MARK: - Подарок лавки и выгода наборов
+
+extension Balance {
+    /// Бесплатный подарок в лавке раз в день: чередуются энергия и монеты.
+    public static let shopGiftEnergy = 10
+    public static let shopGiftCoins = 40
+}
+
+extension Products {
+    /// Цены в долларах для подписи «+N%» на наборах кристаллов (локальные цены пропорциональны).
+    public static let usdPrice: [String: Double] = [
+        gemsSmall: 0.99, gemsMedium: 4.99, gemsLarge: 9.99, gemsChest: 19.99, gemsHuge: 49.99, gemsMega: 99.99,
+    ]
+    public static let gemPacks = [gemsSmall, gemsMedium, gemsLarge, gemsChest, gemsHuge, gemsMega]
+
+    /// На сколько процентов больше кристаллов за доллар, чем в самом маленьком наборе (округлено до 5).
+    public static func gemBonus(_ id: String) -> Int {
+        guard let price = usdPrice[id], let gems = rewards[id]?.gems,
+              let base = usdPrice[gemsSmall], let baseGems = rewards[gemsSmall]?.gems else { return 0 }
+        let ratio = (Double(gems) / price) / (Double(baseGems) / base) - 1
+        return max(0, Int((ratio * 100 / 5).rounded()) * 5)
+    }
+}
+
+extension Game {
+    public var shopGiftReady: Bool { state.shopGiftDay < questDay }
+
+    /// Что лежит в подарке сегодня: четные дни энергия, нечетные монеты.
+    public var shopGift: ProductReward {
+        questDay % 2 == 0 ? ProductReward(energy: Balance.shopGiftEnergy) : ProductReward(coins: Balance.shopGiftCoins)
+    }
+
+    public func claimShopGift() -> ProductReward? {
+        guard shopGiftReady else { return nil }
+        let gift = shopGift
+        state.shopGiftDay = questDay
+        state.energy += gift.energy
+        state.coins += gift.coins
+        return gift
+    }
+}

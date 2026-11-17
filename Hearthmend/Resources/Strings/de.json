@@ -314,5 +314,17 @@
   "thicket.hint": "Lege den gleichen Gegenstand hierher: %@ Stufe %d",
   "thicket.hidden": "Im Dickicht ist etwas versteckt. Räume zuerst die Felder daneben",
   "chest.items": "Noch einmal tippen für einen Gegenstand. Übrig: %d",
-  "chest.open": "Noch einmal tippen zum Einsammeln: %@"
+  "chest.open": "Noch einmal tippen zum Einsammeln: %@",
+  "shop.tab.offers": "Angebote",
+  "shop.tab.gems": "Edelsteine",
+  "shop.tab.resources": "Ressourcen",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Tagesgeschenk",
+  "shop.gift_hint": "Gratis, einmal am Tag",
+  "shop.gift_tomorrow": "Morgen gibt es ein neues Geschenk",
+  "shop.popular": "Beliebt",
+  "shop.best": "Bester Wert",
+  "shop.bonus": "+%d%% mehr",
+  "shop.coins": "Münzen",
+  "top.shop": "Laden"
 }

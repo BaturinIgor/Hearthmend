@@ -314,5 +314,17 @@
   "thicket.hint": "Drop the same item here: %@ level %d",
   "thicket.hidden": "Something is hidden in the thicket. Clear the cells around it first",
   "chest.items": "Tap again for an item. Left: %d",
-  "chest.open": "Tap again to collect: %@"
+  "chest.open": "Tap again to collect: %@",
+  "shop.tab.offers": "Deals",
+  "shop.tab.gems": "Gems",
+  "shop.tab.resources": "Resources",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Daily gift",
+  "shop.gift_hint": "Free, once a day",
+  "shop.gift_tomorrow": "Come back tomorrow for a new gift",
+  "shop.popular": "Popular",
+  "shop.best": "Best value",
+  "shop.bonus": "+%d%% more",
+  "shop.coins": "Coins",
+  "top.shop": "Shop"
 }

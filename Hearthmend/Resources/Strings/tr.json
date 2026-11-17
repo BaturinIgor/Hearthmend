@@ -314,5 +314,17 @@
   "thicket.hint": "Aynı eşyayı buraya bırak: %@ seviye %d",
   "thicket.hidden": "Çalılıkta bir şey saklı. Önce yanındaki hücreleri temizle",
   "chest.items": "Eşya için bir kez daha dokun. Kalan: %d",
-  "chest.open": "Toplamak için bir kez daha dokun: %@"
+  "chest.open": "Toplamak için bir kez daha dokun: %@",
+  "shop.tab.offers": "Fırsatlar",
+  "shop.tab.gems": "Mücevher",
+  "shop.tab.resources": "Kaynaklar",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Günün hediyesi",
+  "shop.gift_hint": "Ücretsiz, günde bir kez",
+  "shop.gift_tomorrow": "Yarın yeni hediye var",
+  "shop.popular": "Popüler",
+  "shop.best": "En iyi değer",
+  "shop.bonus": "%%%d daha fazla",
+  "shop.coins": "Altın",
+  "top.shop": "Dükkân"
 }
