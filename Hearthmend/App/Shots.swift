@@ -47,9 +47,9 @@ struct ShotFrame: View {
                         Color(red: 0.36, green: 0.55, blue: 0.29)
                     }
                 }
-                LinearGradient(colors: [Color.black.opacity(0.15), Color.black.opacity(0.45)], startPoint: .top, endPoint: .bottom)
+                LinearGradient(colors: [Color.black.opacity(0.3), Color.black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
                 caption
-                    .frame(width: width - 44, height: top - 58)
+                    .frame(maxWidth: width - 40, maxHeight: top - 50)
                     .padding(.top, 54)
                 screen
                     .frame(width: width, height: full)
@@ -78,8 +78,8 @@ struct ShotFrame: View {
         .multilineTextAlignment(.center)
         .lineLimit(2)
         .minimumScaleFactor(0.6)
-        .padding(.horizontal, 22)
-        .padding(.vertical, 18)
+        .padding(.horizontal, 30)
+        .padding(.vertical, 22)
         .background(PixelSlice(key: "ui_panel", inset: 6, scale: 4))
         .shadow(color: .black.opacity(0.35), radius: 10, y: 6)
     }
