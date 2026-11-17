@@ -43,6 +43,10 @@ final class GameStore: ObservableObject {
     var balance: Balance { game.balance }
 
     private func tick() {
+        if game.state.questDay != game.questDay {
+            game.ensureQuests()
+            commit()
+        }
         let energy = game.state.energy
         game.refreshEnergy()
         let removed = game.expireBubbles()
@@ -337,6 +341,44 @@ final class GameStore: ObservableObject {
             commit()
         }
         return reward
+    }
+
+    // MARK: - Задания дня и альбом
+
+    var quests: [Quest] { game.state.questDay == game.questDay ? game.state.quests : game.ensureQuests() }
+
+    func claimQuest(_ index: Int) {
+        guard let r = game.claimQuest(index) else { return }
+        rewarded(r)
+    }
+
+    func claimQuestChest() {
+        guard let r = game.claimQuestChest() else { return }
+        Audio.shared.play(.levelup)
+        rewarded(r)
+    }
+
+    func claimDiscovery(_ item: Item) {
+        guard let r = game.claimDiscovery(item) else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        show(ShopRewardText.short(ProductReward(gems: r.gems, coins: r.coins)))
+        commit()
+    }
+
+    func claimChain(_ chain: String) {
+        guard let gems = game.claimChain(chain) else { return }
+        Haptics.success()
+        Audio.shared.play(.levelup)
+        show(ShopRewardText.short(ProductReward(gems: gems)))
+        commit()
+    }
+
+    private func rewarded(_ r: ProductReward) {
+        Haptics.success()
+        Audio.shared.play(.coins)
+        show(ShopRewardText.short(r))
+        commit()
     }
 
     func skipTutorial() {

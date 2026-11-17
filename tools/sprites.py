@@ -77,6 +77,14 @@ SPRITES = {
 }
 
 
+# портреты жителей: первый кадр (стоит лицом к игроку) из NPCs (Premade), кадр 64x64
+NPCS = {
+    "npc_mila": "Farmer_Buba", "npc_tim": "Farmer_Bob", "npc_jack": "Lumberjack_Jack",
+    "npc_mike": "Miner_Mike", "npc_katy": "Bartender_Katy", "npc_chloe": "Chef_Chloe",
+    "npc_fin": "Fisherman_Fin", "npc_bruno": "Bartender_Bruno",
+}
+
+
 def crop_opaque(im):
     box = im.getbbox()
     return im.crop(box) if box else im
@@ -106,7 +114,15 @@ def main():
             sys.exit(f"{key}: пустая клетка")
         im.save(os.path.join(out, key + ".png"))
         images[key] = im
-    print(f"{len(images)} спрайтов в {out}")
+    for key, name in NPCS.items():
+        sheet = Image.open(os.path.join(pack, "NPCs (Premade)", name + ".png")).convert("RGBA")
+        frame = crop_opaque(sheet.crop((0, 0, 64, 64)))
+        # квадрат по большей стороне, фигурка по центру снизу: одинаково встает в иконки
+        side = max(frame.size)
+        sq = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+        sq.paste(frame, ((side - frame.width) // 2, side - frame.height))
+        sq.save(os.path.join(out, key + ".png"))
+    print(f"{len(images)} спрайтов и {len(NPCS)} жителей в {out}")
 
     if "--sheet" in sys.argv:
         dest = sys.argv[sys.argv.index("--sheet") + 1]

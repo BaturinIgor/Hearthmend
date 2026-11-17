@@ -10,7 +10,13 @@ struct HearthmendApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if Shot.hasCaption, let name = Shot.name { ShotFrame(name: name) } else { ContentView() }
+                if Shot.isQA, let name = Shot.name {
+                    QAScreen(name: name)
+                } else if Shot.hasCaption, let name = Shot.name {
+                    ShotFrame(name: name)
+                } else {
+                    ContentView()
+                }
             }
                 .environmentObject(store)
                 .environmentObject(shop)

@@ -10,6 +10,10 @@ on:
         description: "Загрузить в App Store Connect"
         type: boolean
         default: false
+      qa:
+        description: "Только кадры для проверки интерфейса (ru и en), без App Store"
+        type: boolean
+        default: false
   pull_request:
     types: [labeled, synchronize]
 
@@ -87,6 +91,17 @@ jobs:
           # прогрев: первый запуск дольше
           shoot en /tmp/warmup.png -shot board
           sleep 20
+          if [ "${{ inputs.qa }}" = "true" ]; then
+            mkdir -p shots/qa
+            for lang in ru en ja; do
+              for s in qa_board qa_selected qa_quests qa_album qa_settings qa_daily qa_celebrate qa_toast; do
+                shoot $lang shots/qa/${lang}_$s.png -shot $s
+              done
+              shoot $lang shots/qa/${lang}_qa_village.png -village -shot qa_village
+              shoot $lang shots/qa/${lang}_qa_shop.png -shop -shot shop
+            done
+            exit 0
+          fi
           shoot en shots/review_shop.png -shop -shot shop
           for pair in en:en-US ru:ru uk:uk de:de-DE fr:fr-FR es:es-ES pt-BR:pt-BR it:it ja:ja ko:ko zh-Hans:zh-Hans tr:tr pl:pl; do
             lang=${pair%%:*}; locale=${pair#*:}
@@ -105,11 +120,16 @@ jobs:
         run: |
           set -e
           mkdir preview
+          for f in shots/qa/*.png; do
+            [ -f "$f" ] || continue
+            sips -Z 640 -s format jpeg -s formatOptions 70 "$f" --out "preview/$(basename $f .png).jpg" >/dev/null
+          done
           for f in shots/store/*/*.png; do
+            [ -f "$f" ] || continue
             l=$(basename $(dirname $f)); n=$(basename $f .png)
             sips -Z 640 -s format jpeg -s formatOptions 70 "$f" --out "preview/${l}_${n}.jpg" >/dev/null
           done
-          sips -Z 640 -s format jpeg -s formatOptions 70 shots/review_shop.png --out preview/review_shop.jpg >/dev/null
+          [ -f shots/review_shop.png ] && sips -Z 640 -s format jpeg -s formatOptions 70 shots/review_shop.png --out preview/review_shop.jpg >/dev/null
           cd preview
           git init -q -b shots-preview
           git -c user.name=ci -c user.email=ci@users.noreply.github.com add .

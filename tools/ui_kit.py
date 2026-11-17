@@ -500,6 +500,17 @@ def season(kind):
     return outlined(im)
 
 
+def book():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((3, 2, 12, 13), fill=(70, 130, 200, 255))
+    d.rectangle((3, 2, 4, 13), fill=(40, 90, 160, 255))
+    d.rectangle((11, 3, 12, 12), fill=PAPER)
+    d.rectangle((6, 5, 10, 8), fill=(250, 200, 60, 255))
+    d.point((8, 6), fill=(255, 240, 170, 255))
+    d.line((6, 10, 10, 10), fill=(150, 190, 240, 255))
+    return outlined(im)
+
+
 def plant():
     im = canvas(); d = ImageDraw.Draw(im)
     d.polygon([(4, 9), (11, 9), (10, 13), (5, 13)], fill=(200, 110, 70, 255))
@@ -536,7 +547,7 @@ def main():
         "ui_rosette": rosette(), "ui_question": question(), "ui_lock": lock(), "ui_undo": undo(),
         "ui_pouch": pouch(), "ui_chest": chest(), "ui_bag": bag(), "ui_vault": vault(),
         "ui_hammer": hammer(), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
-        "ui_confetti": confetti(), "ui_plant": plant(),
+        "ui_confetti": confetti(), "ui_plant": plant(), "ui_book": book(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),
     }

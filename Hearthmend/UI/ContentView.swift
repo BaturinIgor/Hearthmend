@@ -270,6 +270,8 @@ private struct OrderCard: View {
         let ready = store.canDeliver(order)
         VStack(spacing: 4) {
             HStack(spacing: 2) {
+                ResidentIcon(id: Residents.requester(of: order), size: 30)
+                    .padding(.trailing, 2)
                 ForEach(Array(order.needs.enumerated()), id: \.offset) { _, item in
                     ZStack(alignment: .bottomTrailing) {
                         ItemIcon(item: item, size: 30)
@@ -304,6 +306,8 @@ private struct OrderCard: View {
 /// Действия с выбранным предметом: продать или убрать в корзину.
 private struct SelectedBar: View {
     @EnvironmentObject private var store: GameStore
+    @State private var showQuests = false
+    @State private var showAlbum = false
 
     var body: some View {
         HStack(spacing: 8) {
@@ -317,8 +321,10 @@ private struct SelectedBar: View {
                 ActionButton(title: L10n.t("selected.store")) { store.storeSelected() }
             } else {
                 PostcardButton()
+                BadgeButton(icon: "ui_ticket", count: store.game.questsClaimable) { showQuests = true }
+                BadgeButton(icon: "ui_book", count: store.game.collectionClaimable) { showAlbum = true }
                 if store.game.boostUnlocked { BoostToggle() }
-                if store.state.level < 3 {
+                if store.state.level < 2 {
                     Text(L10n.t("hint.start"))
                         .font(Pixel.font(12))
                         .foregroundColor(Theme.text.opacity(0.8))
@@ -334,6 +340,8 @@ private struct SelectedBar: View {
         .padding(.horizontal, 12)
         .frame(minHeight: 44)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: store.canUndo)
+        .sheet(isPresented: $showQuests) { QuestsSheet() }
+        .background(EmptyView().sheet(isPresented: $showAlbum) { AlbumSheet() })
     }
 }
 
@@ -402,7 +410,14 @@ private struct BasketBar: View {
             JarButton()
             ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-            PixelIcon(key: "ui_basket", size: (22) * 1.1)
+            PixelIcon(key: "ui_basket", size: 26)
+            if store.state.basket.isEmpty {
+                Text(L10n.t("basket.hint"))
+                    .font(Pixel.body(12))
+                    .foregroundColor(Theme.text.opacity(0.65))
+                    .lineLimit(2)
+                    .frame(maxWidth: 110, alignment: .leading)
+            }
             ForEach(0..<store.state.basketSize, id: \.self) { i in
                 let item = i < store.state.basket.count ? store.state.basket[i] : nil
                 Button {
