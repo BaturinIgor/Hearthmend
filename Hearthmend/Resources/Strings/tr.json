@@ -87,6 +87,7 @@
   "jar.free_in": "%@ sonra ücretsiz",
   "jar.open_gems": "Şimdi aç: 💎%d",
   "jar.open_vip": "Şimdi aç (VIP)",
+  "jar.open_free": "Ücretsiz aç",
   "jar.opened": "Ateş böcekleri %d enerji getirdi!",
   "jar.empty": "Kavanoz şimdilik boş. Enerjin dolunca ateş böcekleri toplamaya başlar.",
   "daily.title": "Günün hediyesi",

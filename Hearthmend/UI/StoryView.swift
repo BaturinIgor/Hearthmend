@@ -63,7 +63,8 @@ struct StoryView: View {
                 }
             }
             .foregroundColor(Theme.text)
-            .padding(16)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 22)
             .background(PixelSlice(key: "ui_panel", inset: 6))
             .shadow(color: .black.opacity(0.3), radius: 10, y: 4)
             .padding(.horizontal, 14)

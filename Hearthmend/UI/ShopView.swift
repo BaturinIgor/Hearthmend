@@ -405,6 +405,16 @@ struct JarSheet: View {
                             .background(PixelSlice(key: "ui_btn_green", inset: 5))
                     }
                 }
+            } else if store.state.jarEnergy > 0 {
+                Button {
+                    store.openJar(paid: false)
+                    dismiss()
+                } label: {
+                    PixelText(L10n.t("jar.open_free"), size: 17)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 48)
+                        .background(PixelSlice(key: "ui_btn_green", inset: 5))
+                }
             } else {
                 Text(L10n.t("jar.empty")).font(Pixel.font(14)).opacity(0.8)
             }
