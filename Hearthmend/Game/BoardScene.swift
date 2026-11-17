@@ -105,13 +105,15 @@ final class BoardScene: SKScene {
         for i in state.cells.indices {
             let piece = state.cells[i]
             let highlighted = piece?.item.map { needed.contains($0) } ?? false
-            let sig = piece.map { "\($0)|\(highlighted)" } ?? ""
+            let revealed = store.game.isRevealed(i)
+            let rowChest = i % cols == cols - 1 && state.thicketRows.contains(i / cols)
+            let sig = piece.map { "\($0)|\(highlighted)|\(revealed)|\(rowChest)" } ?? ""
             if drawn[i] == sig, contentNodes[i] != nil || piece == nil { continue }
             contentNodes[i]?.removeFromParent()
             contentNodes[i] = nil
             drawn[i] = sig
             guard let piece else { continue }
-            let node = makeNode(for: piece, highlighted: highlighted)
+            let node = makeNode(for: piece, highlighted: highlighted, revealed: revealed, rowChest: rowChest, index: i)
             node.position = center(of: i)
             node.zPosition = 1
             boardNode.addChild(node)
@@ -179,7 +181,7 @@ final class BoardScene: SKScene {
         boardNode.addChild(ring)
     }
 
-    private func makeNode(for piece: Piece, highlighted: Bool) -> SKNode {
+    private func makeNode(for piece: Piece, highlighted: Bool, revealed: Bool = true, rowChest: Bool = false, index: Int = 0) -> SKNode {
         guard let catalog = store?.catalog else { return SKNode() }
         let node = SKNode()
         switch piece {
@@ -224,8 +226,83 @@ final class BoardScene: SKScene {
             node.addChild(inner)
             node.addChild(badge("\(store?.balance.popCost(item) ?? 0)", icon: "ui_gem"))
             node.run(.repeatForever(.sequence([.scale(to: 1.05, duration: 0.6), .scale(to: 0.95, duration: 0.6)])))
+        case .thicket(let item):
+            let base = SKShapeNode(rectOf: CGSize(width: cellSize - 2, height: cellSize - 2), cornerRadius: cellSize * 0.16)
+            base.fillColor = revealed ? Palette.thicketOpen : Palette.thicket
+            base.strokeColor = .clear
+            node.addChild(base)
+            let leaves = icon(key: "thicket_\(index % 3)", fallback: "🌿", scale: 0.78)
+            node.addChild(leaves)
+            if revealed {
+                // предмет просвечивает сквозь листву: видно, что положить сверху
+                let inner = icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.42)
+                inner.alpha = 0.9
+                inner.zPosition = 1
+                node.addChild(inner)
+                node.addChild(badge("\(item.tier + 1)"))
+                leaves.alpha = 0.75
+            } else {
+                leaves.alpha = 0.95
+            }
+            if rowChest {
+                // ящик за расчищенный ряд висит на краю ряда
+                let mark = icon(key: "chest_0", fallback: "🎁", scale: 0.22)
+                mark.position = CGPoint(x: cellSize * 0.3, y: cellSize * 0.3)
+                mark.zPosition = 2
+                node.addChild(mark)
+            }
+        case .chest(let chest):
+            let glow = SKShapeNode(circleOfRadius: cellSize * 0.4)
+            glow.fillColor = Palette.chestGlow
+            glow.strokeColor = .clear
+            node.addChild(glow)
+            if chest.kind == .items {
+                node.addChild(icon(key: Self.chestKey(chest), fallback: "🎁", scale: 0.6))
+                if let left = chest.left { node.addChild(badge("\(left)", icon: "ui_basket")) }
+                else { node.addChild(stars(chest.level + 1)) }
+            } else {
+                // кучка ресурса растет с уровнем: 1-3 значка, дальше мешочек, банка, сундучок
+                let (key, count) = Self.resourceArt(chest)
+                let offsets: [[CGPoint]] = [[.zero],
+                                            [CGPoint(x: -0.12, y: -0.06), CGPoint(x: 0.12, y: 0.06)],
+                                            [CGPoint(x: -0.14, y: -0.1), CGPoint(x: 0.14, y: -0.1), CGPoint(x: 0, y: 0.12)]]
+                for p in offsets[max(0, min(count, 3) - 1)] {
+                    let sprite = icon(key: key, fallback: "✨", scale: count > 1 ? 0.4 : 0.55)
+                    sprite.position = CGPoint(x: p.x * cellSize, y: p.y * cellSize)
+                    node.addChild(sprite)
+                }
+                node.addChild(badge("\(chest.level + 1)"))
+            }
+            node.run(.repeatForever(.sequence([.wait(forDuration: 2.5 + Double(index % 5) * 0.4),
+                                              .rotate(byAngle: 0.08, duration: 0.07), .rotate(byAngle: -0.16, duration: 0.1),
+                                              .rotate(byAngle: 0.08, duration: 0.07)])))
         }
         return node
+    }
+
+    nonisolated static func chestKey(_ chest: Chest, open: Bool = false) -> String {
+        let base = chest.level >= 3 ? "chest_3_\(chest.kind.rawValue)" : "chest_\(max(0, chest.level))"
+        return open ? base + "_open" : base
+    }
+
+    /// Картинка ресурса на поле и сколько раз ее повторить.
+    nonisolated static func resourceArt(_ chest: Chest) -> (String, Int) {
+        let l = chest.level
+        switch chest.kind {
+        case .coins: return l < 3 ? ("ui_coin", l + 1) : l < 6 ? ("ui_pouch", 1) : ("ui_vault", 1)
+        case .energy: return l < 3 ? ("ui_energy", l + 1) : ("ui_jar", 1)
+        case .gems: return l < 3 ? ("ui_gem", l + 1) : l < 5 ? ("ui_bag", 1) : ("ui_chest", 1)
+        case .items: return (chestKey(chest), 1)
+        }
+    }
+
+    nonisolated static func chestIcon(_ kind: ChestKind) -> String {
+        switch kind {
+        case .items: return "ui_basket"
+        case .coins: return "ui_coin"
+        case .energy: return "ui_energy"
+        case .gems: return "ui_gem"
+        }
     }
 
     /// Спрайт из пака, если он есть в сборке, иначе эмодзи. scale - доля клетки.
@@ -367,6 +444,10 @@ final class BoardScene: SKScene {
         guard let dragged = dragging else {
             let result = store.tap(from)
             render()
+            if let opened = store.lastOpenedChest, opened.index == from {
+                store.lastOpenedChest = nil
+                openChest(at: from, chest: opened.chest, reward: opened.reward)
+            }
             if case .spawned(let cell, _)? = result {
                 squish(at: from)
                 fly(cell, from: center(of: from))
@@ -402,8 +483,13 @@ final class BoardScene: SKScene {
             if store.game.lastLuckyEnergy > 0 { lucky(at: to, energy: store.game.lastLuckyEnergy) }
             for i in cleared { dust(at: i) }
             if let bubble { fly(bubble, from: center(of: to)) }
-        case .mergedGenerator:
+            for cell in store.game.lastChests { fly(cell, from: center(of: to)) }
+        case .mergedGenerator, .mergedChest:
             pop(at: to)
+            sparkle(at: to)
+        case .unlocked:
+            pop(at: to)
+            leaves(at: to)
             sparkle(at: to)
         case .moved:
             slide(to, from: p)
@@ -516,6 +602,62 @@ final class BoardScene: SKScene {
         node.run(.sequence([.fadeIn(withDuration: 0.12), .group([rise, .sequence([.wait(forDuration: 0.55), .fadeOut(withDuration: 0.35)])]), .removeFromParent()]))
     }
 
+    /// Листья разлетаются, когда расчищается заросль. Ящик за ряд вылетает из клетки.
+    private func leaves(at index: Int) {
+        let c = center(of: index)
+        for k in 0..<7 {
+            let leaf = SKShapeNode(ellipseOf: CGSize(width: cellSize * 0.16, height: cellSize * 0.09))
+            leaf.fillColor = k.isMultiple(of: 2) ? Palette.thicketOpen : Palette.thicket
+            leaf.strokeColor = .clear
+            leaf.position = c
+            leaf.zPosition = 6
+            boardNode.addChild(leaf)
+            let dx = CGFloat.random(in: -0.7...0.7) * cellSize, dy = CGFloat.random(in: 0.2...0.8) * cellSize
+            let out = SKAction.moveBy(x: dx, y: dy, duration: 0.35)
+            out.timingMode = .easeOut
+            let fall = SKAction.moveBy(x: dx * 0.2, y: -cellSize * 0.5, duration: 0.35)
+            leaf.run(.sequence([.group([out, .rotate(byAngle: .pi * CGFloat.random(in: -2...2), duration: 0.7),
+                                        .sequence([.wait(forDuration: 0.35), .group([fall, .fadeOut(withDuration: 0.35)])])]),
+                                .removeFromParent()]))
+        }
+        guard let store else { return }
+        for cell in store.game.lastChests { fly(cell, from: c) }
+    }
+
+    /// Ящик открывается: крышка поднимается, награда разлетается.
+    func openChest(at index: Int, chest: Chest, reward: ChestReward) {
+        let c = center(of: index)
+        if chest.kind == .items, let spill = reward.items.first, spill.cell != index {
+            // из ящика достали один предмет: ящик подпрыгивает, предмет летит в клетку
+            squish(at: index)
+            fly(spill.cell, from: c)
+            return
+        }
+        if chest.kind == .items, let tex = Sprites.texture(Self.chestKey(chest, open: true)) {
+            let side = Pixel.crisp(cellSize * 0.72, source: 16)
+            let lid = SKSpriteNode(texture: tex, size: CGSize(width: side, height: side))
+            lid.position = c
+            lid.zPosition = 6
+            boardNode.addChild(lid)
+            lid.run(.sequence([.scale(to: 1.15, duration: 0.12), .wait(forDuration: 0.25),
+                               .group([.fadeOut(withDuration: 0.25), .scale(to: 0.7, duration: 0.25)]), .removeFromParent()]))
+        }
+        sparkle(at: index)
+        let gains: [(String, Int)] = [("ui_coin", reward.coins), ("ui_energy", reward.energy), ("ui_gem", reward.gems)]
+        for (k, (iconKey, amount)) in gains.enumerated() where amount > 0 {
+            let node = badge("+\(amount)", icon: iconKey)
+            node.setScale(1.6)
+            node.position = CGPoint(x: c.x + cellSize * 0.2, y: c.y + cellSize * (0.1 + CGFloat(k) * 0.3))
+            node.zPosition = 8
+            node.alpha = 0
+            boardNode.addChild(node)
+            let rise = SKAction.moveBy(x: 0, y: cellSize, duration: 1.0)
+            rise.timingMode = .easeOut
+            node.run(.sequence([.fadeIn(withDuration: 0.12), .group([rise, .sequence([.wait(forDuration: 0.6), .fadeOut(withDuration: 0.4)])]), .removeFromParent()]))
+        }
+        for spill in reward.items { fly(spill.cell, from: c) }
+    }
+
     private func dust(at index: Int) {
         let puff = SKShapeNode(circleOfRadius: cellSize * 0.35)
         puff.fillColor = Palette.debris
@@ -558,6 +700,9 @@ enum Palette {
     static let generator = UIColor(red: 0.96, green: 0.86, blue: 0.62, alpha: 1)
     static let generatorStroke = UIColor(red: 0.62, green: 0.42, blue: 0.22, alpha: 1)
     static let debris = UIColor(red: 0.48, green: 0.40, blue: 0.33, alpha: 1)
+    static let thicket = UIColor(red: 0.20, green: 0.36, blue: 0.22, alpha: 1)
+    static let thicketOpen = UIColor(red: 0.30, green: 0.48, blue: 0.28, alpha: 1)
+    static let chestGlow = UIColor(red: 1, green: 0.9, blue: 0.55, alpha: 0.35)
     static let bubble = UIColor(red: 0.62, green: 0.86, blue: 0.98, alpha: 0.6)
     static let selected = UIColor(red: 1.0, green: 0.85, blue: 0.2, alpha: 1)
     static let needed = UIColor(red: 0.85, green: 1.0, blue: 0.6, alpha: 0.75)

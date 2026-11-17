@@ -183,8 +183,7 @@ struct PetsSheet: View {
                     let enough = store.state.coins >= pet.cost
                     Button { store.adoptPet(pet.id) } label: { PixelText("🪙\(pet.cost)", size: 15).lineLimit(1).fixedSize() }
                         .buttonStyle(PixelButtonStyle(kind: enough ? .green : .wood, size: 15, compact: true))
-                        .opacity(enough ? 1 : 0.6)
-                        .disabled(!enough)
+                        .opacity(enough ? 1 : 0.75)
                 }
             }
             .frame(minWidth: 70)

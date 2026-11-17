@@ -297,3 +297,25 @@ extension Balance {
         ProductReward(gems: 20, energy: 100),
     ]
 }
+
+// MARK: - Монеты за кристаллы
+
+/// Обмен в одну сторону: монеты за кристаллы. Курс такой, что энергия через монеты
+/// не выгоднее энергии за кристаллы напрямую.
+public struct CoinPack: Equatable {
+    public let gems: Int
+    public let coins: Int
+}
+
+extension Balance {
+    public static let coinPacks = [CoinPack(gems: 40, coins: 1_000), CoinPack(gems: 190, coins: 5_000)]
+}
+
+extension Game {
+    public func buyCoins(_ pack: CoinPack) -> Bool {
+        guard Balance.coinPacks.contains(pack), state.gems >= pack.gems else { return false }
+        state.gems -= pack.gems
+        state.coins += pack.coins
+        return true
+    }
+}

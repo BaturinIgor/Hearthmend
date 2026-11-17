@@ -11,6 +11,7 @@ final class VillageTests: XCTestCase {
 
     private func makeGame(debris: Bool = false) -> Game {
         var b = Balance()
+        b.thicketOpen = 0
         if !debris { b.debrisRows = 0 }
         let clock = self.clock!
         return Game(balance: b, seed: 7, now: { clock.date })

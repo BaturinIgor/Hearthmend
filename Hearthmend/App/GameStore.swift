@@ -8,6 +8,11 @@ final class GameStore: ObservableObject {
     @Published private(set) var state: GameState
     @Published var selected: Int?
     @Published var toast: String?
+    /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
+    @Published var shortage: Shortage?
+    /// Последний открытый ящик: сцена поля проигрывает по нему анимацию.
+    private var selectedAt = Date.distantPast
+    var lastOpenedChest: (index: Int, chest: Chest, reward: ChestReward)?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
     /// Свежие награды события: баннер события их показывает.
@@ -91,6 +96,13 @@ final class GameStore: ObservableObject {
     func tap(_ index: Int) -> Game.SpawnResult? {
         switch game.piece(at: index) {
         case .generator?:
+            // первый тап выбирает генератор, следующие тапы по выбранному дают предметы:
+            // случайное касание не тратит энергию
+            guard selected == index else {
+                Haptics.light()
+                selected = index
+                return nil
+            }
             let result = game.spawn(from: index)
             switch result {
             case .spawned:
@@ -98,13 +110,12 @@ final class GameStore: ObservableObject {
                 Audio.shared.play(.spawn)
             case .noEnergy:
                 Audio.shared.play(.nope)
-                show(L10n.t("toast.no_energy"))
+                shortage = .energy
             case .boardFull:
                 show(L10n.t("toast.board_full"))
             case .notGenerator:
                 break
             }
-            selected = nil
             commit()
             return result
         case .bubble?:
@@ -113,13 +124,46 @@ final class GameStore: ObservableObject {
                 Audio.shared.play(.sparkle)
                 commit()
                 onBoardChange?()
-            } else {
-                show(L10n.t("toast.no_gems"))
+            } else if case .bubble(let item, _)? = game.piece(at: index) {
+                shortage = .gems(need: balance.popCost(item) - state.gems)
             }
         case .item?:
             selected = selected == index ? nil : index
         case .debris?:
             show(L10n.t("toast.debris"))
+        case .chest(let chest)?:
+            // как генератор: первый тап выбирает, второй открывает. Слишком быстрый второй тап
+            // по ресурсу не считается: случайный двойной тап не заберет то, что копили для слияния
+            guard selected == index else {
+                Haptics.light()
+                selected = index
+                selectedAt = Date()
+                return nil
+            }
+            if chest.kind != .items, Date().timeIntervalSince(selectedAt) < 0.35 { return nil }
+            switch game.openChest(at: index) {
+            case .opened(let reward):
+                Haptics.success()
+                Audio.shared.play(reward.coins > 0 || reward.gems > 0 ? .coins : .sparkle)
+                lastOpenedChest = (index, chest, reward)
+                // из начатого ящика можно сразу тапать дальше
+                if case .chest? = game.piece(at: index) {} else { selected = nil }
+                commit()
+                onBoardChange?()
+            case .needSpace:
+                Audio.shared.play(.nope)
+                show(L10n.t("chest.need_space"))
+            case .notChest:
+                break
+            }
+        case .thicket(let item)?:
+            Haptics.light()
+            selected = nil
+            if game.isRevealed(index) {
+                show(String(format: L10n.t("thicket.hint"), catalog.emoji(for: item), item.tier + 1))
+            } else {
+                show(L10n.t("thicket.hidden"))
+            }
         case nil:
             selected = nil
         }
@@ -130,7 +174,7 @@ final class GameStore: ObservableObject {
     func move(from: Int, to: Int) -> Game.MoveResult {
         let result = game.move(from: from, to: to)
         switch result {
-        case .merged, .mergedGenerator:
+        case .merged, .mergedGenerator, .mergedChest, .unlocked:
             Haptics.success()
             Audio.shared.play(game.lastLuckyEnergy > 0 ? .coins : .merge)
             selected = to
@@ -306,7 +350,7 @@ final class GameStore: ObservableObject {
             show(String(format: L10n.t("shop.energy_added"), balance.energyPack))
             commit()
         } else {
-            show(L10n.t("toast.no_gems"))
+            shortage = .gems(need: game.energyPackGems - state.gems)
         }
     }
 
@@ -315,8 +359,8 @@ final class GameStore: ObservableObject {
             Haptics.success()
             show(String(format: L10n.t("shop.energy_added"), balance.coinEnergyAmount))
             commit()
-        } else {
-            show(L10n.t("toast.no_coins"))
+        } else if let price = game.coinEnergyPrice {
+            shortage = .coins(need: price - state.coins)
         }
     }
 
@@ -324,8 +368,8 @@ final class GameStore: ObservableObject {
         if game.buyBasketSlot() {
             Haptics.success()
             commit()
-        } else {
-            show(L10n.t("toast.no_coins"))
+        } else if let price = game.basketSlotPrice {
+            shortage = .coins(need: price - state.coins)
         }
     }
 
@@ -338,7 +382,7 @@ final class GameStore: ObservableObject {
             show(String(format: L10n.t("jar.opened"), amount))
             commit()
         } else if paid {
-            show(L10n.t("toast.no_gems"))
+            shortage = .gems(need: game.jarOpenGems - state.gems)
         }
     }
 
@@ -418,10 +462,27 @@ final class GameStore: ObservableObject {
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
+    func buyCoins(_ pack: CoinPack) {
+        if game.buyCoins(pack) {
+            Haptics.success()
+            Audio.shared.play(.coins)
+            show("🪙 +\(pack.coins)")
+            shortage = nil
+            commit()
+        } else {
+            shortage = .gems(need: pack.gems - state.gems)
+        }
+    }
+
     // MARK: - Животные
 
     func adoptPet(_ id: String) {
-        guard game.adoptPet(id) else { return }
+        guard game.adoptPet(id) else {
+            if let pet = Pets.def(id), game.petAvailable(id), state.coins < pet.cost {
+                shortage = .coins(need: pet.cost - state.coins)
+            }
+            return
+        }
         Haptics.success()
         Audio.shared.play(.levelup)
         show(String(format: L10n.t("pets.adopted"), L10n.t("pet.\(id)")))
@@ -516,6 +577,12 @@ final class GameStore: ObservableObject {
         exit(0)
     }
     #endif
+}
+
+enum Shortage: Equatable {
+    case energy
+    case coins(need: Int)
+    case gems(need: Int)
 }
 
 struct Celebration: Equatable, Identifiable {

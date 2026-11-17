@@ -31,6 +31,7 @@ struct ContentView: View {
                 .transition(.scale(scale: 0.6).combined(with: .opacity))
                 .zIndex(2)
             }
+            ShortageLayer().zIndex(5)
             if let scene = story {
                 StoryView(scene: scene) {
                     store.storySeen(scene)
@@ -70,6 +71,9 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             PixelTile(key: "ui_bg").ignoresSafeArea()
             VStack(spacing: 8) {
+                TopIcons(openDaily: { withAnimation(.spring(response: 0.35)) { showDaily = true } },
+                         openShop: { showShop = true },
+                         openVillage: { screen = .village })
                 TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
                 EventBanner()
@@ -167,8 +171,8 @@ private struct TopBar: View {
         HStack(spacing: 8) {
             Button(action: openSettings) { LevelBadge() }
             Button(action: openShop) { Counter(icon: "ui_energy", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
-            Counter(icon: "ui_coin", value: "\(store.state.coins)")
-            Button(action: openShop) { Counter(icon: "ui_gem", value: "\(store.state.gems)", plus: true) }
+            Button { store.show("🪙 \(store.state.coins)") } label: { Counter(icon: "ui_coin", value: Fmt.compact(store.state.coins)) }
+            Button(action: openShop) { Counter(icon: "ui_gem", value: Fmt.compact(store.state.gems), plus: true) }
             VillageButton(stars: store.state.stars, ready: store.canBuildSomething, action: openVillage)
         }
         .padding(.horizontal, 8)
@@ -216,7 +220,7 @@ private struct VillageButton: View {
         } label: {
             HStack(spacing: 4) {
                 PixelIcon(key: "ui_house", size: 20)
-                PixelText("⭐️\(stars)", size: 15)
+                PixelText("⭐️\(Fmt.compact(stars))", size: 15)
             }
             .foregroundColor(ready ? .white : Theme.text)
             .frame(maxWidth: .infinity, minHeight: 36)
@@ -398,6 +402,19 @@ private struct SelectedBar: View {
                 Spacer()
                 ActionButton(title: String(format: L10n.t("selected.sell"), store.game.sellPrice(item))) { store.sellSelected() }
                 ActionButton(title: L10n.t("selected.store")) { store.storeSelected() }
+            } else if let index = store.selected, case .generator(let gen)? = store.game.piece(at: index) {
+                let def = store.catalog.chain(gen.chain)
+                PixelIcon(key: def?.generator ?? "ui_crate", size: 30)
+                PixelText(String(format: L10n.t("selected.generator"), store.game.boostActive ? 2 : 1), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            } else if let index = store.selected, case .chest(let chest)? = store.game.piece(at: index) {
+                PixelIcon(key: BoardScene.resourceArt(chest).0, size: 30)
+                PixelText(chestText(chest), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
             } else {
                 JarButton()
                 BasketButton()
@@ -420,6 +437,18 @@ private struct SelectedBar: View {
         .padding(.horizontal, 12)
         .frame(minHeight: 44)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: store.canUndo)
+    }
+
+    private func chestText(_ chest: Chest) -> String {
+        let n = chest.remaining
+        let what: String
+        switch chest.kind {
+        case .items: return String(format: L10n.t("chest.items"), n)
+        case .coins: what = "🪙\(n)"
+        case .energy: what = "⚡️\(n)"
+        case .gems: what = "💎\(n)"
+        }
+        return String(format: L10n.t("chest.open"), what)
     }
 }
 

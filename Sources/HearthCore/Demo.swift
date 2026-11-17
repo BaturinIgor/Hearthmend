@@ -8,6 +8,7 @@ extension Game {
     public static func demo(late: Bool = false, far: Bool = false, now: @escaping () -> Date = Date.init) -> Game {
         var b = Balance()
         b.debrisRows = 1
+        b.thicketOpen = 0
         let game = Game(balance: b, seed: 2026, now: now)
         game.state.stars = 100_000
         let districts = game.village.districts

@@ -32,6 +32,11 @@ public enum Piece: Codable, Hashable {
     case debris(Int)
     /// Пузырь с предметом: можно открыть за кристаллы, иначе лопается в срок.
     case bubble(Item, expiresAt: Date)
+    /// Заросли: под листвой лежит предмет. Видно его, только когда рядом есть открытая клетка;
+    /// такой же предмет, положенный сверху, сливается с ним и расчищает клетку.
+    case thicket(Item)
+    /// Ящик: сливается с таким же в ящик побольше, открывается двойным тапом.
+    case chest(Chest)
 
     public var item: Item? {
         if case .item(let i) = self { return i }
@@ -40,8 +45,8 @@ public enum Piece: Codable, Hashable {
 
     public var isMovable: Bool {
         switch self {
-        case .item, .generator: return true
-        case .debris, .bubble: return false
+        case .item, .generator, .chest: return true
+        case .debris, .bubble, .thicket: return false
         }
     }
 }
@@ -81,8 +86,11 @@ public struct Balance: Equatable {
     public var startCoins = 0
     /// На каждую ступень генератора вероятность сразу выдать предмет 2-й ступени.
     public var generatorUpgradeChance = 0.15
-    /// Сколько верхних рядов при старте закрыто завалом.
+    /// Сколько верхних рядов при старте закрыто завалом (если заросли выключены).
     public var debrisRows = 3
+    /// Новая игра начинается с открытого квадрата thicketOpen x thicketOpen внизу по центру,
+    /// остальное поле в зарослях. 0 - по-старому, с завалом сверху.
+    public var thicketOpen = 3
 
     /// Кувшин светлячков: энергия, которая сгорела бы на потолке, копится медленнее в кувшине.
     public var jarCapacity = 60
@@ -221,6 +229,10 @@ public struct GameState: Codable, Equatable {
     /// Животные деревни и день (номер дня UTC), когда у каждого забран подарок.
     public var petsOwned: [String] = []
     public var petGiftDay: [String: Int] = [:]
+    /// Заросли: ряды, за расчистку которых еще не выдан ящик; ящики, которым пока нет места.
+    public var thicketRows: [Int] = []
+    public var pendingChests: [Chest] = []
+    public var chestsOpened: Int = 0
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -253,6 +265,7 @@ public struct GameState: Codable, Equatable {
         case mapRev, buildingSpots, storySeen
         case friendHearts, friendClaimed, merchant, merchantNextAt, merchantsServed, achievementsClaimed
         case petsOwned, petGiftDay
+        case thicketRows, pendingChests, chestsOpened
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -320,6 +333,9 @@ public struct GameState: Codable, Equatable {
         achievementsClaimed = try c.decodeIfPresent([String: Int].self, forKey: .achievementsClaimed) ?? [:]
         petsOwned = try c.decodeIfPresent([String].self, forKey: .petsOwned) ?? []
         petGiftDay = try c.decodeIfPresent([String: Int].self, forKey: .petGiftDay) ?? [:]
+        thicketRows = try c.decodeIfPresent([Int].self, forKey: .thicketRows) ?? []
+        pendingChests = try c.decodeIfPresent([Chest].self, forKey: .pendingChests) ?? []
+        chestsOpened = try c.decodeIfPresent(Int.self, forKey: .chestsOpened) ?? 0
     }
 }
 

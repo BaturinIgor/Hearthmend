@@ -26,6 +26,8 @@ public final class Game {
     public internal(set) var lastFriendLevelUp: FriendLevelUp?
     /// Счастливое слияние: сколько энергии выпало последним слиянием (0 - не выпало).
     public internal(set) var lastLuckyEnergy = 0
+    /// Клетки, где после последнего хода появились ящики (выпали при слиянии или за ряд зарослей).
+    public internal(set) var lastChests: [Int] = []
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -57,26 +59,43 @@ public final class Game {
     public static func newState(catalog: Catalog, balance: Balance, now: Date) -> GameState {
         var cells = [Piece?](repeating: nil, count: balance.cellCount)
         let cols = balance.cols
-        for r in 0..<min(balance.debrisRows, balance.rows) {
-            for c in 0..<cols { cells[r * cols + c] = .debris(1) }
-        }
         let bottom = (balance.rows - 1) * cols
         let chains = startChains.filter { catalog.chain($0) != nil }
-        let genCols = [1, 3, 5]
-        for (i, chain) in chains.enumerated() where i < genCols.count && genCols[i] < cols {
-            cells[bottom + genCols[i]] = .generator(GeneratorPiece(chain: chain, tier: 0))
-        }
-        // по паре предметов каждой цепочки, чтобы первое слияние было сразу
-        let row = balance.rows - 3
-        for (i, chain) in chains.enumerated() {
-            let c = i * 2
-            guard row > balance.debrisRows - 1, c + 1 < cols else { continue }
-            cells[row * cols + c] = .item(Item(chain: chain, tier: 0))
-            cells[row * cols + c + 1] = .item(Item(chain: chain, tier: 0))
+        let thickets = balance.thicketOpen >= 3 && balance.rows >= 3 && cols >= 3
+        if thickets {
+            // заросли вокруг квадрата внизу по центру: генераторы в нижнем ряду квадрата,
+            // пара предметов над ними, чтобы первое слияние было сразу
+            cells = thicketCells(balance: balance, chains: chains, catalog: catalog)
+            let k = min(balance.thicketOpen, cols, balance.rows)
+            let left = (cols - k) / 2
+            for (i, chain) in chains.enumerated() where i < k {
+                cells[bottom + left + i] = .generator(GeneratorPiece(chain: chain, tier: 0))
+            }
+            if let first = chains.first {
+                let row = (balance.rows - k) * cols
+                cells[row + left] = .item(Item(chain: first, tier: 0))
+                cells[row + left + k - 1] = .item(Item(chain: first, tier: 0))
+            }
+        } else {
+            for r in 0..<min(balance.debrisRows, balance.rows) {
+                for c in 0..<cols { cells[r * cols + c] = .debris(1) }
+            }
+            let genCols = [1, 3, 5]
+            for (i, chain) in chains.enumerated() where i < genCols.count && genCols[i] < cols {
+                cells[bottom + genCols[i]] = .generator(GeneratorPiece(chain: chain, tier: 0))
+            }
+            // по паре предметов каждой цепочки, чтобы первое слияние было сразу
+            let row = balance.rows - 3
+            for (i, chain) in chains.enumerated() {
+                let c = i * 2
+                guard row > balance.debrisRows - 1, c + 1 < cols else { continue }
+                cells[row * cols + c] = .item(Item(chain: chain, tier: 0))
+                cells[row * cols + c + 1] = .item(Item(chain: chain, tier: 0))
+            }
         }
         var best: [String: Int] = [:]
         for chain in chains { best[chain] = 1 }
-        return GameState(cells: cells,
+        var state = GameState(cells: cells,
                          energy: balance.energyMax,
                          energyUpdatedAt: now,
                          coins: balance.startCoins,
@@ -91,6 +110,15 @@ public final class Game {
                          unlockedChains: chains,
                          mergesTotal: 0,
                          ordersTotal: 0)
+        if thickets {
+            state.thicketRows = (0..<balance.rows).filter { r in
+                (0..<cols).contains { c in
+                    if case .thicket? = cells[r * cols + c] { return true }
+                    return false
+                }
+            }
+        }
+        return state
     }
 
     // MARK: - Клетки
@@ -237,15 +265,35 @@ public final class Game {
         /// cleared - клетки, где снялся слой завала, bubble - клетка нового пузыря.
         case merged(item: Item, cleared: [Int], bubble: Int?)
         case mergedGenerator(GeneratorPiece)
+        case mergedChest(Chest)
+        /// Предмет положен на такой же в зарослях: клетка расчищена, в ней предмет ступенью выше.
+        case unlocked(item: Item)
         case invalid
     }
 
     public func move(from: Int, to: Int) -> MoveResult {
         lastLuckyEnergy = 0
+        lastChests = []
         guard from != to,
               state.cells.indices.contains(from), state.cells.indices.contains(to),
               let a = state.cells[from], a.isMovable else { return .invalid }
         let b = state.cells[to]
+        if case .thicket(let hidden)? = b {
+            guard case .item(let x) = a, x == hidden, isRevealed(to) else { return .invalid }
+            let next = catalog.next(x) ?? x
+            state.cells[to] = .item(next)
+            state.cells[from] = nil
+            state.mergesTotal += 1
+            advanceTutorial(from: .merge)
+            state.bestTier[next.chain] = max(state.bestTier[next.chain] ?? 0, next.tier)
+            lastDiscovery = nil
+            discover(next)
+            progressQuest(.merge)
+            if next.tier >= Balance.bigMergeTier { progressQuest(.bigMerge) }
+            rewardThicketRows()
+            placePendingGenerators()
+            return .unlocked(item: next)
+        }
         if let b, !b.isMovable { return .invalid }
 
         switch (a, b) {
@@ -263,6 +311,7 @@ public final class Game {
             let cleared = clearDebris(around: to)
             lastLuckyEnergy = luckyMerge(next)
             let bubble = maybeBubble(next, near: to)
+            maybeChest(next, near: to)
             placePendingGenerators()
             return .merged(item: next, cleared: cleared, bubble: bubble)
         case (.generator(let x), .generator(let y)?) where x == y:
@@ -272,6 +321,12 @@ public final class Game {
             state.cells[to] = .generator(next)
             state.cells[from] = nil
             return .mergedGenerator(next)
+        case (.chest(let x), .chest(let y)?) where x == y:
+            guard x.canMerge else { return swap(from, to) }
+            let next = Chest(kind: x.kind, level: x.level + 1)
+            state.cells[to] = .chest(next)
+            state.cells[from] = nil
+            return .mergedChest(next)
         case (_, nil):
             state.cells[to] = a
             state.cells[from] = nil

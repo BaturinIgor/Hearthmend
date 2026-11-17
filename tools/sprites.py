@@ -97,6 +97,21 @@ SPRITES = {
 }
 
 
+# заросли и ящики на поле: не из каталога, вырезаются всегда
+CHEST = "Buildings/House_Decor/Chest_Anim.png"
+METAL = "Buildings/House_Decor/Metal_Chest_Anim.png"
+GOLD = "Buildings/House_Decor/Golden_Chest_Anim.png"
+JEWEL = "Buildings/House_Decor/Golden_Jeweled_Chest_Anim.png"
+EXTRA = {
+    "thicket_0": (DECOR, 5, 9, 1, 1), "thicket_1": (DECOR, 6, 9, 1, 1), "thicket_2": (DECOR, 7, 9, 1, 1),
+}
+for lvl, sheet in enumerate([CHEST, METAL, GOLD]):
+    EXTRA[f"chest_{lvl}"] = (sheet, 0, 0, 1, 1)
+    EXTRA[f"chest_{lvl}_open"] = (sheet, 4, 0, 1, 1)
+for kind, row in {"coins": 0, "gems": 1, "energy": 3, "items": 4}.items():
+    EXTRA[f"chest_3_{kind}"] = (JEWEL, 0, row, 1, 1)
+    EXTRA[f"chest_3_{kind}_open"] = (JEWEL, 4, row, 1, 1)
+
 # портреты жителей: первый кадр (стоит лицом к игроку) из NPCs (Premade), кадр 64x64
 NPCS = {
     "npc_mila": "Farmer_Buba", "npc_tim": "Farmer_Bob", "npc_jack": "Lumberjack_Jack",
@@ -134,6 +149,11 @@ def main():
             sys.exit(f"{key}: пустая клетка")
         im.save(os.path.join(out, key + ".png"))
         images[key] = im
+    for key, spec in EXTRA.items():
+        im = cut(pack, spec)
+        if im.getbbox() is None:
+            sys.exit(f"{key}: пустая клетка")
+        im.save(os.path.join(out, key + ".png"))
     for key, name in NPCS.items():
         sheet = Image.open(os.path.join(pack, "NPCs (Premade)", name + ".png")).convert("RGBA")
         frame = crop_opaque(sheet.crop((0, 0, 64, 64)))

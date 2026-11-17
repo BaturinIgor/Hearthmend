@@ -24,6 +24,7 @@ final class GameTests: XCTestCase {
     private func emptyGame(balance: Balance = Balance(), seed: UInt64 = 42) -> Game {
         var b = balance
         b.debrisRows = 0
+        b.thicketOpen = 0
         let game = makeGame(balance: b, seed: seed)
         for i in 0..<b.cellCount { game.testSet(i, nil) }
         return game
@@ -55,7 +56,9 @@ final class GameTests: XCTestCase {
     // MARK: - Стартовое поле
 
     func testNewGameLayout() {
-        let game = makeGame()
+        var classic = Balance()
+        classic.thicketOpen = 0
+        let game = makeGame(balance: classic)
         let b = game.balance
         XCTAssertEqual(game.state.cells.count, b.cellCount)
         XCTAssertEqual(game.state.energy, b.energyMax)

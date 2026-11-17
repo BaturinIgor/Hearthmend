@@ -66,6 +66,13 @@ public struct SimReport: CustomStringConvertible {
     public var gemsFromPets = 0
     public var coinsFromPets = 0
     public var petsAllDay: Double?
+    public var chestsOpened = 0
+    public var energyFromChests = 0
+    public var coinsFromChests = 0
+    public var gemsFromChests = 0
+    public var thicketsCleared = 0
+    /// День, к которому расчищены все заросли (nil - не расчищены или их не было).
+    public var thicketsDoneDay: Double?
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -86,6 +93,7 @@ public struct SimReport: CustomStringConvertible {
         кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection), дружба \(gemsFromFriends), достижения \(gemsFromAchievements), торговец \(gemsFromMerchant); монеты из альбома \(coinsFromCollection)
         торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends), счастливые слияния \(energyFromLucky)
         животные: \(petsAdopted) за \(coinsOnPets) мон, все к дню \(petsAllDay.map { String(format: "%.1f", $0) } ?? "-"), подарки: энергия \(energyFromPets), кр \(gemsFromPets), мон \(coinsFromPets)
+        заросли: \(thicketsCleared), все к дню \(thicketsDoneDay.map { String(format: "%.1f", $0) } ?? "-"); ящики: \(chestsOpened), энергия \(energyFromChests), мон \(coinsFromChests), кр \(gemsFromChests)
         районы: \(districts)
         """
     }
@@ -129,6 +137,7 @@ public enum Simulator {
                 }
             }
             report.days = day
+            if report.thicketsDoneDay == nil, report.thicketsCleared > 0, game.thicketsLeft == 0 { report.thicketsDoneDay = day }
             if game.isVillageComplete {
                 report.villageDone = true
                 if config.stopWhenVillageDone { break }
@@ -153,6 +162,8 @@ public enum Simulator {
             }
             if deliverOrder(game, report: &report) { continue }
             if completeTask(game, report: &report) { continue }
+            if clearThicket(game, report: &report) { continue }
+            if handleChests(game, report: &report) { continue }
             if mergeSomething(game, report: &report) { continue }
             if config.popBubbles, popBubble(game, report: &report) { continue }
             if game.state.energy > 0 {
@@ -253,13 +264,63 @@ public enum Simulator {
     }
 
     /// Сколько каждого предмета нужно заказам.
-    private static func demand(_ game: Game) -> [Item: Int] {
+    private static func orderDemand(_ game: Game) -> [Item: Int] {
         var result: [Item: Int] = [:]
         for order in game.state.orders {
             for need in order.needs { result[need, default: 0] += 1 }
         }
         for need in game.state.merchant?.needs ?? [] { result[need, default: 0] += 1 }
         return result
+    }
+
+    /// Что нужно: заказы, торговец и видимые заросли (на них кладут такой же предмет).
+    private static func demand(_ game: Game) -> [Item: Int] {
+        var result = orderDemand(game)
+        for t in game.revealedThickets { result[t.item, default: 0] += 1 }
+        return result
+    }
+
+    /// Кладет лишний предмет на такой же в зарослях.
+    private static func clearThicket(_ game: Game, report: inout SimReport) -> Bool {
+        let reserved = orderDemand(game)
+        var positions: [Item: [Int]] = [:]
+        for (i, piece) in game.state.cells.enumerated() {
+            if case .item(let item)? = piece { positions[item, default: []].append(i) }
+        }
+        for t in game.revealedThickets {
+            guard let idx = positions[t.item], idx.count > (reserved[t.item] ?? 0) else { continue }
+            if case .unlocked = game.move(from: idx.last!, to: t.index) {
+                report.thicketsCleared += 1
+                report.merges += 1
+                return true
+            }
+        }
+        return false
+    }
+
+    /// Ящики: одинаковые сливает, остальные открывает (с предметами - когда хватает места).
+    private static func handleChests(_ game: Game, report: inout SimReport) -> Bool {
+        var positions: [Chest: [Int]] = [:]
+        for (i, piece) in game.state.cells.enumerated() {
+            if case .chest(let c)? = piece { positions[c, default: []].append(i) }
+        }
+        for (chest, idx) in positions where idx.count >= 2 && chest.canMerge {
+            if case .mergedChest = game.move(from: idx[0], to: idx[1]) { return true }
+        }
+        let empty = game.state.cells.filter { $0 == nil }.count
+        for (chest, idx) in positions {
+            if chest.kind == .items, empty < 3, chest.remaining > 1 { continue }
+            if case .opened(let r) = game.openChest(at: idx[0]) {
+                if game.piece(at: idx[0]).map({ if case .chest = $0 { return false } else { return true } }) ?? true {
+                    report.chestsOpened += 1
+                }
+                report.energyFromChests += r.energy
+                report.coinsFromChests += r.coins
+                report.gemsFromChests += r.gems
+                return true
+            }
+        }
+        return false
     }
 
     /// Самая низкая ступень, на которой стоит сливать: не трогает предметы, которые уже ждут заказы,
