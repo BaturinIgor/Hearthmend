@@ -79,6 +79,8 @@ public struct SimReport: CustomStringConvertible {
     public var adventureKinds: [AdventureKind] = []
     public var islandMerges = 0
     public var islandWashed = 0
+    public var greenhouseHarvests = 0
+    public var greenhouseWaterings = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -439,6 +441,11 @@ public enum Simulator {
             lastState = game.adventure
             return
         }
+        if a.kind == .greenhouse {
+            playGreenhouse(game, report: &report)
+            lastState = game.adventure
+            return
+        }
         guard a.kind == .depths else { return }
         for _ in 0..<3000 {
             if mergeFinds(game) { continue }
@@ -480,6 +487,30 @@ public enum Simulator {
                 game.washAway(i)
                 report.islandWashed += 1
             }
+        }
+    }
+
+    /// Теплица: поливает, сливает пары, собирает спелое без пары, сажает на свободные грядки.
+    private static func playGreenhouse(_ game: Game, report: inout SimReport) {
+        if game.water() { report.greenhouseWaterings += 1 }
+        for _ in 0..<500 {
+            guard let g = game.adventure?.greenhouse else { return }
+            // пары одинаковых: сначала младшие
+            var pair: (Int, Int)?
+            var seen: [Item: Int] = [:]
+            for i in g.beds.indices.sorted(by: { (g.beds[$0]?.item.tier ?? 99, $0) < (g.beds[$1]?.item.tier ?? 99, $1) }) {
+                guard let p = g.beds[i], p.item.tier < Greenhouse.maxTier else { continue }
+                if let j = seen[p.item] { pair = (i, j); break }
+                seen[p.item] = i
+            }
+            if case let (a, b)? = pair, game.movePlant(from: a, to: b) { continue }
+            // спелое без пары
+            if let i = g.beds.indices.first(where: { g.beds[$0]?.ripe(at: game.now()) == true }), game.harvest(i) != nil {
+                report.greenhouseHarvests += 1
+                continue
+            }
+            if case .planted = game.plantSeed() { continue }
+            return
         }
     }
 

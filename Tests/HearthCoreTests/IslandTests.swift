@@ -41,10 +41,13 @@ final class IslandTests: XCTestCase {
     func testRotationAlternates() {
         let (game, clock) = makeGame()
         XCTAssertEqual(game.adventure?.kind, .island)
-        clock.advance(7 * 86_400)
-        XCTAssertEqual(game.adventure?.kind, .depths)
-        clock.advance(7 * 86_400)
-        XCTAssertEqual(game.adventure?.kind, .island)
+        var seen: [AdventureKind] = []
+        for _ in AdventureKind.rotation {
+            clock.advance(7 * 86_400)
+            seen.append(game.adventure!.kind)
+        }
+        XCTAssertEqual(Set(seen), Set(AdventureKind.rotation), "за круг идут все события")
+        XCTAssertEqual(seen.last, .island)
         XCTAssertNotNil(game.adventure?.island)
     }
 

@@ -111,6 +111,7 @@ DECOR = {
     # большие события
     "decor_minecart": (OD + "Minecrats.png", 16, 106, 16, 22),
     "decor_boat": (OD + "Boat.png", 2, 14, 40, 32),
+    "decor_flowers_big": (OD + "Outdoor_Decor.png", 86, 345, 20, 22),
 }
 BUILDINGS.update(DECOR)
 

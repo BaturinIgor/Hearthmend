@@ -350,5 +350,14 @@
   "adv.island.hint": "Tocca un oggetto, poi una casella vicino a quelli uguali",
   "adv.island.tide": "Marea",
   "adv.island.full": "Niente spazio sulla spiaggia: unisci o porta via qualcosa",
-  "adv.no_shells": "Conchiglie finite: completa ordini sul tabellone principale"
+  "adv.no_shells": "Conchiglie finite: completa ordini sul tabellone principale",
+  "adv.greenhouse.title": "La Serra",
+  "adv.greenhouse.how": "I semi arrivano dagli ordini. Le piante crescono in tempo reale. Due uguali diventano una più grande che matura prima. Raccogli ciò che è maturo per i punti; le più grandi valgono molto di più. L'annaffiatoio si riempie ogni 4 ore e fa crescere tutto un'ora prima.",
+  "adv.greenhouse.golden": "Una pianta dell'ultimo stadio porta anche un forziere sul tabellone principale.",
+  "adv.greenhouse.full": "Tutte le aiuole sono occupate: prima unisci o raccogli",
+  "adv.greenhouse.watered": "Annaffiato! Tutto cresce un'ora prima",
+  "adv.greenhouse.harvest": "Raccogli",
+  "adv.greenhouse.water": "Annaffia",
+  "adv.greenhouse.plant": "Pianta",
+  "adv.no_seeds": "Semi finiti: completa ordini sul tabellone principale"
 }

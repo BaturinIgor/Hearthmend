@@ -657,6 +657,39 @@ def water_tile():
     return im
 
 
+def seeds():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(3, 5), (12, 5), (13, 14), (2, 14)], fill=(214, 170, 110, 255))
+    d.rectangle((4, 2, 11, 5), fill=(196, 150, 92, 255))
+    d.line((4, 5, 11, 5), fill=(150, 104, 60, 255))
+    d.ellipse((5, 8, 10, 12), fill=(110, 180, 80, 255))
+    d.point((7, 7), fill=(110, 180, 80, 255)); d.point((8, 6), fill=(110, 180, 80, 255))
+    return outlined(im)
+
+
+def can():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((3, 6, 10, 13), fill=(110, 170, 220, 255))
+    d.line((3, 6, 10, 6), fill=(170, 210, 240, 255))
+    d.arc((4, 2, 10, 9), 180, 360, fill=(80, 130, 180, 255))
+    d.line((10, 9, 14, 5), fill=(110, 170, 220, 255), width=2)
+    d.point((14, 4), fill=(170, 210, 240, 255))
+    return outlined(im)
+
+
+def soil_tile():
+    import random
+    rnd = random.Random(4)
+    im = Image.new("RGBA", (16, 16), (126, 86, 58, 255))
+    px = im.load()
+    for y in (4, 9, 14):
+        for x in range(16):
+            px[x, y] = (104, 70, 46, 255)
+    for _ in range(10):
+        px[rnd.randrange(16), rnd.randrange(16)] = (146, 104, 72, 255)
+    return im
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "Hearthmend/Resources/UI"
     os.makedirs(out, exist_ok=True)
@@ -690,6 +723,7 @@ def main():
         "ui_mine_2": mine_tile((150, 146, 140, 255), (186, 182, 176, 255), (112, 108, 104, 255), 2, 12),
         "ui_mine_3": mine_tile((104, 96, 112, 255), (150, 140, 160, 255), (70, 64, 80, 255), 3, 16),
         "ui_mine_open": mine_open(),
+        "ui_seeds": seeds(), "ui_can": can(), "ui_soil": soil_tile(),
         "ui_shell": shell(), "ui_wave": wave(), "ui_fog": fog_tile(), "ui_water": water_tile(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),

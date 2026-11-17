@@ -350,5 +350,14 @@
   "adv.island.hint": "Toca un objeto y luego una casilla junto a otros iguales",
   "adv.island.tide": "Marea",
   "adv.island.full": "No hay sitio en la orilla: combina o arrastra algo al mar",
-  "adv.no_shells": "Sin conchas: completa pedidos en el tablero principal"
+  "adv.no_shells": "Sin conchas: completa pedidos en el tablero principal",
+  "adv.greenhouse.title": "El Invernadero",
+  "adv.greenhouse.how": "Las semillas vienen de los pedidos. Las plantas crecen en tiempo real. Dos iguales se combinan en una más grande que madura antes. Cosecha lo maduro por puntos; las grandes valen mucho más. La regadera se llena cada 4 horas y acelera todo una hora.",
+  "adv.greenhouse.golden": "Una planta de la última etapa trae además un cofre a tu tablero principal.",
+  "adv.greenhouse.full": "Todos los bancales están ocupados: combina o cosecha primero",
+  "adv.greenhouse.watered": "¡Regado! Todo crece una hora más rápido",
+  "adv.greenhouse.harvest": "Cosechar",
+  "adv.greenhouse.water": "Regar",
+  "adv.greenhouse.plant": "Plantar",
+  "adv.no_seeds": "Sin semillas: completa pedidos en el tablero principal"
 }

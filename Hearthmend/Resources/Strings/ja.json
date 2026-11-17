@@ -350,5 +350,14 @@
   "adv.island.hint": "アイテムをタップして、同じ物のとなりのマスをタップ",
   "adv.island.tide": "潮",
   "adv.island.full": "浜がいっぱい：合成するか波でながそう",
-  "adv.no_shells": "貝がらがない：メインボードで注文をこなそう"
+  "adv.no_shells": "貝がらがない：メインボードで注文をこなそう",
+  "adv.greenhouse.title": "温室",
+  "adv.greenhouse.how": "タネは注文でもらえるよ。植物は本当の時間で育つよ。同じ物2つで大きな1つに合成、早く実るよ。実ったら収穫してポイント。大きいほどずっと多い！じょうろは4時間ごとに満タンになって、全部を1時間早く育てるよ。",
+  "adv.greenhouse.golden": "最後の段階の植物は、メインボードに宝箱も届けるよ。",
+  "adv.greenhouse.full": "畑がいっぱい：先に合成か収穫を",
+  "adv.greenhouse.watered": "水やり完了！全部1時間早く育つよ",
+  "adv.greenhouse.harvest": "収穫",
+  "adv.greenhouse.water": "水やり",
+  "adv.greenhouse.plant": "植える",
+  "adv.no_seeds": "タネがない：メインボードで注文をこなそう"
 }

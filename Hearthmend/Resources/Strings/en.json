@@ -350,5 +350,14 @@
   "adv.island.hint": "Tap an item, then a cell next to the same ones",
   "adv.island.tide": "Tide",
   "adv.island.full": "No room on the shore: merge or wash something away",
-  "adv.no_shells": "Out of shells: complete orders on the main board"
+  "adv.no_shells": "Out of shells: complete orders on the main board",
+  "adv.greenhouse.title": "The Greenhouse",
+  "adv.greenhouse.how": "Seeds come from orders. Plants grow in real time. Two alike merge into one bigger plant that ripens sooner. Harvest ripe plants for points; bigger ones are worth much more. The watering can refills every 4 hours and speeds everything up by an hour.",
+  "adv.greenhouse.golden": "A fully grown plant of the last stage also brings a chest to your main board.",
+  "adv.greenhouse.full": "All beds are taken: merge or harvest first",
+  "adv.greenhouse.watered": "Watered! Everything grows an hour faster",
+  "adv.greenhouse.harvest": "Harvest",
+  "adv.greenhouse.water": "Water",
+  "adv.greenhouse.plant": "Plant",
+  "adv.no_seeds": "Out of seeds: complete orders on the main board"
 }

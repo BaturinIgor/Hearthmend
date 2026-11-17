@@ -350,5 +350,14 @@
   "adv.island.hint": "点一个物品，再点相同物品旁边的格子",
   "adv.island.tide": "潮水",
   "adv.island.full": "岸上没位置了：合成或冲走一些",
-  "adv.no_shells": "贝壳用完了：去主棋盘完成订单"
+  "adv.no_shells": "贝壳用完了：去主棋盘完成订单",
+  "adv.greenhouse.title": "温室",
+  "adv.greenhouse.how": "种子来自订单。植物按真实时间生长。两个相同的合成一个更大的，成熟更快。收获成熟的植物得积分，越大越多。水壶每4小时装满一次，让所有植物快长1小时。",
+  "adv.greenhouse.golden": "最高阶段的植物还会给主棋盘送一个宝箱。",
+  "adv.greenhouse.full": "苗床都满了：先合成或收获",
+  "adv.greenhouse.watered": "浇好了！全部快长1小时",
+  "adv.greenhouse.harvest": "收获",
+  "adv.greenhouse.water": "浇水",
+  "adv.greenhouse.plant": "种植",
+  "adv.no_seeds": "种子用完了：去主棋盘完成订单"
 }

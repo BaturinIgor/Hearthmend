@@ -350,5 +350,14 @@
   "adv.island.hint": "Touche un objet, puis une case près des mêmes",
   "adv.island.tide": "Marée",
   "adv.island.full": "Plus de place sur la plage : fusionne ou fais emporter un objet",
-  "adv.no_shells": "Plus de coquillages : remplis des commandes sur le plateau principal"
+  "adv.no_shells": "Plus de coquillages : remplis des commandes sur le plateau principal",
+  "adv.greenhouse.title": "La Serre",
+  "adv.greenhouse.how": "Les graines viennent des commandes. Les plantes poussent en temps réel. Deux identiques fusionnent en une plus grande qui mûrit plus vite. Récolte ce qui est mûr pour des points ; les plus grandes valent bien plus. L'arrosoir se remplit toutes les 4 heures et fait tout pousser une heure plus vite.",
+  "adv.greenhouse.golden": "Une plante du dernier stade apporte aussi un coffre sur ton plateau principal.",
+  "adv.greenhouse.full": "Toutes les plates-bandes sont prises : fusionne ou récolte d'abord",
+  "adv.greenhouse.watered": "Arrosé ! Tout pousse une heure plus vite",
+  "adv.greenhouse.harvest": "Récolter",
+  "adv.greenhouse.water": "Arroser",
+  "adv.greenhouse.plant": "Planter",
+  "adv.no_seeds": "Plus de graines : remplis des commandes sur le plateau principal"
 }

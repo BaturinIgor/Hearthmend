@@ -350,5 +350,14 @@
   "adv.island.hint": "Stuknij przedmiot, potem pole obok takich samych",
   "adv.island.tide": "Przypływ",
   "adv.island.full": "Brak miejsca na brzegu: połącz lub zmyj coś",
-  "adv.no_shells": "Brak muszli: realizuj zamówienia na głównej planszy"
+  "adv.no_shells": "Brak muszli: realizuj zamówienia na głównej planszy",
+  "adv.greenhouse.title": "Szklarnia",
+  "adv.greenhouse.how": "Nasiona dają zamówienia. Rośliny rosną w czasie rzeczywistym. Dwie takie same łączą się w jedną większą, która szybciej dojrzewa. Zbieraj dojrzałe za punkty: większe są warte dużo więcej. Konewka napełnia się co 4 godziny i przyspiesza wszystko o godzinę.",
+  "adv.greenhouse.golden": "Roślina ostatniego etapu przynosi też skrzynię na główną planszę.",
+  "adv.greenhouse.full": "Wszystkie grządki zajęte: najpierw połącz albo zbierz",
+  "adv.greenhouse.watered": "Podlane! Wszystko rośnie godzinę szybciej",
+  "adv.greenhouse.harvest": "Zbierz",
+  "adv.greenhouse.water": "Podlej",
+  "adv.greenhouse.plant": "Posadź",
+  "adv.no_seeds": "Brak nasion: realizuj zamówienia na głównej planszy"
 }
