@@ -293,5 +293,13 @@
   "pets.daily": "매일: %@",
   "pets.home": "마을을 산책 중",
   "pets.adopted": "%@이(가) 마을에 왔어요!",
-  "achievements.pets": "마을의 동물: %d"
+  "achievements.pets": "마을의 동물: %d",
+  "shortage.energy": "에너지 소진",
+  "shortage.energy_full": "%@ 후 가득 참",
+  "shortage.coins": "🪙%d 부족",
+  "shortage.coins_hint": "크리스털을 코인으로 교환:",
+  "shortage.gems": "💎%d 부족",
+  "shortage.gems_hint": "크리스털은 일일 과제, 업적, 도감, 상점에서 얻어요",
+  "shortage.gems_free": "일지에 보상 %d개!",
+  "shortage.shop": "상점으로"
 }

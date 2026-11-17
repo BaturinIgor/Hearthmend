@@ -293,5 +293,13 @@
   "pets.daily": "Jeden Tag: %@",
   "pets.home": "Streift durchs Dorf",
   "pets.adopted": "%@ wohnt jetzt im Dorf!",
-  "achievements.pets": "Tiere im Dorf: %d"
+  "achievements.pets": "Tiere im Dorf: %d",
+  "shortage.energy": "Keine Energie mehr",
+  "shortage.energy_full": "Wieder voll in %@",
+  "shortage.coins": "Es fehlen 🪙%d",
+  "shortage.coins_hint": "Tausche Kristalle gegen Münzen:",
+  "shortage.gems": "Es fehlen 💎%d",
+  "shortage.gems_hint": "Kristalle gibt es für Aufgaben, Erfolge und das Album oder im Laden",
+  "shortage.gems_free": "Im Tagebuch warten Belohnungen: %d!",
+  "shortage.shop": "Zum Laden"
 }

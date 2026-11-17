@@ -293,5 +293,13 @@
   "pets.daily": "Каждый день: %@",
   "pets.home": "Гуляет по деревне",
   "pets.adopted": "%@ теперь живёт в деревне!",
-  "achievements.pets": "Животных в деревне: %d"
+  "achievements.pets": "Животных в деревне: %d",
+  "shortage.energy": "Энергия закончилась",
+  "shortage.energy_full": "Полная снова через %@",
+  "shortage.coins": "Не хватает 🪙%d",
+  "shortage.coins_hint": "Обменяй кристаллы на монеты:",
+  "shortage.gems": "Не хватает 💎%d",
+  "shortage.gems_hint": "Кристаллы дают задания, достижения и альбом, а ещё они есть в лавке",
+  "shortage.gems_free": "В журнале ждут наград: %d!",
+  "shortage.shop": "В лавку"
 }

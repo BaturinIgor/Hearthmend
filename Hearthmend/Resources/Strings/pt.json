@@ -293,5 +293,13 @@
   "pets.daily": "Todo dia: %@",
   "pets.home": "Passeia pela vila",
   "pets.adopted": "%@ agora mora na vila!",
-  "achievements.pets": "Animais na vila: %d"
+  "achievements.pets": "Animais na vila: %d",
+  "shortage.energy": "Sem energia",
+  "shortage.energy_full": "Cheia de novo em %@",
+  "shortage.coins": "Faltam 🪙%d",
+  "shortage.coins_hint": "Troque cristais por moedas:",
+  "shortage.gems": "Faltam 💎%d",
+  "shortage.gems_hint": "Cristais vêm de tarefas, conquistas e do álbum, ou da loja",
+  "shortage.gems_free": "Recompensas no diário: %d!",
+  "shortage.shop": "Ir à loja"
 }

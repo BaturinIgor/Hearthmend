@@ -293,5 +293,13 @@
   "pets.daily": "Щодня: %@",
   "pets.home": "Гуляє селом",
   "pets.adopted": "%@ тепер живе в селі!",
-  "achievements.pets": "Тварин у селі: %d"
+  "achievements.pets": "Тварин у селі: %d",
+  "shortage.energy": "Енергія скінчилася",
+  "shortage.energy_full": "Знову повна через %@",
+  "shortage.coins": "Бракує 🪙%d",
+  "shortage.coins_hint": "Обміняй кристали на монети:",
+  "shortage.gems": "Бракує 💎%d",
+  "shortage.gems_hint": "Кристали дають завдання, досягнення й альбом, а ще вони є в крамниці",
+  "shortage.gems_free": "У журналі чекають нагород: %d!",
+  "shortage.shop": "До крамниці"
 }

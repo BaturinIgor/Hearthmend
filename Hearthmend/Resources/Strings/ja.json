@@ -293,5 +293,13 @@
   "pets.daily": "毎日：%@",
   "pets.home": "村をおさんぽ中",
   "pets.adopted": "%@が村にやってきた！",
-  "achievements.pets": "村のどうぶつ：%d"
+  "achievements.pets": "村のどうぶつ：%d",
+  "shortage.energy": "エネルギー切れ",
+  "shortage.energy_full": "満タンまで %@",
+  "shortage.coins": "🪙あと%d",
+  "shortage.coins_hint": "クリスタルをコインに交換：",
+  "shortage.gems": "💎あと%d",
+  "shortage.gems_hint": "クリスタルはデイリー、実績、図鑑、ショップで手に入ります",
+  "shortage.gems_free": "日誌に報酬が%d個！",
+  "shortage.shop": "ショップへ"
 }

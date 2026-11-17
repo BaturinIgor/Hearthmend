@@ -31,6 +31,7 @@ struct ContentView: View {
                 .transition(.scale(scale: 0.6).combined(with: .opacity))
                 .zIndex(2)
             }
+            ShortageLayer().zIndex(5)
             if let scene = story {
                 StoryView(scene: scene) {
                     store.storySeen(scene)
@@ -167,8 +168,8 @@ private struct TopBar: View {
         HStack(spacing: 8) {
             Button(action: openSettings) { LevelBadge() }
             Button(action: openShop) { Counter(icon: "ui_energy", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
-            Counter(icon: "ui_coin", value: "\(store.state.coins)")
-            Button(action: openShop) { Counter(icon: "ui_gem", value: "\(store.state.gems)", plus: true) }
+            Button { store.show("🪙 \(store.state.coins)") } label: { Counter(icon: "ui_coin", value: Fmt.compact(store.state.coins)) }
+            Button(action: openShop) { Counter(icon: "ui_gem", value: Fmt.compact(store.state.gems), plus: true) }
             VillageButton(stars: store.state.stars, ready: store.canBuildSomething, action: openVillage)
         }
         .padding(.horizontal, 8)
@@ -216,7 +217,7 @@ private struct VillageButton: View {
         } label: {
             HStack(spacing: 4) {
                 PixelIcon(key: "ui_house", size: 20)
-                PixelText("⭐️\(stars)", size: 15)
+                PixelText("⭐️\(Fmt.compact(stars))", size: 15)
             }
             .foregroundColor(ready ? .white : Theme.text)
             .frame(maxWidth: .infinity, minHeight: 36)

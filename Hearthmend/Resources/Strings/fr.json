@@ -293,5 +293,13 @@
   "pets.daily": "Chaque jour : %@",
   "pets.home": "Se promène au village",
   "pets.adopted": "%@ vit maintenant au village !",
-  "achievements.pets": "Animaux au village : %d"
+  "achievements.pets": "Animaux au village : %d",
+  "shortage.energy": "Plus d'énergie",
+  "shortage.energy_full": "De nouveau pleine dans %@",
+  "shortage.coins": "Il manque 🪙%d",
+  "shortage.coins_hint": "Échange des cristaux contre des pièces :",
+  "shortage.gems": "Il manque 💎%d",
+  "shortage.gems_hint": "Les cristaux viennent des quêtes, succès et de l'album, ou de la boutique",
+  "shortage.gems_free": "Récompenses dans le journal : %d !",
+  "shortage.shop": "Boutique"
 }

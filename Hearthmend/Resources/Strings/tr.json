@@ -293,5 +293,13 @@
   "pets.daily": "Her gün: %@",
   "pets.home": "Köyde geziniyor",
   "pets.adopted": "%@ artık köyde yaşıyor!",
-  "achievements.pets": "Köydeki hayvanlar: %d"
+  "achievements.pets": "Köydeki hayvanlar: %d",
+  "shortage.energy": "Enerji bitti",
+  "shortage.energy_full": "%@ sonra yine dolu",
+  "shortage.coins": "🪙%d eksik",
+  "shortage.coins_hint": "Kristalleri altına çevir:",
+  "shortage.gems": "💎%d eksik",
+  "shortage.gems_hint": "Kristaller görevlerden, başarılardan, albümden veya dükkândan gelir",
+  "shortage.gems_free": "Günlükte ödül bekliyor: %d!",
+  "shortage.shop": "Dükkâna"
 }

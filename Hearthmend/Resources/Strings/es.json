@@ -293,5 +293,13 @@
   "pets.daily": "Cada día: %@",
   "pets.home": "Pasea por el pueblo",
   "pets.adopted": "¡%@ ya vive en el pueblo!",
-  "achievements.pets": "Animales en el pueblo: %d"
+  "achievements.pets": "Animales en el pueblo: %d",
+  "shortage.energy": "Sin energía",
+  "shortage.energy_full": "Llena de nuevo en %@",
+  "shortage.coins": "Faltan 🪙%d",
+  "shortage.coins_hint": "Cambia cristales por monedas:",
+  "shortage.gems": "Faltan 💎%d",
+  "shortage.gems_hint": "Los cristales salen de tareas, logros y el álbum, o de la tienda",
+  "shortage.gems_free": "Recompensas en el diario: %d!",
+  "shortage.shop": "A la tienda"
 }

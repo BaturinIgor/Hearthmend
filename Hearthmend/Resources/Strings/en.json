@@ -293,5 +293,13 @@
   "pets.daily": "Every day: %@",
   "pets.home": "Roams the village",
   "pets.adopted": "%@ moved into the village!",
-  "achievements.pets": "Animals in the village: %d"
+  "achievements.pets": "Animals in the village: %d",
+  "shortage.energy": "Out of energy",
+  "shortage.energy_full": "Full again in %@",
+  "shortage.coins": "Need 🪙%d more",
+  "shortage.coins_hint": "Swap gems for coins:",
+  "shortage.gems": "Need 💎%d more",
+  "shortage.gems_hint": "Gems come from quests, achievements and the album, or from the shop",
+  "shortage.gems_free": "%d rewards are waiting in the journal!",
+  "shortage.shop": "Open shop"
 }

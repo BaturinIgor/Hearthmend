@@ -293,5 +293,13 @@
   "pets.daily": "Codziennie: %@",
   "pets.home": "Spaceruje po wiosce",
   "pets.adopted": "%@ zamieszkało w wiosce!",
-  "achievements.pets": "Zwierzęta w wiosce: %d"
+  "achievements.pets": "Zwierzęta w wiosce: %d",
+  "shortage.energy": "Brak energii",
+  "shortage.energy_full": "Pełna znów za %@",
+  "shortage.coins": "Brakuje 🪙%d",
+  "shortage.coins_hint": "Wymień kryształy na monety:",
+  "shortage.gems": "Brakuje 💎%d",
+  "shortage.gems_hint": "Kryształy dają zadania, osiągnięcia i album, są też w sklepie",
+  "shortage.gems_free": "Nagrody w dzienniku: %d!",
+  "shortage.shop": "Do sklepu"
 }

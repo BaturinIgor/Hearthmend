@@ -293,5 +293,13 @@
   "pets.daily": "Ogni giorno: %@",
   "pets.home": "Passeggia nel villaggio",
   "pets.adopted": "%@ ora vive nel villaggio!",
-  "achievements.pets": "Animali nel villaggio: %d"
+  "achievements.pets": "Animali nel villaggio: %d",
+  "shortage.energy": "Energia finita",
+  "shortage.energy_full": "Di nuovo piena tra %@",
+  "shortage.coins": "Mancano 🪙%d",
+  "shortage.coins_hint": "Scambia cristalli con monete:",
+  "shortage.gems": "Mancano 💎%d",
+  "shortage.gems_hint": "I cristalli arrivano da compiti, obiettivi e album, o dal negozio",
+  "shortage.gems_free": "Premi nel diario: %d!",
+  "shortage.shop": "Al negozio"
 }

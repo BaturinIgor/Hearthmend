@@ -8,6 +8,8 @@ final class GameStore: ObservableObject {
     @Published private(set) var state: GameState
     @Published var selected: Int?
     @Published var toast: String?
+    /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
+    @Published var shortage: Shortage?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
     /// Свежие награды события: баннер события их показывает.
@@ -98,7 +100,7 @@ final class GameStore: ObservableObject {
                 Audio.shared.play(.spawn)
             case .noEnergy:
                 Audio.shared.play(.nope)
-                show(L10n.t("toast.no_energy"))
+                shortage = .energy
             case .boardFull:
                 show(L10n.t("toast.board_full"))
             case .notGenerator:
@@ -113,8 +115,8 @@ final class GameStore: ObservableObject {
                 Audio.shared.play(.sparkle)
                 commit()
                 onBoardChange?()
-            } else {
-                show(L10n.t("toast.no_gems"))
+            } else if case .bubble(let item, _)? = game.piece(at: index) {
+                shortage = .gems(need: balance.popCost(item) - state.gems)
             }
         case .item?:
             selected = selected == index ? nil : index
@@ -306,7 +308,7 @@ final class GameStore: ObservableObject {
             show(String(format: L10n.t("shop.energy_added"), balance.energyPack))
             commit()
         } else {
-            show(L10n.t("toast.no_gems"))
+            shortage = .gems(need: game.energyPackGems - state.gems)
         }
     }
 
@@ -315,8 +317,8 @@ final class GameStore: ObservableObject {
             Haptics.success()
             show(String(format: L10n.t("shop.energy_added"), balance.coinEnergyAmount))
             commit()
-        } else {
-            show(L10n.t("toast.no_coins"))
+        } else if let price = game.coinEnergyPrice {
+            shortage = .coins(need: price - state.coins)
         }
     }
 
@@ -324,8 +326,8 @@ final class GameStore: ObservableObject {
         if game.buyBasketSlot() {
             Haptics.success()
             commit()
-        } else {
-            show(L10n.t("toast.no_coins"))
+        } else if let price = game.basketSlotPrice {
+            shortage = .coins(need: price - state.coins)
         }
     }
 
@@ -338,7 +340,7 @@ final class GameStore: ObservableObject {
             show(String(format: L10n.t("jar.opened"), amount))
             commit()
         } else if paid {
-            show(L10n.t("toast.no_gems"))
+            shortage = .gems(need: game.jarOpenGems - state.gems)
         }
     }
 
@@ -418,10 +420,27 @@ final class GameStore: ObservableObject {
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
+    func buyCoins(_ pack: CoinPack) {
+        if game.buyCoins(pack) {
+            Haptics.success()
+            Audio.shared.play(.coins)
+            show("🪙 +\(pack.coins)")
+            shortage = nil
+            commit()
+        } else {
+            shortage = .gems(need: pack.gems - state.gems)
+        }
+    }
+
     // MARK: - Животные
 
     func adoptPet(_ id: String) {
-        guard game.adoptPet(id) else { return }
+        guard game.adoptPet(id) else {
+            if let pet = Pets.def(id), game.petAvailable(id), state.coins < pet.cost {
+                shortage = .coins(need: pet.cost - state.coins)
+            }
+            return
+        }
         Haptics.success()
         Audio.shared.play(.levelup)
         show(String(format: L10n.t("pets.adopted"), L10n.t("pet.\(id)")))
@@ -516,6 +535,12 @@ final class GameStore: ObservableObject {
         exit(0)
     }
     #endif
+}
+
+enum Shortage: Equatable {
+    case energy
+    case coins(need: Int)
+    case gems(need: Int)
 }
 
 struct Celebration: Equatable, Identifiable {

@@ -293,5 +293,13 @@
   "pets.daily": "每天：%@",
   "pets.home": "在村里散步",
   "pets.adopted": "%@住进了村子！",
-  "achievements.pets": "村里的动物：%d"
+  "achievements.pets": "村里的动物：%d",
+  "shortage.energy": "能量用完了",
+  "shortage.energy_full": "%@ 后恢复满",
+  "shortage.coins": "还差🪙%d",
+  "shortage.coins_hint": "用水晶兑换金币：",
+  "shortage.gems": "还差💎%d",
+  "shortage.gems_hint": "水晶可从每日任务、成就、图鉴或商店获得",
+  "shortage.gems_free": "日志里有%d个奖励！",
+  "shortage.shop": "去商店"
 }

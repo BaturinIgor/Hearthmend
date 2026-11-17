@@ -272,6 +272,7 @@ struct PixelSheet<Content: View>: View {
         .foregroundColor(Theme.text)
         .background(PixelTile(key: "ui_bg").ignoresSafeArea())
         .overlay(alignment: .bottom) { SheetToast() }
+        .overlay { ShortageLayer() }
     }
 }
 
