@@ -5,6 +5,7 @@ import UIKit
 struct HearthmendApp: App {
     @StateObject private var store = GameStore()
     @StateObject private var shop = StoreManager()
+    @Environment(\.scenePhase) private var phase
 
     var body: some Scene {
         WindowGroup {
@@ -19,20 +20,29 @@ struct HearthmendApp: App {
                     Audio.shared.startMusic()
                 }
         }
+        .onChange(of: phase) { p in
+            if p != .active { store.flush() }
+        }
     }
 }
 
+@MainActor
 enum Haptics {
     private static var on: Bool { UserDefaults.standard.object(forKey: "hapticsOn") as? Bool ?? true }
 
+    private static let impact = UIImpactFeedbackGenerator(style: .light)
+    private static let notify = UINotificationFeedbackGenerator()
+
     static func light() {
         guard on else { return }
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        impact.impactOccurred()
+        impact.prepare()
     }
 
     static func success() {
         guard on else { return }
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        notify.notificationOccurred(.success)
+        notify.prepare()
     }
 }
 

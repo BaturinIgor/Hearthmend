@@ -133,4 +133,25 @@ final class BalanceTests: XCTestCase {
         let b = Simulator.run(config)
         XCTAssertEqual(a.description, b.description)
     }
+
+    /// Задания дня - заметная, но небольшая добавка энергии; кристаллов с них меньше пачки за 0.99 в неделю.
+    func testQuestsAreABonusNotTheEconomy() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.energyFromQuests, 0, "зерно \(seed): задания выполняются")
+            XCTAssertLessThanOrEqual(Double(r.energyFromQuests), Double(r.energySpent) * 0.15, "зерно \(seed)")
+            let weeks = max(1, r.days / 7)
+            XCTAssertLessThan(Double(r.gemsFromQuests) / weeks, 200, "зерно \(seed): кристаллов с заданий за неделю")
+        }
+    }
+
+    /// Альбом: награды разовые и ограниченные.
+    func testCollectionRewardsAreBounded() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.coinsFromCollection, 0, "зерно \(seed): находки оплачиваются")
+            XCTAssertLessThan(r.gemsFromCollection, 250, "зерно \(seed)")
+            XCTAssertLessThan(r.coinsFromCollection, r.coinsFromOrders / 5, "зерно \(seed): альбом не заменяет заказы")
+        }
+    }
 }

@@ -60,6 +60,11 @@ final class GameStore: ObservableObject {
         if !Self.isDemo { Persistence.save(game.state) }
     }
 
+    /// Сразу записать сохранение (при уходе приложения в фон).
+    func flush() {
+        if !Self.isDemo { Persistence.flush() }
+    }
+
     func show(_ text: String) {
         toast = text
         toastTask?.cancel()
@@ -171,13 +176,22 @@ final class GameStore: ObservableObject {
 
     func storeSelected() {
         guard let index = selected else { return }
+        if storeItem(at: index) { onBoardChange?() }
+    }
+
+    /// Убрать предмет в корзину (кнопкой или перетаскиванием вниз под поле).
+    @discardableResult
+    func storeItem(at index: Int) -> Bool {
         guard game.store(at: index) else {
-            show(L10n.t("toast.basket_full"))
-            return
+            Audio.shared.play(.nope)
+            show(L10n.t(state.basket.count >= state.basketSize ? "toast.basket_full" : "toast.basket_only_items"))
+            return false
         }
-        selected = nil
+        Haptics.light()
+        Audio.shared.play(.drop)
+        if selected == index { selected = nil }
         commit()
-        onBoardChange?()
+        return true
     }
 
     func retrieve(_ basketIndex: Int) {
@@ -185,6 +199,8 @@ final class GameStore: ObservableObject {
             show(L10n.t("toast.board_full"))
             return
         }
+        Haptics.light()
+        Audio.shared.play(.drop)
         commit()
         onBoardChange?()
     }
@@ -230,7 +246,7 @@ final class GameStore: ObservableObject {
             Haptics.success()
             Audio.shared.play(.build)
             if let resident = task.resident, let chain = task.unlocksChain {
-                celebrate(Celebration(icon: "🏡",
+                celebrate(Celebration(icon: "npc:\(resident)",
                                       title: String(format: L10n.t("resident.arrived"), L10n.t("resident.\(resident)")),
                                       subtitle: String(format: L10n.t("resident.chain"), L10n.t("chain.\(chain)"))))
             } else if let district = districtBefore, game.currentDistrict?.id != district.id {
@@ -397,8 +413,32 @@ enum Persistence {
         return try? JSONDecoder().decode(GameState.self, from: data)
     }
 
+    private static let queue = DispatchQueue(label: "hearthmend.save", qos: .utility)
+    private static var pending: GameState?
+    private static var scheduled = false
+    private static let lock = NSLock()
+
+    /// Сохранение не чаще раза в полсекунды и не на главном потоке: быстрые тапы не тормозят.
     static func save(_ state: GameState) {
-        guard let data = try? JSONEncoder().encode(state) else { return }
+        lock.lock()
+        pending = state
+        let start = !scheduled
+        scheduled = true
+        lock.unlock()
+        if start { queue.asyncAfter(deadline: .now() + 0.5) { write() } }
+    }
+
+    static func flush() {
+        queue.sync { write() }
+    }
+
+    private static func write() {
+        lock.lock()
+        let state = pending
+        pending = nil
+        scheduled = false
+        lock.unlock()
+        guard let state, let data = try? JSONEncoder().encode(state) else { return }
         try? data.write(to: url, options: .atomic)
     }
 

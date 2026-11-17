@@ -20,6 +20,8 @@ public final class Game {
     public internal(set) var lastPostcard: PostcardReward?
     /// Штамп последней покупки: магазин показывает его и праздник за полную карточку.
     public internal(set) var lastStamp: StampReward?
+    /// Последний впервые найденный предмет: интерфейс показывает «Новое в альбоме».
+    public internal(set) var lastDiscovery: Item?
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -39,6 +41,7 @@ public final class Game {
         } else {
             self.state = Game.newState(catalog: catalog, balance: balance, now: now())
         }
+        migrateCollection()
         refillOrders()
     }
 
@@ -215,6 +218,9 @@ public final class Game {
         let item = Item(chain: gen.chain, tier: tier)
         state.cells[cell] = .item(item)
         advanceTutorial(from: .spawn)
+        lastDiscovery = nil
+        discover(item)
+        progressQuest(.spawn)
         return .spawned(index: cell, item: item)
     }
 
@@ -244,6 +250,10 @@ public final class Game {
             state.mergesTotal += 1
             advanceTutorial(from: .merge)
             state.bestTier[next.chain] = max(state.bestTier[next.chain] ?? 0, next.tier)
+            lastDiscovery = nil
+            discover(next)
+            progressQuest(.merge)
+            if next.tier >= Balance.bigMergeTier { progressQuest(.bigMerge) }
             let cleared = clearDebris(around: to)
             let bubble = maybeBubble(next, near: to)
             placePendingGenerators()
@@ -374,6 +384,7 @@ public final class Game {
         state.coins += order.coins
         state.stars += order.stars
         state.ordersTotal += 1
+        progressQuest(.deliver)
         advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)

@@ -14,6 +14,8 @@ public struct SimConfig {
     /// Забирать ежедневную награду и покупать энергию за монеты, когда хватает.
     public var claimDaily = true
     public var buyCoinEnergy = true
+    /// Забирать награды заданий дня и альбома.
+    public var claimQuests = true
     /// Включать ускорение генераторов x2, как только оно откроется.
     public var useBoost = false
     /// Останавливаться, когда вся деревня отстроена.
@@ -41,6 +43,10 @@ public struct SimReport: CustomStringConvertible {
     public var energyFromCoins = 0
     public var energyFromEvents = 0
     public var eventMilestones = 0
+    public var energyFromQuests = 0
+    public var gemsFromQuests = 0
+    public var gemsFromCollection = 0
+    public var coinsFromCollection = 0
     public var coinsSpent = 0
     public var level = 1
     public var tasksDone = 0
@@ -58,7 +64,8 @@ public struct SimReport: CustomStringConvertible {
         дней \(String(format: "%.1f", days)), сессий \(sessions), энергия \(energySpent), слияний \(merges), \
         заказов \(orders), звезд \(starsEarned), задач \(tasksDone), уровень \(level)
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
-        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), застреваний \(stalledSessions)
+        пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), с заданий \(energyFromQuests), застреваний \(stalledSessions)
+        кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection); монеты из альбома \(coinsFromCollection)
         районы: \(districts)
         """
     }
@@ -89,6 +96,7 @@ public enum Simulator {
             report.sessions += 1
             let stalled = playSession(game, config: config, report: &report)
             if stalled { report.stalledSessions += 1 }
+            if config.claimQuests { claimRewards(game, report: &report) }
             let day = clock.date.timeIntervalSince(start) / 86400
             for district in game.village.districts where report.districtDoneDay[district.id] == nil {
                 if district.tasks.allSatisfy({ game.state.completedTasks.contains($0.id) }) {
@@ -128,6 +136,31 @@ public enum Simulator {
             return false
         }
         return false
+    }
+
+    /// Задания дня и альбом: забирает все, что можно.
+    private static func claimRewards(_ game: Game, report: inout SimReport) {
+        for i in game.ensureQuests().indices {
+            if let r = game.claimQuest(i) {
+                report.energyFromQuests += r.energy
+                report.gemsFromQuests += r.gems
+            }
+        }
+        if let r = game.claimQuestChest() {
+            report.energyFromQuests += r.energy
+            report.gemsFromQuests += r.gems
+        }
+        for key in game.state.discovered {
+            let parts = key.split(separator: "#")
+            guard parts.count == 2, let tier = Int(parts[1]) else { continue }
+            if let r = game.claimDiscovery(Item(chain: String(parts[0]), tier: tier)) {
+                report.gemsFromCollection += r.gems
+                report.coinsFromCollection += r.coins
+            }
+        }
+        for chain in game.catalog.chains {
+            if let gems = game.claimChain(chain.id) { report.gemsFromCollection += gems }
+        }
     }
 
     private static func deliverOrder(_ game: Game, report: inout SimReport) -> Bool {
@@ -298,5 +331,6 @@ public enum Simulator {
 
 final class SimClock {
     var date = Date(timeIntervalSince1970: 1_800_000_000)
+    init(_ date: Date = Date(timeIntervalSince1970: 1_800_000_000)) { self.date = date }
     func advance(_ seconds: TimeInterval) { date = date.addingTimeInterval(seconds) }
 }

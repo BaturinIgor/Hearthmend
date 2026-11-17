@@ -66,39 +66,67 @@ final class BoardScene: SKScene {
 
     // MARK: - Отрисовка
 
+    /// Что нарисовано в клетке: узел пересоздается, только когда это меняется.
+    /// Так быстрые тапы по генератору не обрывают полет уже вылетевших предметов.
+    private var drawn: [Int: String] = [:]
+    private var tiles: [SKNode] = []
+    private var layoutKey = ""
+
     func render() {
         guard let store, size.width > 0, size.height > 0 else { return }
         layout()
-        boardNode.removeAllChildren()
-        contentNodes.removeAll()
+        let key = "\(cellSize)|\(origin)|\(cols)x\(rows)"
+        if key != layoutKey {
+            layoutKey = key
+            boardNode.removeAllChildren()
+            contentNodes.removeAll()
+            drawn.removeAll()
+            tiles = []
+            for i in 0..<(cols * rows) {
+                let r = i / cols, c = i % cols
+                let tile: SKNode
+                if let texture = Sprites.texture((r + c) % 2 == 0 ? "ui_cell_a" : "ui_cell_b") {
+                    // пиксельные клетки травы из tools/ui_kit.py
+                    tile = SKSpriteNode(texture: texture, size: CGSize(width: cellSize - 1, height: cellSize - 1))
+                } else {
+                    let shape = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
+                    shape.fillColor = (r + c) % 2 == 0 ? Palette.tileA : Palette.tileB
+                    shape.strokeColor = .clear
+                    tile = shape
+                }
+                tile.position = center(of: i)
+                tile.zPosition = 0
+                boardNode.addChild(tile)
+                tiles.append(tile)
+            }
+        }
         let state = store.game.state
         let needed = store.game.neededItems
         for i in state.cells.indices {
-            let r = i / cols, c = i % cols
-            let tile: SKNode
-            if let texture = Sprites.texture((r + c) % 2 == 0 ? "ui_cell_a" : "ui_cell_b") {
-                // пиксельные клетки травы из tools/ui_kit.py
-                tile = SKSpriteNode(texture: texture, size: CGSize(width: cellSize - 1, height: cellSize - 1))
-            } else {
-                let shape = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
-                shape.fillColor = (r + c) % 2 == 0 ? Palette.tileA : Palette.tileB
-                shape.strokeColor = .clear
-                tile = shape
-            }
-            tile.position = center(of: i)
-            tile.zPosition = 0
-            boardNode.addChild(tile)
-
-            if let piece = state.cells[i] {
-                let node = makeNode(for: piece, highlighted: piece.item.map { needed.contains($0) } ?? false)
-                node.position = center(of: i)
-                node.zPosition = 1
-                boardNode.addChild(node)
-                contentNodes[i] = node
-            }
+            let piece = state.cells[i]
+            let highlighted = piece?.item.map { needed.contains($0) } ?? false
+            let sig = piece.map { "\($0)|\(highlighted)" } ?? ""
+            if drawn[i] == sig, contentNodes[i] != nil || piece == nil { continue }
+            contentNodes[i]?.removeFromParent()
+            contentNodes[i] = nil
+            drawn[i] = sig
+            guard let piece else { continue }
+            let node = makeNode(for: piece, highlighted: highlighted)
+            node.position = center(of: i)
+            node.zPosition = 1
+            boardNode.addChild(node)
+            contentNodes[i] = node
         }
+        boardNode.children.filter { $0.name == "tutorial" }.forEach { $0.removeFromParent() }
         updateSelection()
         tutorialHints(state)
+    }
+
+    /// Узел клетки больше не соответствует состоянию (его тащили): нарисовать заново.
+    private func forget(_ index: Int) {
+        contentNodes[index]?.removeFromParent()
+        contentNodes[index] = nil
+        drawn[index] = nil
     }
 
     /// Подсказки обучения: пульсирующие рамки на генераторе или на паре одинаковых предметов.
@@ -127,6 +155,7 @@ final class BoardScene: SKScene {
             ring.glowWidth = 4
             ring.position = center(of: i)
             ring.zPosition = 3
+            ring.name = "tutorial"
             ring.run(.repeatForever(.sequence([
                 .group([.scale(to: 1.12, duration: 0.5), .fadeAlpha(to: 0.4, duration: 0.5)]),
                 .group([.scale(to: 1.0, duration: 0.5), .fadeAlpha(to: 1, duration: 0.5)]),
@@ -165,7 +194,8 @@ final class BoardScene: SKScene {
             node.addChild(badge("\(item.tier + 1)"))
         case .generator(let gen):
             if let crate = Sprites.texture("ui_crate") {
-                node.addChild(SKSpriteNode(texture: crate, size: CGSize(width: cellSize * 0.9, height: cellSize * 0.9)))
+                let side = Pixel.crisp(cellSize * 0.9, source: 16)
+                node.addChild(SKSpriteNode(texture: crate, size: CGSize(width: side, height: side)))
             } else {
                 let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
                 base.fillColor = Palette.generator
@@ -175,7 +205,7 @@ final class BoardScene: SKScene {
             }
             let def = catalog.chain(gen.chain)
             node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.6))
-            node.addChild(badge(String(repeating: "★", count: gen.tier + 1)))
+            node.addChild(stars(gen.tier + 1))
         case .debris(let layers):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
             base.fillColor = Palette.debris
@@ -192,7 +222,7 @@ final class BoardScene: SKScene {
             let inner = icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.5)
             inner.alpha = 0.8
             node.addChild(inner)
-            node.addChild(badge("💎\(store?.balance.popCost(item) ?? 0)"))
+            node.addChild(badge("\(store?.balance.popCost(item) ?? 0)", icon: "ui_gem"))
             node.run(.repeatForever(.sequence([.scale(to: 1.05, duration: 0.6), .scale(to: 0.95, duration: 0.6)])))
         }
         return node
@@ -202,8 +232,10 @@ final class BoardScene: SKScene {
     private func icon(key: String, fallback: String, scale: CGFloat) -> SKNode {
         guard let texture = Sprites.texture(key) else { return emoji(fallback, scale: scale) }
         let sprite = SKSpriteNode(texture: texture)
-        let side = cellSize * (scale + 0.12)
-        let k = side / max(texture.size().width, texture.size().height)
+        // кратное увеличение пикселей: все пиксели одного размера, картинка четкая
+        let longest = max(texture.size().width, texture.size().height)
+        let side = Pixel.crisp(cellSize * (scale + 0.12), source: longest)
+        let k = side / longest
         sprite.size = CGSize(width: texture.size().width * k, height: texture.size().height * k)
         return sprite
     }
@@ -216,15 +248,48 @@ final class BoardScene: SKScene {
         return label
     }
 
-    private func badge(_ text: String) -> SKLabelNode {
-        let label = SKLabelNode(text: text)
-        label.fontName = "Tiny5"
-        label.fontSize = cellSize * 0.24
-        label.fontColor = Palette.badge
-        label.horizontalAlignmentMode = .right
-        label.verticalAlignmentMode = .bottom
-        label.position = CGPoint(x: cellSize * 0.42, y: -cellSize * 0.44)
-        return label
+    /// Номер ступени (или цена) в углу клетки: четкие пиксельные цифры со светлой обводкой.
+    private func badge(_ text: String, icon: String? = nil) -> SKNode {
+        let node = SKNode()
+        let size = max(8, (cellSize * 0.2).rounded())
+        func label(_ color: UIColor, dx: CGFloat, dy: CGFloat) -> SKLabelNode {
+            let l = SKLabelNode(text: text)
+            l.fontName = "PressStart2P-Regular"
+            l.fontSize = size
+            l.fontColor = color
+            l.horizontalAlignmentMode = .right
+            l.verticalAlignmentMode = .bottom
+            l.position = CGPoint(x: dx, y: dy)
+            return l
+        }
+        let o: CGFloat = 1.5
+        for (dx, dy) in [(-o, 0), (o, 0), (0, -o), (0, o), (o, -o)] {
+            node.addChild(label(Palette.badgeOutline, dx: dx, dy: dy))
+        }
+        node.addChild(label(Palette.badge, dx: 0, dy: 0))
+        node.position = CGPoint(x: cellSize * 0.44, y: -cellSize * 0.44)
+        if let icon, let texture = Sprites.texture(icon) {
+            let width = CGFloat(text.count) * size + 2
+            let side = Pixel.crisp(size * 1.6, source: 16)
+            let sprite = SKSpriteNode(texture: texture, size: CGSize(width: side, height: side))
+            sprite.position = CGPoint(x: -width - side * 0.4, y: size * 0.5)
+            node.addChild(sprite)
+        }
+        return node
+    }
+
+    /// Звезды уровня генератора в верхнем левом углу.
+    private func stars(_ count: Int) -> SKNode {
+        let node = SKNode()
+        guard let texture = Sprites.texture("ui_star") else { return node }
+        let side = Pixel.crisp(cellSize * 0.24, source: 16)
+        for i in 0..<count {
+            let star = SKSpriteNode(texture: texture, size: CGSize(width: side, height: side))
+            star.position = CGPoint(x: -cellSize * 0.36 + CGFloat(i) * side * 0.7, y: cellSize * 0.36)
+            node.addChild(star)
+        }
+        node.zPosition = 1
+        return node
     }
 
     // MARK: - Подсказки
@@ -310,13 +375,24 @@ final class BoardScene: SKScene {
             }
             return
         }
+        if index(at: p) == nil, p.y < origin.y, store.game.piece(at: from)?.item != nil {
+            // брошен ниже поля: в корзину
+            if store.storeItem(at: from) {
+                forget(from)
+                dragged.removeFromParent()
+                render()
+                return
+            }
+        }
         guard let to = index(at: p), to != from else {
             // мимо поля или на то же место: предмет плавно возвращается
             dragged.run(.group([.move(to: center(of: from), duration: 0.16), .scale(to: 1, duration: 0.16)])) { [weak self] in
+                dragged.zPosition = 1
                 self?.render()
             }
             return
         }
+        forget(from)
         let result = store.move(from: from, to: to)
         render()
         switch result {
@@ -339,6 +415,7 @@ final class BoardScene: SKScene {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let from = touchIndex, dragging != nil { forget(from) }
         touchStart = nil
         touchIndex = nil
         dragging = nil
@@ -462,4 +539,5 @@ enum Palette {
     static let selected = UIColor(red: 1.0, green: 0.85, blue: 0.2, alpha: 1)
     static let needed = UIColor(red: 0.85, green: 1.0, blue: 0.6, alpha: 0.75)
     static let badge = UIColor(red: 0.30, green: 0.20, blue: 0.10, alpha: 1)
+    static let badgeOutline = UIColor(red: 1.0, green: 0.96, blue: 0.86, alpha: 1)
 }

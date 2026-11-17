@@ -194,6 +194,14 @@ public struct GameState: Codable, Equatable {
     public var postcardPieces: Int = 0
     public var stamps: Int = 0
     public var stampCards: Int = 0
+    /// Задания дня: номер дня (UTC), сами задания, забран ли сундук.
+    public var questDay: Int = -1
+    public var quests: [Quest] = []
+    public var questChestClaimed: Bool = false
+    /// Альбом: найденные предметы ("цепочка#ступень"), оплаченные находки, оплаченные цепочки.
+    public var discovered: [String] = []
+    public var collectionClaimed: [String] = []
+    public var collectionChains: [String] = []
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -222,7 +230,7 @@ public struct GameState: Codable, Equatable {
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
         case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
         case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces, stamps, stampCards
-        case tutorialStep
+        case tutorialStep, questDay, quests, questChestClaimed, discovered, collectionClaimed, collectionChains
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -273,6 +281,12 @@ public struct GameState: Codable, Equatable {
         postcardPieces = try c.decodeIfPresent(Int.self, forKey: .postcardPieces) ?? 0
         stamps = try c.decodeIfPresent(Int.self, forKey: .stamps) ?? 0
         stampCards = try c.decodeIfPresent(Int.self, forKey: .stampCards) ?? 0
+        questDay = try c.decodeIfPresent(Int.self, forKey: .questDay) ?? -1
+        quests = try c.decodeIfPresent([Quest].self, forKey: .quests) ?? []
+        questChestClaimed = try c.decodeIfPresent(Bool.self, forKey: .questChestClaimed) ?? false
+        discovered = try c.decodeIfPresent([String].self, forKey: .discovered) ?? []
+        collectionClaimed = try c.decodeIfPresent([String].self, forKey: .collectionClaimed) ?? []
+        collectionChains = try c.decodeIfPresent([String].self, forKey: .collectionChains) ?? []
     }
 }
 

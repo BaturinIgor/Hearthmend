@@ -95,8 +95,13 @@ private struct CelebrationView: View {
         ZStack {
             Color.black.opacity(0.35).ignoresSafeArea().onTapGesture(perform: close)
             VStack(spacing: 10) {
-                Text(celebration.icon)
-                    .font(.system(size: 64))
+                Group {
+                    if celebration.icon.hasPrefix("npc:") {
+                        ResidentIcon(id: String(celebration.icon.dropFirst(4)), size: 72)
+                    } else {
+                        EmojiIcon(celebration.icon, size: 64)
+                    }
+                }
                     .scaleEffect(glow ? 1.12 : 0.95)
                     .rotationEffect(.degrees(glow ? 6 : -6))
                 Text(celebration.title)
@@ -167,8 +172,7 @@ private struct LevelBadge: View {
                 .stroke(Theme.accent, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)
-            Text("\(store.state.level)")
-                .font(Pixel.font(15))
+            PixelText("\(store.state.level)", size: 16)
                 .foregroundColor(Theme.text)
         }
         .frame(width: 38, height: 38)
@@ -188,7 +192,7 @@ private struct VillageButton: View {
             action()
         } label: {
             HStack(spacing: 4) {
-                Text("🏡")
+                PixelIcon(key: "ui_house", size: 20)
                 PixelText("⭐️\(stars)", size: 15)
             }
             .foregroundColor(ready ? .white : Theme.text)
@@ -213,9 +217,11 @@ private struct Counter: View {
         HStack(spacing: 4) {
             PixelIcon(key: icon, size: 22)
             VStack(alignment: .leading, spacing: 0) {
-                Text(value).font(Pixel.font(16))
+                PixelText(value, size: 17)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 if let sub {
-                    Text(sub).font(Pixel.font(10)).opacity(0.7)
+                    Text(sub).font(Pixel.body(10)).opacity(0.7)
                 }
             }
         }
@@ -238,14 +244,21 @@ private struct OrdersStrip: View {
     @EnvironmentObject private var store: GameStore
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(store.state.orders) { order in
-                    OrderCard(order: order)
+        GeometryReader { geo in
+            ScrollView(.horizontal, showsIndicators: false) {
+                // пока заказы помещаются, они стоят по центру; если нет - листаются
+                HStack(alignment: .top, spacing: 8) {
+                    ForEach(store.state.orders) { order in
+                        OrderCard(order: order)
+                            .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    }
                 }
+                .padding(.horizontal, 8)
+                .frame(minWidth: geo.size.width)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.orders.map(\.id))
             }
-            .padding(.horizontal, 8)
         }
+        .frame(height: 118)
     }
 }
 
@@ -260,15 +273,14 @@ private struct OrderCard: View {
                 ForEach(Array(order.needs.enumerated()), id: \.offset) { _, item in
                     ZStack(alignment: .bottomTrailing) {
                         ItemIcon(item: item, size: 30)
-                        Text("\(item.tier + 1)")
-                            .font(Pixel.font(10))
-                            .foregroundColor(Theme.text)
+                        TierBadge(tier: item.tier)
                     }
                     .frame(width: 34, height: 34)
                 }
             }
-            PixelText("🪙\(order.coins) ⭐️\(order.stars)", size: 14)
-                .font(Pixel.font(11))
+            PixelText("🪙\(order.coins) ⭐️\(order.stars)", size: 15)
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundColor(Theme.text)
             Button {
                 store.deliver(order)
@@ -357,7 +369,7 @@ private struct PostcardButton: View {
             open = true
         } label: {
             HStack(spacing: 3) {
-                Text("🖼️")
+                PixelIcon(key: "ui_frame", size: 20)
                 Text("\(store.state.postcardPieces)/\(store.balance.postcardPieces)")
                     .font(Pixel.font(13))
             }
@@ -390,7 +402,7 @@ private struct BasketBar: View {
             JarButton()
             ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-            Text("🧺").font(.system(size: 22))
+            PixelIcon(key: "ui_basket", size: (22) * 1.1)
             ForEach(0..<store.state.basketSize, id: \.self) { i in
                 let item = i < store.state.basket.count ? store.state.basket[i] : nil
                 Button {
@@ -428,5 +440,19 @@ struct ItemIcon: View {
         } else {
             Text(store.catalog.emoji(for: item)).font(.system(size: size * 0.85))
         }
+    }
+}
+
+/// Номер ступени предмета: четкие пиксельные цифры на светлой плашке.
+struct TierBadge: View {
+    let tier: Int
+
+    var body: some View {
+        Text("\(tier + 1)")
+            .font(Pixel.digits(13))
+            .foregroundColor(Theme.text)
+            .padding(.horizontal, 2)
+            .padding(.vertical, 1)
+            .background(Color(red: 1, green: 0.96, blue: 0.86).opacity(0.9))
     }
 }

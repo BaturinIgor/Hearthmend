@@ -5,13 +5,41 @@ import UIKit
 /// (картинки из tools/ui_kit.py, лежат в Resources/UI). Всё увеличивается без сглаживания.
 @MainActor
 enum Pixel {
-    /// Пиксельный шрифт для заголовков, чисел и кнопок. Иероглифы iOS дорисует системным шрифтом.
+    /// Мельче этого пиксельный шрифт читается плохо: такой текст набирается округлым системным.
+    static let pixelMin: CGFloat = 15
+
+    /// Пиксельный шрифт для заголовков и кнопок. Мелкий текст (подсказки, описания) идет
+    /// округлым системным полужирным: так его легко читать. Иероглифы iOS дорисует системным шрифтом.
     static func font(_ size: CGFloat) -> Font {
-        .custom("Tiny5", size: size * 1.12)
+        size < pixelMin ? body(size) : .custom("Tiny5", size: size * 1.12)
+    }
+
+    /// Читаемый текст: описания, подсказки, мелкие подписи.
+    static func body(_ size: CGFloat) -> Font {
+        .system(size: size + 1, weight: .bold, design: .rounded)
+    }
+
+    /// Цифры: крупный пиксельный шрифт с четкими 8, 6, 9 (Press Start 2P).
+    static func digits(_ size: CGFloat) -> Font {
+        .custom("PressStart2P-Regular", size: (size * 0.74).rounded())
+    }
+
+    /// Сторона пиксельной картинки в точках, кратная пикселю исходника: все пиксели одинаковые.
+    static func crisp(_ size: CGFloat, source: CGFloat) -> CGFloat {
+        let scale = UIScreen.main.scale
+        let k = max(1, (size * scale / max(1, source)).rounded())
+        return k * source / scale
     }
 
     /// Эмодзи валют в строках заменяются пиксельными иконками.
-    static let icons: [String: String] = ["💎": "ui_gem", "🪙": "ui_coin", "⚡️": "ui_energy", "⚡": "ui_energy", "⭐️": "ui_star", "⭐": "ui_star"]
+    static let icons: [String: String] = ["💎": "ui_gem", "🪙": "ui_coin", "⚡️": "ui_energy", "⚡": "ui_energy", "⭐️": "ui_star", "⭐": "ui_star",
+                                             "🪴": "ui_plant", "👑": "ui_crown", "🏡": "ui_house", "🎟": "ui_ticket", "🎀": "ui_ribbon", "🖼": "ui_frame", "🧺": "ui_basket", "🎁": "ui_gift", "🫙": "ui_jar", "🏵": "ui_rosette", "❓": "ui_question", "🔒": "ui_lock", "↩": "ui_undo", "👝": "ui_pouch", "🧰": "ui_chest", "💰": "ui_bag", "🏰": "ui_vault", "🛠": "ui_hammer", "🐷": "ui_piggy", "✓": "ui_check", "🎉": "ui_party", "🎊": "ui_confetti", "🌸": "ui_spring", "☀": "ui_summer", "🍂": "ui_autumn", "❄": "ui_winter", "★": "ui_star", "🧱": "debris"]
+
+    /// Ключ картинки для эмодзи (без вариантов начертания), если она у нас нарисована.
+    static func key(for emoji: String) -> String? {
+        let bare = emoji.replacingOccurrences(of: "\u{FE0F}", with: "").replacingOccurrences(of: "\u{FE0E}", with: "")
+        return icons[emoji] ?? icons[bare]
+    }
 
     private static var scaled: [String: UIImage] = [:]
 
@@ -22,33 +50,51 @@ enum Pixel {
         guard let src = Sprites.image(key) else { return nil }
         let format = UIGraphicsImageRendererFormat()
         format.scale = UIScreen.main.scale
-        let img = UIGraphicsImageRenderer(size: CGSize(width: size, height: size), format: format).image { ctx in
+        // кратное увеличение: иначе пиксели выходят разной ширины и картинка «кривая»
+        let side = max(src.size.width, src.size.height)
+        let k = crisp(size, source: side) / side
+        let w = src.size.width * k, h = src.size.height * k
+        let img = UIGraphicsImageRenderer(size: CGSize(width: w, height: h), format: format).image { ctx in
             ctx.cgContext.interpolationQuality = .none
-            src.draw(in: CGRect(x: 0, y: 0, width: size, height: size))
+            src.draw(in: CGRect(x: 0, y: 0, width: w, height: h))
         }
         scaled[id] = img
         return img
     }
 
-    /// Текст с иконками: "💎 120  ⚡️ 30" -> пиксельный шрифт и пиксельные кристалл и молния.
+    /// Текст с иконками: "💎 120  ⚡️ 30" -> пиксельные кристалл и молния, числа крупным пиксельным шрифтом.
     static func text(_ string: String, size: CGFloat) -> Text {
+        let small = size < pixelMin
         var result = Text("")
         var buffer = ""
-        func flush() {
-            if !buffer.isEmpty { result = result + Text(buffer); buffer = "" }
+        var number = ""
+        func flushText() {
+            if !buffer.isEmpty { result = result + Text(buffer).font(font(size)); buffer = "" }
+        }
+        func flushNumber() {
+            if !number.isEmpty {
+                result = result + Text(number).font(small ? body(size) : digits(size))
+                number = ""
+            }
         }
         for ch in string {
             let s = String(ch)
-            if let key = icons[s] ?? icons[s.replacingOccurrences(of: "\u{FE0F}", with: "")],
+            if let key = key(for: s),
                let image = icon(key, size: (size * 1.3).rounded()) {
-                flush()
+                flushText(); flushNumber()
                 result = result + Text(Image(uiImage: image)).baselineOffset(-size * 0.22)
+            } else if ch.isASCII, ch.isNumber || (!number.isEmpty && (ch == "/" || ch == ":")) || ((ch == "+" || ch == "×") && number.isEmpty) {
+                flushText()
+                number.append(ch)
+            } else if ch == "\u{FE0F}" || ch == "\u{FE0E}" {
+                continue
             } else {
+                flushNumber()
                 buffer.append(ch)
             }
         }
-        flush()
-        return result.font(font(size))
+        flushText(); flushNumber()
+        return result
     }
 }
 
@@ -231,5 +277,43 @@ struct PixelSheet<Content: View>: View {
         }
         .foregroundColor(Theme.text)
         .background(PixelTile(key: "ui_bg").ignoresSafeArea())
+    }
+}
+
+/// Значок по эмодзи: наша пиксельная картинка, если она нарисована (несколько символов подряд,
+/// например «💎💎», идут рядом). Неизвестный символ остается текстом.
+struct EmojiIcon: View {
+    let emoji: String
+    var size: CGFloat = 24
+
+    init(_ emoji: String, size: CGFloat = 24) {
+        self.emoji = emoji
+        self.size = size
+    }
+
+    var body: some View {
+        HStack(spacing: -size * 0.25) {
+            ForEach(Array(emoji.enumerated()), id: \.offset) { _, ch in
+                if let key = Pixel.key(for: String(ch)) {
+                    PixelIcon(key: key, size: size)
+                } else {
+                    Text(String(ch)).font(.system(size: size * 0.85))
+                }
+            }
+        }
+    }
+}
+
+/// Портрет жителя из пака (npc_<id>), запасной вариант - домик.
+struct ResidentIcon: View {
+    let id: String
+    var size: CGFloat = 40
+
+    var body: some View {
+        if Sprites.image("npc_\(id)") != nil {
+            PixelIcon(key: "npc_\(id)", size: size)
+        } else {
+            PixelIcon(key: "ui_house", size: size)
+        }
     }
 }
