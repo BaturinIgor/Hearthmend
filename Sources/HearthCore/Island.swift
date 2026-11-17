@@ -126,9 +126,9 @@ public enum Island {
         AdventureMilestone(points: 225, prize: .chest(Chest(kind: .energy, level: 3))),
         AdventureMilestone(points: 290, prize: .chest(Chest(kind: .coins, level: 4))),
         AdventureMilestone(points: 370, prize: .generator("fishing")),
-        AdventureMilestone(points: 460, prize: .chest(Chest(kind: .gems, level: 2))),
-        AdventureMilestone(points: 570, prize: .chest(Chest(kind: .energy, level: 4))),
-        AdventureMilestone(points: 700, prize: .decor("decor_boat")),
+        AdventureMilestone(points: 490, prize: .chest(Chest(kind: .gems, level: 2))),
+        AdventureMilestone(points: 620, prize: .chest(Chest(kind: .energy, level: 4))),
+        AdventureMilestone(points: 780, prize: .decor("decor_boat")),
     ]
 }
 

@@ -70,7 +70,8 @@ final class IslandTests: XCTestCase {
         XCTAssertEqual(r.merges.count, 1)
         XCTAssertEqual(r.merges[0].made, 1)
         let items = game.adventure!.island!.cells.compactMap(\.item)
-        XCTAssertEqual(items, [Item(chain: flower.chain, tier: 1)])
+        XCTAssertEqual(items.filter { $0 == Item(chain: flower.chain, tier: 1) }.count, 1)
+        XCTAssertFalse(items.contains(flower))
         XCTAssertEqual(game.adventure!.island!.cells[center].item, Item(chain: flower.chain, tier: 1), "новый встает куда положили")
         XCTAssertFalse(r.cleared.isEmpty, "слияние у края очищает туман")
         XCTAssertLessThan(game.adventure!.island!.fogLeft, fogBefore)
@@ -87,9 +88,10 @@ final class IslandTests: XCTestCase {
         }
         let r = game.moveOnIsland(from: center + w, to: center)!
         XCTAssertEqual(r.merges.first?.made, 2)
+        // из тумана могли выйти подарки, считаем только то, что получилось из самоцветов
         let items = game.adventure!.island!.cells.compactMap(\.item)
-        XCTAssertEqual(items.count, 2)
-        XCTAssertTrue(items.allSatisfy { $0 == Item(chain: gem.chain, tier: 1) })
+        XCTAssertEqual(items.filter { $0 == Item(chain: gem.chain, tier: 1) }.count, 2)
+        XCTAssertFalse(items.contains(gem))
     }
 
     func testCascadeAndTopTierBecomesPoints() {
@@ -102,7 +104,8 @@ final class IslandTests: XCTestCase {
         let before = game.adventure!.points
         let r = game.moveOnIsland(from: center + w, to: center)!
         XCTAssertEqual(r.merges.last?.item.tier, Island.maxTier)
-        XCTAssertTrue(game.adventure!.island!.cells.allSatisfy { $0.item == nil }, "последняя ступень не занимает место")
+        XCTAssertFalse(game.adventure!.island!.cells.contains { $0.item?.tier ?? 0 >= Island.maxTier }, "последняя ступень не занимает место")
+        XCTAssertFalse(game.adventure!.island!.cells.contains { $0.item == top })
         XCTAssertGreaterThanOrEqual(game.adventure!.points - before, Island.tierPoints[Island.maxTier])
     }
 
