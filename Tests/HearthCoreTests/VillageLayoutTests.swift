@@ -20,8 +20,8 @@ final class VillageLayoutTests: XCTestCase {
         for task in VillageDef.bundled.allTasks {
             XCTAssertGreaterThan(task.x, 0, task.id)
             XCTAssertLessThan(task.x, Game.mapSize.width, task.id)
-            XCTAssertGreaterThan(task.y, 0, task.id)
-            XCTAssertLessThanOrEqual(task.y, Game.mapSize.height, task.id)
+            XCTAssertGreaterThan(Double(task.y), 0, task.id)
+            XCTAssertLessThanOrEqual(Double(task.y), Game.mapSize.height, task.id)
         }
     }
 
