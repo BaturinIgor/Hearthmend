@@ -350,5 +350,14 @@
   "adv.island.hint": "Bir eşyaya, sonra aynılarının yanındaki hücreye dokun",
   "adv.island.tide": "Gelgit",
   "adv.island.full": "Kıyıda yer yok: birleştir ya da dalgaya ver",
-  "adv.no_shells": "Kabuk kalmadı: ana tahtada sipariş tamamla"
+  "adv.no_shells": "Kabuk kalmadı: ana tahtada sipariş tamamla",
+  "adv.greenhouse.title": "Sera",
+  "adv.greenhouse.how": "Tohumlar siparişlerden gelir. Bitkiler gerçek zamanda büyür. İki aynı bitki daha büyük birine birleşir ve daha çabuk olgunlaşır. Olgunları puan için topla, büyükler çok daha değerli. Sulama kabı 4 saatte bir dolar ve her şeyi bir saat hızlandırır.",
+  "adv.greenhouse.golden": "Son aşamadaki bitki ana tahtana bir sandık da getirir.",
+  "adv.greenhouse.full": "Tüm tarhlar dolu: önce birleştir ya da hasat et",
+  "adv.greenhouse.watered": "Sulandı! Her şey bir saat daha hızlı büyüyor",
+  "adv.greenhouse.harvest": "Hasat",
+  "adv.greenhouse.water": "Sula",
+  "adv.greenhouse.plant": "Ek",
+  "adv.no_seeds": "Tohum kalmadı: ana tahtada sipariş tamamla"
 }

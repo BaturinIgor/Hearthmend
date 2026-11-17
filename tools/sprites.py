@@ -176,11 +176,15 @@ ISLAND = {
     "island_amber": [(ORES, 5, 2, 1, 1), (ORES, 6, 2, 1, 1), (ORES, 3, 2, 1, 1),
                      (ORES, 2, 2, 1, 1), (ORES, 1, 2, 1, 1), (ORES, 4, 2, 1, 1)],
 }
+# растения события «Теплица»: росток, три стадии роста и урожай
+for chain, k in (("gh_tomato", 1), ("gh_sunflower", 14), ("gh_strawberry", 17)):
+    for t, col in enumerate(range(2, 7)):
+        ISLAND[chain] = ISLAND.get(chain, []) + [(CROPS, col, 2 * k, 1, 2)]
 ISLAND_OUTLINE = set()
 for chain, specs in ISLAND.items():
     for i, spec in enumerate(specs):
         EXTRA[f"{chain}_{i}"] = spec
-        if spec[0] == FLOWERS or spec[1] < 5:
+        if spec[0] in (FLOWERS, CROPS) and not (spec[0] == CROPS and spec[1] == 6) or (spec[0] == ORES and spec[1] < 5):
             ISLAND_OUTLINE.add(f"{chain}_{i}")
 for kind, row in {"coins": 0, "gems": 1, "energy": 3, "items": 4}.items():
     EXTRA[f"chest_3_{kind}"] = (JEWEL, 0, row, 1, 1)

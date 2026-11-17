@@ -350,5 +350,14 @@
   "adv.island.hint": "Tippe einen Gegenstand an, dann ein Feld neben gleichen",
   "adv.island.tide": "Flut",
   "adv.island.full": "Kein Platz am Strand: kombiniere oder spül etwas weg",
-  "adv.no_shells": "Keine Muscheln mehr: erfülle Aufträge auf dem Hauptfeld"
+  "adv.no_shells": "Keine Muscheln mehr: erfülle Aufträge auf dem Hauptfeld",
+  "adv.greenhouse.title": "Das Gewächshaus",
+  "adv.greenhouse.how": "Samen gibt es für Aufträge. Pflanzen wachsen in Echtzeit. Zwei gleiche werden zu einer größeren, die schneller reif ist. Ernte Reifes für Punkte, größere bringen viel mehr. Die Gießkanne füllt sich alle 4 Stunden und lässt alles eine Stunde schneller wachsen.",
+  "adv.greenhouse.golden": "Eine Pflanze der letzten Stufe bringt zusätzlich eine Truhe aufs Hauptfeld.",
+  "adv.greenhouse.full": "Alle Beete belegt: erst kombinieren oder ernten",
+  "adv.greenhouse.watered": "Gegossen! Alles wächst eine Stunde schneller",
+  "adv.greenhouse.harvest": "Ernten",
+  "adv.greenhouse.water": "Gießen",
+  "adv.greenhouse.plant": "Pflanzen",
+  "adv.no_seeds": "Keine Samen mehr: erfülle Aufträge auf dem Hauptfeld"
 }

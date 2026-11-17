@@ -273,7 +273,7 @@ final class GameStore: ObservableObject {
         } else if piggyBefore < balance.piggyMax && game.piggyFull {
             show(L10n.t("shop.piggy_full"))
         } else {
-            let moveIcon = game.adventure?.kind == .island ? "🐚" : "⛏️"
+            let moveIcon = AdventureArt.emoji(game.adventure?.kind ?? .depths)
             show(String(format: L10n.t("toast.order_done"), order.coins, order.stars) + (movesBefore != nil && movesGot > 0 ? "  \(moveIcon)\(movesGot)" : ""))
         }
         if let up = game.lastFriendLevelUp {
@@ -606,7 +606,7 @@ final class GameStore: ObservableObject {
         guard n > 0 else { return }
         Haptics.success()
         Audio.shared.play(.coins)
-        show((icon == "ui_shell" ? "🐚" : "⛏️") + " +\(n)")
+        show(AdventureArt.emoji(game.adventure?.kind ?? .depths) + " +\(n)")
         commit()
     }
 
@@ -654,6 +654,58 @@ final class GameStore: ObservableObject {
         guard game.washAway(index) else { return }
         Haptics.light()
         Audio.shared.play(.drop)
+        commit()
+    }
+
+    // MARK: - Теплица
+
+    @discardableResult
+    func plantSeed(at bed: Int? = nil) -> Game.PlantResult {
+        let r = game.plantSeed(at: bed)
+        switch r {
+        case .noMoves:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.no_seeds"))
+        case .noRoom:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.greenhouse.full"))
+        case .planted:
+            Haptics.light()
+            Audio.shared.play(.spawn)
+        }
+        commit()
+        return r
+    }
+
+    /// Перенос растения. true - если растения слились.
+    @discardableResult
+    func movePlant(from: Int, to: Int) -> Bool {
+        let merge = game.canMergePlants(from, to)
+        guard game.movePlant(from: from, to: to) else { return false }
+        Haptics.light()
+        Audio.shared.play(merge ? .merge : .drop)
+        commit()
+        return merge
+    }
+
+    func harvest(_ bed: Int) {
+        guard let r = game.harvest(bed) else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        if r.prizes.isEmpty {
+            show(String(format: L10n.t("adv.points"), r.points))
+        } else {
+            show(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))
+            onBoardChange?()
+        }
+        commit()
+    }
+
+    func water() {
+        guard game.water() else { return }
+        Haptics.success()
+        Audio.shared.play(.sparkle)
+        show(L10n.t("adv.greenhouse.watered"))
         commit()
     }
 

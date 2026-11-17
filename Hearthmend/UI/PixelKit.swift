@@ -28,7 +28,7 @@ enum Pixel {
 
     /// Эмодзи валют в строках заменяются пиксельными иконками.
     static let icons: [String: String] = ["💎": "ui_gem", "🪙": "ui_coin", "⚡️": "ui_energy", "⚡": "ui_energy", "⭐️": "ui_star", "⭐": "ui_star",
-                                             "🪴": "ui_plant", "👑": "ui_crown", "🏡": "ui_house", "🎟": "ui_ticket", "🎀": "ui_ribbon", "🖼": "ui_frame", "🧺": "ui_basket", "🎁": "ui_gift", "🫙": "ui_jar", "🏵": "ui_rosette", "❓": "ui_question", "🔒": "ui_lock", "↩": "ui_undo", "👝": "ui_pouch", "🧰": "ui_chest", "💰": "ui_bag", "🏰": "ui_vault", "🛠": "ui_hammer", "🐷": "ui_piggy", "✓": "ui_check", "🎉": "ui_party", "🎊": "ui_confetti", "🌸": "ui_spring", "☀": "ui_summer", "🍂": "ui_autumn", "❄": "ui_winter", "★": "ui_star", "🧱": "debris", "🛒": "ui_wagon", "🏆": "ui_trophy", "💛": "ui_heart", "❤": "ui_heart", "⛏": "ui_pickaxe", "🏮": "ui_lantern", "🚃": "ui_minecart", "🐚": "ui_shell", "🌊": "ui_wave"]
+                                             "🪴": "ui_plant", "👑": "ui_crown", "🏡": "ui_house", "🎟": "ui_ticket", "🎀": "ui_ribbon", "🖼": "ui_frame", "🧺": "ui_basket", "🎁": "ui_gift", "🫙": "ui_jar", "🏵": "ui_rosette", "❓": "ui_question", "🔒": "ui_lock", "↩": "ui_undo", "👝": "ui_pouch", "🧰": "ui_chest", "💰": "ui_bag", "🏰": "ui_vault", "🛠": "ui_hammer", "🐷": "ui_piggy", "✓": "ui_check", "🎉": "ui_party", "🎊": "ui_confetti", "🌸": "ui_spring", "☀": "ui_summer", "🍂": "ui_autumn", "❄": "ui_winter", "★": "ui_star", "🧱": "debris", "🛒": "ui_wagon", "🏆": "ui_trophy", "💛": "ui_heart", "❤": "ui_heart", "⛏": "ui_pickaxe", "🏮": "ui_lantern", "🚃": "ui_minecart", "🐚": "ui_shell", "🌊": "ui_wave", "🌱": "ui_seeds", "💧": "ui_can"]
 
     /// Ключ картинки для эмодзи (без вариантов начертания), если она у нас нарисована.
     static func key(for emoji: String) -> String? {

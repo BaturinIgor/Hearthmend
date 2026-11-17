@@ -28,7 +28,17 @@ enum AdventureArt {
         switch kind {
         case .depths: return "ui_pickaxe"
         case .island: return "ui_shell"
+        case .greenhouse: return "ui_seeds"
         default: return "ui_gift"
+        }
+    }
+
+    /// Валюта события в тостах.
+    static func emoji(_ kind: AdventureKind) -> String {
+        switch kind {
+        case .island: return "🐚"
+        case .greenhouse: return "🌱"
+        default: return "⛏️"
         }
     }
 
@@ -47,6 +57,7 @@ struct AdventureSheet: View {
         switch store.state.adventure?.kind {
         case .depths?: DepthsView()
         case .island?: IslandView()
+        case .greenhouse?: GreenhouseView()
         default: PixelSheet(L10n.t("adv.title")) { Spacer() }
         }
     }

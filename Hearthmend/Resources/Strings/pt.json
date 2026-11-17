@@ -350,5 +350,14 @@
   "adv.island.hint": "Toque num item e depois numa casa ao lado de iguais",
   "adv.island.tide": "Maré",
   "adv.island.full": "Sem espaço na praia: combine ou leve algo ao mar",
-  "adv.no_shells": "Sem conchas: complete pedidos no tabuleiro principal"
+  "adv.no_shells": "Sem conchas: complete pedidos no tabuleiro principal",
+  "adv.greenhouse.title": "A Estufa",
+  "adv.greenhouse.how": "As sementes vêm dos pedidos. As plantas crescem em tempo real. Duas iguais viram uma maior, que amadurece mais rápido. Colha o que estiver maduro por pontos; as maiores valem muito mais. O regador enche a cada 4 horas e acelera tudo em uma hora.",
+  "adv.greenhouse.golden": "Uma planta do último estágio também traz um baú para o tabuleiro principal.",
+  "adv.greenhouse.full": "Todos os canteiros ocupados: combine ou colha primeiro",
+  "adv.greenhouse.watered": "Regado! Tudo cresce uma hora mais rápido",
+  "adv.greenhouse.harvest": "Colher",
+  "adv.greenhouse.water": "Regar",
+  "adv.greenhouse.plant": "Plantar",
+  "adv.no_seeds": "Sem sementes: complete pedidos no tabuleiro principal"
 }

@@ -350,5 +350,14 @@
   "adv.island.hint": "아이템을 누르고 같은 것 옆 칸을 누르세요",
   "adv.island.tide": "밀물",
   "adv.island.full": "해변에 자리가 없어요: 합치거나 파도로 보내세요",
-  "adv.no_shells": "조개가 없어요: 메인 보드에서 주문을 완료하세요"
+  "adv.no_shells": "조개가 없어요: 메인 보드에서 주문을 완료하세요",
+  "adv.greenhouse.title": "온실",
+  "adv.greenhouse.how": "씨앗은 주문으로 받아요. 식물은 실제 시간으로 자라요. 같은 것 2개를 합치면 더 큰 하나가 되고 더 빨리 익어요. 익으면 수확해서 점수! 클수록 훨씬 많아요. 물뿌리개는 4시간마다 차고 모두 1시간 빨리 자라게 해요.",
+  "adv.greenhouse.golden": "마지막 단계 식물은 메인 보드에 상자도 가져와요.",
+  "adv.greenhouse.full": "밭이 가득 찼어요: 먼저 합치거나 수확하세요",
+  "adv.greenhouse.watered": "물을 줬어요! 모두 1시간 빨리 자라요",
+  "adv.greenhouse.harvest": "수확",
+  "adv.greenhouse.water": "물 주기",
+  "adv.greenhouse.plant": "심기",
+  "adv.no_seeds": "씨앗이 없어요: 메인 보드에서 주문을 완료하세요"
 }
