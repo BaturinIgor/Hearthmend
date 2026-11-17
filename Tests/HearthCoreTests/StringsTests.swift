@@ -1,4 +1,5 @@
 import XCTest
+import HearthCore
 
 /// Строки интерфейса на всех языках: те же ключи, что в английском, и те же %d / %@.
 /// Иначе String(format:) в игре упадет или покажет мусор.
@@ -54,6 +55,20 @@ final class StringsTests: XCTestCase {
             for t in d["tasks"] as? [[String: Any]] ?? [] {
                 XCTAssertNotNil(en["task.\(t["id"] as? String ?? "")"], "\(t["id"] ?? "")")
             }
+        }
+    }
+
+    func testParallelLinesHaveText() throws {
+        let en = try load("en.json")
+        for r in Friends.all {
+            XCTAssertNotNil(en["friends.about.\(r)"], r)
+            XCTAssertNotNil(en["resident.\(r)"], r)
+        }
+        for kind in AchievementKind.allCases {
+            XCTAssertEqual(specifiers(en["achievements.\(kind.rawValue)"] ?? ""), ["d"], kind.rawValue)
+        }
+        for key in ["merchant.arrived", "merchant.thanks", "merchant.about", "friends.title", "achievements.title"] {
+            XCTAssertNotNil(en[key], key)
         }
     }
 }

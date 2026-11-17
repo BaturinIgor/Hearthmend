@@ -271,6 +271,10 @@ private struct OrdersStrip: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 // пока заказы помещаются, они стоят по центру; если нет - листаются
                 HStack(alignment: .top, spacing: 8) {
+                    if let visit = store.state.merchant {
+                        MerchantCard(visit: visit)
+                            .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    }
                     ForEach(store.state.orders) { order in
                         OrderCard(order: order)
                             .transition(.scale(scale: 0.6).combined(with: .opacity))
@@ -279,6 +283,7 @@ private struct OrdersStrip: View {
                 .padding(.horizontal, 8)
                 .frame(minWidth: geo.size.width)
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.orders.map(\.id))
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.merchant)
             }
         }
         .frame(height: 118)
@@ -326,11 +331,62 @@ private struct OrderCard: View {
     }
 }
 
+/// Особый заказ странствующего торговца: три предмета, таймер, награда кристаллами.
+private struct MerchantCard: View {
+    @EnvironmentObject private var store: GameStore
+    let visit: MerchantVisit
+
+    var body: some View {
+        let ready = store.canDeliverMerchant
+        VStack(spacing: 4) {
+            HStack(spacing: 2) {
+                PixelIcon(key: "ui_wagon", size: 28)
+                    .padding(.trailing, 2)
+                ForEach(Array(visit.needs.enumerated()), id: \.offset) { _, item in
+                    ZStack(alignment: .bottomTrailing) {
+                        ItemIcon(item: item, size: 28)
+                        TierBadge(tier: item.tier)
+                    }
+                    .frame(width: 31, height: 34)
+                }
+            }
+            HStack(spacing: 4) {
+                PixelText(reward, size: 14).lineLimit(1).fixedSize()
+                Text(timeLeft).font(Pixel.digits(11)).opacity(0.7).lineLimit(1).fixedSize()
+            }
+            .foregroundColor(Theme.text)
+            Button {
+                store.deliverMerchant()
+            } label: {
+                Text(L10n.t("orders.give"))
+            }
+            .buttonStyle(PixelButtonStyle(kind: ready ? .green : .wood, size: 12, compact: true))
+            .opacity(ready ? 1 : 0.55)
+            .disabled(!ready)
+        }
+        .padding(8)
+        .background(PixelSlice(key: ready ? "ui_paper_green" : "ui_paper_lilac", inset: 4))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            Haptics.light()
+            store.highlight(Order(id: -1, needs: visit.needs, coins: 0, stars: 0, xp: 0))
+            store.show(L10n.t("merchant.about"))
+        }
+    }
+
+    private var reward: String {
+        "💎\(visit.gems)" + (visit.decor != nil ? " 🪴" : visit.energy > 0 ? " ⚡️\(visit.energy)" : "")
+    }
+
+    private var timeLeft: String {
+        let s = max(0, Int(visit.leavesAt.timeIntervalSince(store.game.now())))
+        return String(format: "%d:%02d", s / 3600, (s % 3600) / 60)
+    }
+}
+
 /// Действия с выбранным предметом: продать или убрать в корзину.
 private struct SelectedBar: View {
     @EnvironmentObject private var store: GameStore
-    @State private var showQuests = false
-    @State private var showAlbum = false
 
     var body: some View {
         HStack(spacing: 8) {
@@ -346,8 +402,7 @@ private struct SelectedBar: View {
                 JarButton()
                 BasketButton()
                 PostcardButton()
-                BadgeButton(icon: "ui_ticket", count: store.game.questsClaimable) { showQuests = true }
-                BadgeButton(icon: "ui_book", count: store.game.collectionClaimable) { showAlbum = true }
+                JournalButton()
                 if store.game.boostUnlocked { BoostToggle() }
                 if store.state.level < 2 {
                     Text(L10n.t("hint.start"))
@@ -365,8 +420,6 @@ private struct SelectedBar: View {
         .padding(.horizontal, 12)
         .frame(minHeight: 44)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: store.canUndo)
-        .sheet(isPresented: $showQuests) { QuestsSheet() }
-        .background(EmptyView().sheet(isPresented: $showAlbum) { AlbumSheet() })
     }
 }
 

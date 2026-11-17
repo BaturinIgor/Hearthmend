@@ -521,6 +521,37 @@ def plant():
     return outlined(im)
 
 
+def trophy():
+    im = canvas(); d = ImageDraw.Draw(im)
+    gold, light, dark = (250, 196, 60, 255), (255, 232, 140, 255), (200, 130, 30, 255)
+    # ручки
+    d.rectangle((2, 3, 3, 6), fill=gold); d.point((3, 7), fill=gold)
+    d.rectangle((12, 3, 13, 6), fill=gold); d.point((12, 7), fill=gold)
+    # чаша
+    d.rectangle((4, 2, 11, 6), fill=gold)
+    d.rectangle((5, 7, 10, 8), fill=gold)
+    d.line((4, 2, 11, 2), fill=light)
+    d.line((6, 3, 6, 6), fill=(255, 250, 220, 255))
+    d.line((10, 3, 10, 7), fill=dark)
+    # ножка и подставка
+    d.rectangle((7, 9, 8, 10), fill=dark)
+    d.rectangle((5, 11, 10, 13), fill=WOOD_M)
+    d.line((5, 11, 10, 11), fill=WOOD_L)
+    return outlined(im)
+
+
+def wagon():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.pieslice((2, 1, 13, 12), 180, 360, fill=(246, 236, 210, 255))
+    d.line((5, 2, 5, 6), fill=(232, 110, 120, 255))
+    d.line((10, 2, 10, 6), fill=(232, 110, 120, 255))
+    d.rectangle((1, 6, 14, 10), fill=WOOD_M)
+    d.line((1, 6, 14, 6), fill=WOOD_L)
+    d.ellipse((2, 9, 6, 13), fill=(90, 60, 40, 255)); d.point((4, 11), fill=(250, 210, 80, 255))
+    d.ellipse((9, 9, 13, 13), fill=(90, 60, 40, 255)); d.point((11, 11), fill=(250, 210, 80, 255))
+    return outlined(im)
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "Hearthmend/Resources/UI"
     os.makedirs(out, exist_ok=True)
@@ -548,6 +579,7 @@ def main():
         "ui_pouch": pouch(), "ui_chest": chest(), "ui_bag": bag(), "ui_vault": vault(),
         "ui_hammer": hammer(), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
         "ui_confetti": confetti(), "ui_plant": plant(), "ui_book": book(),
+        "ui_trophy": trophy(), "ui_wagon": wagon(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),
     }

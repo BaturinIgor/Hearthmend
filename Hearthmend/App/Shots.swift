@@ -35,8 +35,10 @@ struct QAScreen: View {
 
     var body: some View {
         switch name {
-        case "qa_quests": QuestsSheet()
-        case "qa_album": AlbumSheet()
+        case "qa_quests": JournalSheet(tab: .quests)
+        case "qa_album": JournalSheet(tab: .album)
+        case "qa_friends": JournalSheet(tab: .friends)
+        case "qa_achievements": JournalSheet(tab: .achievements)
         case "qa_settings": SettingsView()
         case "qa_daily":
             ZStack { ContentView(); DailyRewardView {} }
