@@ -37,7 +37,7 @@ extension Game {
     /// Где стоит постройка: на своем месте из village.json или там, куда ее передвинул игрок.
     public func spot(of task: VillageTask) -> (x: Double, y: Double) {
         if let s = state.buildingSpots[task.id], s.count == 2 { return (s[0], s[1]) }
-        return (task.x, task.y)
+        return (task.x, Double(task.y))
     }
 
     /// Двигать можно только готовые постройки, в пределах карты.

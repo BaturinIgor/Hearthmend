@@ -47,7 +47,7 @@
       {"id": "mine_camp", "cost": 280, "requires": [], "building": "bld_camp", "x": 12.5, "y": 33, "unlocksChain": "crystal", "resident": "bruno"},
       {"id": "mine_carts", "cost": 300, "requires": ["mine_camp"], "building": "bld_carts", "x": 20, "y": 40},
       {"id": "mine_forge", "cost": 320, "requires": ["mine_camp"], "building": "bld_forge", "x": 6.5, "y": 36},
-      {"id": "mine_crystals", "cost": 330, "requires": ["mine_carts"], "building": "bld_crystals", "x": 11, "y": 39.5},
+      {"id": "mine_crystals", "cost": 330, "requires": ["mine_carts"], "building": "bld_crystals", "x": 11, "y": 40},
       {"id": "mine_lodge", "cost": 340, "requires": ["mine_forge"], "building": "bld_lodge", "x": 27.5, "y": 42},
       {"id": "mine_hall", "cost": 380, "requires": ["mine_crystals", "mine_lodge"], "building": "bld_mine_hall", "x": 24.5, "y": 36, "gems": 45}
     ]},
