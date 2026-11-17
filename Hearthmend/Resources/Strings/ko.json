@@ -314,5 +314,17 @@
   "thicket.hint": "같은 아이템을 여기에 놓으세요: %@ %d단계",
   "thicket.hidden": "덤불 속에 뭔가 숨어 있어요. 먼저 옆 칸을 치우세요",
   "chest.items": "한 번 더 탭해서 아이템 꺼내기. 남음: %d",
-  "chest.open": "한 번 더 탭해서 받기: %@"
+  "chest.open": "한 번 더 탭해서 받기: %@",
+  "shop.tab.offers": "특가",
+  "shop.tab.gems": "보석",
+  "shop.tab.resources": "자원",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "오늘의 선물",
+  "shop.gift_hint": "하루 한 번 무료",
+  "shop.gift_tomorrow": "내일 새 선물이 와요",
+  "shop.popular": "인기",
+  "shop.best": "최고 가치",
+  "shop.bonus": "%d%% 더",
+  "shop.coins": "코인",
+  "top.shop": "상점"
 }

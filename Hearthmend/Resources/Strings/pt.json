@@ -314,5 +314,17 @@
   "thicket.hint": "Solte aqui o mesmo item: %@ nível %d",
   "thicket.hidden": "Há algo escondido no matagal. Limpe primeiro as casas ao lado",
   "chest.items": "Toque de novo para tirar um item. Restam: %d",
-  "chest.open": "Toque de novo para coletar: %@"
+  "chest.open": "Toque de novo para coletar: %@",
+  "shop.tab.offers": "Ofertas",
+  "shop.tab.gems": "Gemas",
+  "shop.tab.resources": "Recursos",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Presente do dia",
+  "shop.gift_hint": "Grátis, uma vez por dia",
+  "shop.gift_tomorrow": "Volte amanhã para outro presente",
+  "shop.popular": "Popular",
+  "shop.best": "Melhor valor",
+  "shop.bonus": "+%d%% a mais",
+  "shop.coins": "Moedas",
+  "top.shop": "Loja"
 }

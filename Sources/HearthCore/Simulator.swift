@@ -67,6 +67,7 @@ public struct SimReport: CustomStringConvertible {
     public var coinsFromPets = 0
     public var petsAllDay: Double?
     public var chestsOpened = 0
+    public var energyFromShopGift = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
     public var gemsFromChests = 0
@@ -117,7 +118,10 @@ public enum Simulator {
             game.expireBubbles()
             if config.serveMerchant { game.updateMerchant() }
             if config.openJar { report.energyFromJar += game.openJar() }
-            if config.claimDaily { game.claimDaily() }
+            if config.claimDaily {
+                game.claimDaily()
+                if let gift = game.claimShopGift() { report.energyFromShopGift += gift.energy }
+            }
             while config.buyCoinEnergy, let price = game.coinEnergyPrice, game.state.coins >= price, game.buyEnergyWithCoins() {
                 report.energyFromCoins += game.balance.coinEnergyAmount
                 report.coinsSpent += price
@@ -304,11 +308,13 @@ public enum Simulator {
         for (i, piece) in game.state.cells.enumerated() {
             if case .chest(let c)? = piece { positions[c, default: []].append(i) }
         }
-        for (chest, idx) in positions where idx.count >= 2 && chest.canMerge {
+        // порядок словаря случайный от запуска к запуску: идем по клеткам, чтобы бот был повторяемым
+        let groups = positions.sorted { $0.value[0] < $1.value[0] }
+        for (chest, idx) in groups where idx.count >= 2 && chest.canMerge {
             if case .mergedChest = game.move(from: idx[0], to: idx[1]) { return true }
         }
         let empty = game.state.cells.filter { $0 == nil }.count
-        for (chest, idx) in positions {
+        for (chest, idx) in groups {
             if chest.kind == .items, empty < 3, chest.remaining > 1 { continue }
             if case .opened(let r) = game.openChest(at: idx[0]) {
                 if game.piece(at: idx[0]).map({ if case .chest = $0 { return false } else { return true } }) ?? true {
@@ -339,7 +345,7 @@ public enum Simulator {
             }
         }
         // генераторы сливаем всегда: это выгодно и освобождает клетку
-        for (_, idx) in generators where idx.count >= 2 {
+        for idx in generators.values.sorted(by: { $0[0] < $1[0] }) where idx.count >= 2 {
             if case .mergedGenerator = game.move(from: idx[0], to: idx[1]) { return true }
         }
         let maxNeeded = Dictionary(need.keys.map { ($0.chain, $0.tier) }, uniquingKeysWith: max)
@@ -351,7 +357,7 @@ public enum Simulator {
                 let target = maxNeeded[item.chain] ?? 0
                 return item.tier < target || emptyCount < 6
             }
-            .sorted { $0.key.tier < $1.key.tier }
+            .sorted { ($0.key.tier, $0.value[0]) < ($1.key.tier, $1.value[0]) }
         for (_, idx) in candidates {
             if case .merged = game.move(from: idx[0], to: idx[1]) {
                 report.merges += 1

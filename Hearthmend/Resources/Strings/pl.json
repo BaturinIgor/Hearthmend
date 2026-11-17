@@ -314,5 +314,17 @@
   "thicket.hint": "Upuść tu taki sam przedmiot: %@ poziom %d",
   "thicket.hidden": "W zaroślach coś się kryje. Najpierw oczyść pola obok",
   "chest.items": "Stuknij jeszcze raz po przedmiot. Zostało: %d",
-  "chest.open": "Stuknij jeszcze raz, żeby zebrać: %@"
+  "chest.open": "Stuknij jeszcze raz, żeby zebrać: %@",
+  "shop.tab.offers": "Okazje",
+  "shop.tab.gems": "Klejnoty",
+  "shop.tab.resources": "Zasoby",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Prezent dnia",
+  "shop.gift_hint": "Za darmo, raz dziennie",
+  "shop.gift_tomorrow": "Jutro nowy prezent",
+  "shop.popular": "Popularne",
+  "shop.best": "Najkorzystniej",
+  "shop.bonus": "+%d%% więcej",
+  "shop.coins": "Monety",
+  "top.shop": "Sklep"
 }

@@ -462,6 +462,14 @@ final class GameStore: ObservableObject {
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
+    func claimShopGift() {
+        guard let gift = game.claimShopGift() else { return }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        show(ShopRewardText.short(gift))
+        commit()
+    }
+
     func buyCoins(_ pack: CoinPack) {
         if game.buyCoins(pack) {
             Haptics.success()
@@ -583,6 +591,8 @@ enum Shortage: Equatable {
     case energy
     case coins(need: Int)
     case gems(need: Int)
+
+    var isGems: Bool { if case .gems = self { return true } else { return false } }
 }
 
 struct Celebration: Equatable, Identifiable {

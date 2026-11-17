@@ -314,5 +314,17 @@
   "thicket.hint": "Pose ici le même objet : %@ niveau %d",
   "thicket.hidden": "Quelque chose se cache dans les fourrés. Dégage d'abord les cases voisines",
   "chest.items": "Touche encore pour un objet. Reste : %d",
-  "chest.open": "Touche encore pour récupérer : %@"
+  "chest.open": "Touche encore pour récupérer : %@",
+  "shop.tab.offers": "Offres",
+  "shop.tab.gems": "Gemmes",
+  "shop.tab.resources": "Ressources",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Cadeau du jour",
+  "shop.gift_hint": "Gratuit, une fois par jour",
+  "shop.gift_tomorrow": "Reviens demain pour un nouveau cadeau",
+  "shop.popular": "Populaire",
+  "shop.best": "Meilleure offre",
+  "shop.bonus": "+%d%% en plus",
+  "shop.coins": "Pièces",
+  "top.shop": "Boutique"
 }

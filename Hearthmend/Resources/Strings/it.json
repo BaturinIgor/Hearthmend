@@ -314,5 +314,17 @@
   "thicket.hint": "Lascia qui lo stesso oggetto: %@ livello %d",
   "thicket.hidden": "Qualcosa è nascosto nella boscaglia. Prima libera le caselle vicine",
   "chest.items": "Tocca di nuovo per un oggetto. Rimasti: %d",
-  "chest.open": "Tocca di nuovo per raccogliere: %@"
+  "chest.open": "Tocca di nuovo per raccogliere: %@",
+  "shop.tab.offers": "Offerte",
+  "shop.tab.gems": "Gemme",
+  "shop.tab.resources": "Risorse",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Regalo del giorno",
+  "shop.gift_hint": "Gratis, una volta al giorno",
+  "shop.gift_tomorrow": "Torna domani per un nuovo regalo",
+  "shop.popular": "Popolare",
+  "shop.best": "Più conveniente",
+  "shop.bonus": "+%d%% in più",
+  "shop.coins": "Monete",
+  "top.shop": "Negozio"
 }

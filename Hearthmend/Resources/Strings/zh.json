@@ -314,5 +314,17 @@
   "thicket.hint": "把相同的物品放到这里：%@ %d级",
   "thicket.hidden": "灌木丛里藏着东西。先清理旁边的格子",
   "chest.items": "再点一次取出物品。剩余：%d",
-  "chest.open": "再点一次领取：%@"
+  "chest.open": "再点一次领取：%@",
+  "shop.tab.offers": "特惠",
+  "shop.tab.gems": "宝石",
+  "shop.tab.resources": "资源",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "每日礼物",
+  "shop.gift_hint": "每天免费一次",
+  "shop.gift_tomorrow": "明天还有新礼物",
+  "shop.popular": "热门",
+  "shop.best": "最划算",
+  "shop.bonus": "多 %d%%",
+  "shop.coins": "金币",
+  "top.shop": "商店"
 }

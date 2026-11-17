@@ -314,5 +314,17 @@
   "thicket.hint": "Suelta aquí el mismo objeto: %@ nivel %d",
   "thicket.hidden": "Algo se esconde en la maleza. Despeja primero las casillas de al lado",
   "chest.items": "Toca otra vez para sacar un objeto. Quedan: %d",
-  "chest.open": "Toca otra vez para recoger: %@"
+  "chest.open": "Toca otra vez para recoger: %@",
+  "shop.tab.offers": "Ofertas",
+  "shop.tab.gems": "Gemas",
+  "shop.tab.resources": "Recursos",
+  "shop.tab.vip": "VIP",
+  "shop.gift": "Regalo del día",
+  "shop.gift_hint": "Gratis, una vez al día",
+  "shop.gift_tomorrow": "Vuelve mañana por otro regalo",
+  "shop.popular": "Popular",
+  "shop.best": "Mejor precio",
+  "shop.bonus": "+%d%% más",
+  "shop.coins": "Monedas",
+  "top.shop": "Tienda"
 }
