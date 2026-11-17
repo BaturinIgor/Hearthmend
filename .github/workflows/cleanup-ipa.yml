@@ -1,0 +1,30 @@
+name: Удалить старые .ipa
+
+# Разовая чистка перед открытием репозитория: релизы build-* с .ipa и артефакты Hearthmend-ipa.
+# В .ipa расшифрованные спрайты пака, их нельзя держать в открытом доступе.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Releases and tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for tag in $(gh release list -R "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq '.[].tagName'); do
+            gh release delete "$tag" -R "$GITHUB_REPOSITORY" --yes --cleanup-tag && echo "release $tag deleted"
+          done
+          echo "left: $(gh release list -R "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq length)"
+      - name: IPA artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for id in $(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts" --paginate --jq '.artifacts[] | select(.name == "Hearthmend-ipa") | .id'); do
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$id" && echo "artifact $id deleted"
+          done
