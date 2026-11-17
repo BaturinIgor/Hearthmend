@@ -218,6 +218,9 @@ public struct GameState: Codable, Equatable {
     public var merchantsServed: Int = 0
     /// Достижения: сколько ступеней каждого уже забрано.
     public var achievementsClaimed: [String: Int] = [:]
+    /// Животные деревни и день (номер дня UTC), когда у каждого забран подарок.
+    public var petsOwned: [String] = []
+    public var petGiftDay: [String: Int] = [:]
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -249,6 +252,7 @@ public struct GameState: Codable, Equatable {
         case tutorialStep, questDay, quests, questChestClaimed, discovered, collectionClaimed, collectionChains
         case mapRev, buildingSpots, storySeen
         case friendHearts, friendClaimed, merchant, merchantNextAt, merchantsServed, achievementsClaimed
+        case petsOwned, petGiftDay
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -314,6 +318,8 @@ public struct GameState: Codable, Equatable {
         merchantNextAt = try c.decodeIfPresent(Date.self, forKey: .merchantNextAt)
         merchantsServed = try c.decodeIfPresent(Int.self, forKey: .merchantsServed) ?? 0
         achievementsClaimed = try c.decodeIfPresent([String: Int].self, forKey: .achievementsClaimed) ?? [:]
+        petsOwned = try c.decodeIfPresent([String].self, forKey: .petsOwned) ?? []
+        petGiftDay = try c.decodeIfPresent([String: Int].self, forKey: .petGiftDay) ?? [:]
     }
 }
 

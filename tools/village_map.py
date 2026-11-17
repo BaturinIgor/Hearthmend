@@ -111,6 +111,30 @@ DECOR = {
 }
 BUILDINGS.update(DECOR)
 
+# животные деревни: (лист, ряд ходьбы вправо, сколько кадров), кадры 32x32 -> pet_<id>_<n>
+PETS = {
+    "chicken": ("Animals/Chicken/Chicken_01.png", 1, 6),
+    "duck": ("Animals/Duck/Duck_01.png", 1, 6),
+    "sheep": ("Animals/Sheep/Sheep_01.png", 3, 8),
+    "frog": ("Animals/Frog/Frog_01.png", 1, 8),
+    "pig": ("Animals/Pig/Pig_01.png", 3, 8),
+    "goose": ("Animals/Goose/Goose_01.png", 1, 6),
+    "cow": ("Animals/Cow/Cow_01.png", 3, 8),
+    "swan": ("Animals/Swan/Swan_01.png", 1, 6),
+    "horse": ("Animals/Horse/Horse_01.png", 3, 6),
+    "mouse": ("Animals/Mouse/Mouse_01.png", 0, 6),
+}
+
+
+def pet_frames(pack, out):
+    n = 0
+    for pid, (path, row, count) in PETS.items():
+        sheet = load(pack, path)
+        for i in range(count):
+            sheet.crop((i * 32, row * 32, i * 32 + 32, row * 32 + 32)).save(os.path.join(out, f"pet_{pid}_{i}.png"))
+            n += 1
+    return n
+
 
 POSTCARD_W, POSTCARD_H = 448, 336
 
@@ -274,6 +298,7 @@ def main():
     missing = [t["building"] for t in tasks if t["building"] not in BUILDINGS]
     if missing:
         sys.exit("нет спрайтов для: " + ", ".join(missing))
+    print(f"кадров животных: {pet_frames(pack, out)}")
     images = {k: building(pack, k) for k in BUILDINGS}
     for k, im in images.items():
         im.save(os.path.join(out, k + ".png"))
