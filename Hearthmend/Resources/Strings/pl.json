@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Zbierz",
   "adv.greenhouse.water": "Podlej",
   "adv.greenhouse.plant": "Posadź",
-  "adv.no_seeds": "Brak nasion: realizuj zamówienia na głównej planszy"
+  "adv.no_seeds": "Brak nasion: realizuj zamówienia na głównej planszy",
+  "adv.mosaic.title": "Witraż",
+  "adv.mosaic.how": "Szkło dają zamówienia. Tnij kawałki na warsztat: dwa takie same łączą się w większy, który zakrywa dużo więcej pól. Połóż kawałek na odłamku tego samego koloru, a wypełni najbliższe puste pola; nadmiar szkła przepada. Gotowy odłamek daje premię, gotowe okno dużą premię i nowe okno.",
+  "adv.mosaic.window": "Każde gotowe okno przynosi też skrzynię na główną planszę.",
+  "adv.mosaic.full": "Warsztat pełny: połącz kawałki albo włóż je w okno",
+  "adv.mosaic.cut": "Tnij",
+  "adv.mosaic.shatter": "Rozbij",
+  "adv.mosaic.done": "Okno gotowe! Oto nowe",
+  "adv.mosaic.wrong": "Ten kawałek ma inny kolor",
+  "adv.no_glass": "Brak szkła: realizuj zamówienia na głównej planszy"
 }

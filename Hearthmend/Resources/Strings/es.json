@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Cosechar",
   "adv.greenhouse.water": "Regar",
   "adv.greenhouse.plant": "Plantar",
-  "adv.no_seeds": "Sin semillas: completa pedidos en el tablero principal"
+  "adv.no_seeds": "Sin semillas: completa pedidos en el tablero principal",
+  "adv.mosaic.title": "La Vidriera",
+  "adv.mosaic.how": "El vidrio viene de los pedidos. Corta piezas en el banco: dos iguales se combinan en una más grande que cubre muchas más casillas. Pon una pieza en un fragmento de su color para llenar las casillas vacías más cercanas; el vidrio que sobra se pierde. Un fragmento completo da un bonus; una ventana completa, un gran bonus y una ventana nueva.",
+  "adv.mosaic.window": "Cada ventana completa trae además un cofre a tu tablero principal.",
+  "adv.mosaic.full": "El banco está lleno: combina piezas o ponlas en la ventana",
+  "adv.mosaic.cut": "Cortar",
+  "adv.mosaic.shatter": "Romper",
+  "adv.mosaic.done": "¡Ventana lista! Aquí tienes una nueva",
+  "adv.mosaic.wrong": "Esta pieza es de otro color",
+  "adv.no_glass": "Sin vidrio: completa pedidos en el tablero principal"
 }

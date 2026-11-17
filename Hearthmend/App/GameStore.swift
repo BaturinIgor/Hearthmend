@@ -709,6 +709,71 @@ final class GameStore: ObservableObject {
         commit()
     }
 
+    // MARK: - Витраж
+
+    @discardableResult
+    func cutGlass() -> Game.CutResult {
+        let r = game.cutGlass()
+        switch r {
+        case .noMoves:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.no_glass"))
+        case .noRoom:
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.mosaic.full"))
+        case .cut:
+            Haptics.light()
+            Audio.shared.play(.spawn)
+        }
+        commit()
+        return r
+    }
+
+    /// Перенос на верстаке. true - если кусочки слились.
+    @discardableResult
+    func moveGlass(from: Int, to: Int) -> Bool {
+        let merge = game.canMergeGlass(from, to)
+        guard game.moveGlass(from: from, to: to) else { return false }
+        Haptics.light()
+        Audio.shared.play(merge ? .merge : .drop)
+        commit()
+        return merge
+    }
+
+    @discardableResult
+    func setGlass(slot: Int, cell: Int) -> Game.MosaicSet? {
+        guard let r = game.setGlass(slot: slot, cell: cell) else {
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.mosaic.wrong"))
+            return nil
+        }
+        if r.windowDone || r.regionDone {
+            Haptics.success()
+            Audio.shared.play(.sparkle)
+        } else {
+            Haptics.light()
+            Audio.shared.play(.drop)
+        }
+        if r.windowDone {
+            show(L10n.t("adv.mosaic.done") + " " + r.prizes.map(Self.describe).joined(separator: " "))
+            onBoardChange?()
+        } else if !r.prizes.isEmpty {
+            show(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))
+            onBoardChange?()
+        } else {
+            show(String(format: L10n.t("adv.points"), r.points))
+        }
+        commit()
+        return r
+    }
+
+    func shatterGlass(_ slot: Int) {
+        guard game.shatterGlass(slot) else { return }
+        Haptics.light()
+        Audio.shared.play(.drop)
+        commit()
+    }
+
     /// Награда события одной строкой: ящики и ресурсы значками, генератор, украшение.
     static func describe(_ prize: AdventurePrize) -> String {
         switch prize {

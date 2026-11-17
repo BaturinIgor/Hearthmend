@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Colher",
   "adv.greenhouse.water": "Regar",
   "adv.greenhouse.plant": "Plantar",
-  "adv.no_seeds": "Sem sementes: complete pedidos no tabuleiro principal"
+  "adv.no_seeds": "Sem sementes: complete pedidos no tabuleiro principal",
+  "adv.mosaic.title": "O Vitral",
+  "adv.mosaic.how": "O vidro vem dos pedidos. Corte peças na bancada: duas iguais viram uma maior, que cobre muito mais casas. Coloque uma peça num fragmento da mesma cor para preencher as casas vazias mais próximas; o vidro que sobra se perde. Um fragmento completo dá bônus; uma janela completa, um grande bônus e uma janela nova.",
+  "adv.mosaic.window": "Cada janela completa também traz um baú para o tabuleiro principal.",
+  "adv.mosaic.full": "A bancada está cheia: combine peças ou coloque-as na janela",
+  "adv.mosaic.cut": "Cortar",
+  "adv.mosaic.shatter": "Quebrar",
+  "adv.mosaic.done": "Janela pronta! Aqui vem uma nova",
+  "adv.mosaic.wrong": "Esta peça é de outra cor",
+  "adv.no_glass": "Sem vidro: complete pedidos no tabuleiro principal"
 }

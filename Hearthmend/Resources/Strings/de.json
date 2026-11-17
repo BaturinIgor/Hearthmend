@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Ernten",
   "adv.greenhouse.water": "Gießen",
   "adv.greenhouse.plant": "Pflanzen",
-  "adv.no_seeds": "Keine Samen mehr: erfülle Aufträge auf dem Hauptfeld"
+  "adv.no_seeds": "Keine Samen mehr: erfülle Aufträge auf dem Hauptfeld",
+  "adv.mosaic.title": "Buntglas",
+  "adv.mosaic.how": "Glas gibt es für Aufträge. Schneide Stücke auf die Werkbank: zwei gleiche werden zu einem größeren, das viel mehr Felder füllt. Lege ein Stück auf eine Scherbe seiner Farbe, es füllt die nächsten leeren Felder; übriges Glas geht verloren. Eine fertige Scherbe gibt einen Bonus, ein fertiges Fenster einen großen Bonus und ein neues Fenster.",
+  "adv.mosaic.window": "Jedes fertige Fenster bringt zusätzlich eine Truhe aufs Hauptfeld.",
+  "adv.mosaic.full": "Die Werkbank ist voll: kombiniere Stücke oder setze sie ins Fenster",
+  "adv.mosaic.cut": "Schneiden",
+  "adv.mosaic.shatter": "Zerbrechen",
+  "adv.mosaic.done": "Fenster fertig! Hier kommt ein neues",
+  "adv.mosaic.wrong": "Dieses Stück hat eine andere Farbe",
+  "adv.no_glass": "Kein Glas mehr: erfülle Aufträge auf dem Hauptfeld"
 }

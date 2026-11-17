@@ -677,6 +677,19 @@ def can():
     return outlined(im)
 
 
+def glass():
+    """Стекло для витража: три цветных осколка в свинцовой рамке."""
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(2, 3), (8, 2), (7, 8), (2, 9)], fill=(224, 72, 96, 255))
+    d.polygon([(8, 2), (13, 3), (13, 9), (7, 8)], fill=(80, 140, 232, 255))
+    d.polygon([(2, 9), (7, 8), (13, 9), (12, 14), (3, 14)], fill=(250, 186, 64, 255))
+    lead = (60, 54, 70, 255)
+    d.line((8, 2, 7, 8), fill=lead); d.line((2, 9, 7, 8), fill=lead); d.line((7, 8, 13, 9), fill=lead)
+    d.point((4, 4), fill=(255, 200, 210, 255)); d.point((10, 4), fill=(200, 226, 255, 255))
+    d.point((5, 11), fill=(255, 236, 170, 255)); d.point((6, 10), fill=(255, 236, 170, 255))
+    return outlined(im)
+
+
 def soil_tile():
     import random
     rnd = random.Random(4)
@@ -723,7 +736,7 @@ def main():
         "ui_mine_2": mine_tile((150, 146, 140, 255), (186, 182, 176, 255), (112, 108, 104, 255), 2, 12),
         "ui_mine_3": mine_tile((104, 96, 112, 255), (150, 140, 160, 255), (70, 64, 80, 255), 3, 16),
         "ui_mine_open": mine_open(),
-        "ui_seeds": seeds(), "ui_can": can(), "ui_soil": soil_tile(),
+        "ui_seeds": seeds(), "ui_can": can(), "ui_soil": soil_tile(), "ui_glass": glass(),
         "ui_shell": shell(), "ui_wave": wave(), "ui_fog": fog_tile(), "ui_water": water_tile(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),

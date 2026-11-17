@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Hasat",
   "adv.greenhouse.water": "Sula",
   "adv.greenhouse.plant": "Ek",
-  "adv.no_seeds": "Tohum kalmadı: ana tahtada sipariş tamamla"
+  "adv.no_seeds": "Tohum kalmadı: ana tahtada sipariş tamamla",
+  "adv.mosaic.title": "Vitray",
+  "adv.mosaic.how": "Cam siparişlerden gelir. Tezgâha parça kes: iki aynı parça çok daha fazla kare dolduran büyük bir parçaya birleşir. Parçayı kendi rengindeki kırığa koy, en yakın boş kareleri doldurur; artan cam kaybolur. Biten kırık bonus verir, biten pencere büyük bonus ve yeni bir pencere.",
+  "adv.mosaic.window": "Biten her pencere ana tahtana bir sandık da getirir.",
+  "adv.mosaic.full": "Tezgâh dolu: parçaları birleştir ya da pencereye koy",
+  "adv.mosaic.cut": "Kes",
+  "adv.mosaic.shatter": "Kır",
+  "adv.mosaic.done": "Pencere bitti! İşte yenisi",
+  "adv.mosaic.wrong": "Bu parça başka renkte",
+  "adv.no_glass": "Cam kalmadı: ana tahtada sipariş tamamla"
 }
