@@ -240,12 +240,17 @@ public final class Game {
         guard case .generator(let gen) = piece(at: index) else { return .notGenerator }
         guard let cell = nearestEmpty(to: index) else { return .boardFull }
         // ускорение x2: вдвое больше энергии за предмет на ступень выше (та же ценность, меньше тапов)
-        // если на ускорение не хватает, обычный предмет за 1 энергию
-        let boosted = boostActive && spendEnergy(2)
-        guard boosted || spendEnergy(1) else { return .noEnergy }
-        var tier = 0
-        if Double.random(in: 0..<1, using: &rng) < Double(gen.tier) * balance.generatorUpgradeChance { tier = 1 }
-        if Double.random(in: 0..<1, using: &rng) < 0.1 { tier += 1 }
+        // если на ускорение не хватает, обычный предмет за обычную цену
+        let level = min(max(gen.tier, 0), Balance.generatorOdds.count - 1)
+        let cost = Balance.generatorCost[level]
+        let boosted = boostActive && spendEnergy(cost * 2)
+        guard boosted || spendEnergy(cost) else { return .noEnergy }
+        var tier = Balance.generatorOdds[level].count - 1
+        var roll = Double.random(in: 0..<1, using: &rng)
+        for (t, p) in Balance.generatorOdds[level].enumerated() {
+            if roll < p { tier = t; break }
+            roll -= p
+        }
         if boosted { tier += 1 }
         tier = min(tier, catalog.maxTier(of: gen.chain))
         let item = Item(chain: gen.chain, tier: tier)
@@ -312,6 +317,7 @@ public final class Game {
             lastLuckyEnergy = luckyMerge(next)
             let bubble = maybeBubble(next, near: to)
             maybeChest(next, near: to)
+            maybeGenerator(next)
             placePendingGenerators()
             return .merged(item: next, cleared: cleared, bubble: bubble)
         case (.generator(let x), .generator(let y)?) where x == y:
@@ -493,7 +499,7 @@ public final class Game {
 
     /// Ступень в заказе на одну выше лучшей собранной, но не выше последней ступени цепочки.
     private func randomNeed(chain: String, easier: Bool = false) -> Item {
-        let maxTier = catalog.maxTier(of: chain)
+        let maxTier = catalog.orderTop(of: chain)
         var top = min(maxTier, max(2, (state.bestTier[chain] ?? 1) + 1))
         if easier { top = max(1, top - 1) }
         let low = min(1, top)

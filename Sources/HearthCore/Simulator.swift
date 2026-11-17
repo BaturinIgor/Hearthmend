@@ -68,6 +68,8 @@ public struct SimReport: CustomStringConvertible {
     public var petsAllDay: Double?
     public var chestsOpened = 0
     public var energyFromShopGift = 0
+    public var bestGeneratorLevel = 0
+    public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
     public var gemsFromChests = 0
@@ -152,6 +154,7 @@ public enum Simulator {
         report.bestFriends = game.bestFriends
         report.merchantsServed = game.state.merchantsServed
         report.bestTier = game.state.bestTier
+        report.bestGeneratorLevel = game.bestGeneratorLevel
         return report
     }
 
@@ -359,13 +362,19 @@ public enum Simulator {
             }
             .sorted { ($0.key.tier, $0.value[0]) < ($1.key.tier, $1.value[0]) }
         for (_, idx) in candidates {
+            let gens = generatorCount(game)
             if case .merged = game.move(from: idx[0], to: idx[1]) {
+                report.generatorsDropped += max(0, generatorCount(game) - gens)
                 report.merges += 1
                 report.energyFromLucky += game.lastLuckyEnergy
                 return true
             }
         }
         return false
+    }
+
+    private static func generatorCount(_ game: Game) -> Int {
+        game.state.pendingGenerators.count + game.state.cells.filter { if case .generator? = $0 { return true } else { return false } }.count
     }
 
     private static func popBubble(_ game: Game, report: inout SimReport) -> Bool {

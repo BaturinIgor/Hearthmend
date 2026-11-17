@@ -10,8 +10,9 @@ final class VillageLayoutTests: XCTestCase {
         XCTAssertEqual(g.village.districts.map(\.id), ["square", "farmstead", "riverside", "orchard", "hilltop", "mine", "fair"])
         XCTAssertNotNil(g.catalog.chain("fishing"))
         XCTAssertNotNil(g.catalog.chain("crystal"))
-        XCTAssertEqual(g.catalog.maxTier(of: "fishing"), 7)
-        XCTAssertEqual(g.catalog.maxTier(of: "crystal"), 7)
+        XCTAssertEqual(g.catalog.orderTop(of: "fishing"), 7)
+        XCTAssertEqual(g.catalog.orderTop(of: "crystal"), 7)
+        XCTAssertEqual(g.catalog.maxTier(of: "fishing"), 9)
         XCTAssertEqual(g.village.task("river_fisher")?.unlocksChain, "fishing")
         XCTAssertEqual(g.village.task("mine_camp")?.unlocksChain, "crystal")
     }
