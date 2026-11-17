@@ -309,5 +309,10 @@
   "top.boost_locked": "El impulso x2 de generadores se abre en el nivel %d",
   "top.merchant_locked": "El mercader ambulante llega desde el nivel %d",
   "top.merchant_soon": "El mercader llega en %@",
-  "selected.generator": "Toca otra vez: un objeto por ⚡️%d"
+  "selected.generator": "Toca otra vez: un objeto por ⚡️%d",
+  "chest.need_space": "Faltan %d casillas libres para este cofre",
+  "thicket.hint": "Suelta aquí el mismo objeto: %@ nivel %d",
+  "thicket.hidden": "Algo se esconde en la maleza. Despeja primero las casillas de al lado",
+  "chest.items": "%d objetos",
+  "chest.open": "Toca otra vez para abrir: %@"
 }

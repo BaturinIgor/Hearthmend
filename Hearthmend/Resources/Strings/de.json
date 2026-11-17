@@ -309,5 +309,10 @@
   "top.boost_locked": "Generator-Boost x2 ab Stufe %d",
   "top.merchant_locked": "Der fahrende Händler kommt ab Stufe %d",
   "top.merchant_soon": "Der Händler kommt in %@",
-  "selected.generator": "Noch einmal tippen: Gegenstand für ⚡️%d"
+  "selected.generator": "Noch einmal tippen: Gegenstand für ⚡️%d",
+  "chest.need_space": "Für diese Truhe fehlen noch %d freie Felder",
+  "thicket.hint": "Lege den gleichen Gegenstand hierher: %@ Stufe %d",
+  "thicket.hidden": "Im Dickicht ist etwas versteckt. Räume zuerst die Felder daneben",
+  "chest.items": "%d Gegenstände",
+  "chest.open": "Noch einmal tippen zum Öffnen: %@"
 }

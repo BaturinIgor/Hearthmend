@@ -6,6 +6,7 @@ final class TutorialTests: XCTestCase {
         let clock = TestClock()
         var b = Balance()
         b.debrisRows = 0
+        b.thicketOpen = 0
         let game = Game(balance: b, seed: 4, now: { clock.date })
         XCTAssertEqual(game.tutorial, .spawn)
 

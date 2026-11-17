@@ -309,5 +309,10 @@
   "top.boost_locked": "O impulso x2 dos geradores abre no nível %d",
   "top.merchant_locked": "O mercador viajante vem a partir do nível %d",
   "top.merchant_soon": "O mercador chega em %@",
-  "selected.generator": "Toque de novo: um item por ⚡️%d"
+  "selected.generator": "Toque de novo: um item por ⚡️%d",
+  "chest.need_space": "Faltam %d casas livres para este baú",
+  "thicket.hint": "Solte aqui o mesmo item: %@ nível %d",
+  "thicket.hidden": "Há algo escondido no matagal. Limpe primeiro as casas ao lado",
+  "chest.items": "%d itens",
+  "chest.open": "Toque de novo para abrir: %@"
 }

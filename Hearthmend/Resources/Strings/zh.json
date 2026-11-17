@@ -309,5 +309,10 @@
   "top.boost_locked": "生成器2倍加速在%d级开放",
   "top.merchant_locked": "流浪商人从%d级开始到访",
   "top.merchant_soon": "商人将在%@后到达",
-  "selected.generator": "再点一次：⚡️%d 换一个物品"
+  "selected.generator": "再点一次：⚡️%d 换一个物品",
+  "chest.need_space": "打开这个宝箱还需要 %d 个空格",
+  "thicket.hint": "把相同的物品放到这里：%@ %d级",
+  "thicket.hidden": "灌木丛里藏着东西。先清理旁边的格子",
+  "chest.items": "%d 件物品",
+  "chest.open": "再点一次打开：%@"
 }

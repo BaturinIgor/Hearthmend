@@ -409,6 +409,12 @@ private struct SelectedBar: View {
                     .foregroundColor(Theme.text)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
+            } else if let index = store.selected, case .chest(let chest)? = store.game.piece(at: index) {
+                PixelIcon(key: BoardScene.chestKey(chest), size: 30)
+                PixelText(chestText(chest), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
             } else {
                 JarButton()
                 BasketButton()
@@ -431,6 +437,18 @@ private struct SelectedBar: View {
         .padding(.horizontal, 12)
         .frame(minHeight: 44)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: store.canUndo)
+    }
+
+    private func chestText(_ chest: Chest) -> String {
+        let n = Game.chestAmount(chest)
+        let what: String
+        switch chest.kind {
+        case .items: what = String(format: L10n.t("chest.items"), n)
+        case .coins: what = "🪙\(n)"
+        case .energy: what = "⚡️\(n)"
+        case .gems: what = "💎\(n)"
+        }
+        return String(format: L10n.t("chest.open"), what)
     }
 }
 

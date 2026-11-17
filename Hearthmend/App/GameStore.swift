@@ -10,6 +10,8 @@ final class GameStore: ObservableObject {
     @Published var toast: String?
     /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
     @Published var shortage: Shortage?
+    /// Последний открытый ящик: сцена поля проигрывает по нему анимацию.
+    var lastOpenedChest: (index: Int, chest: Chest, reward: ChestReward)?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
     /// Свежие награды события: баннер события их показывает.
@@ -128,6 +130,35 @@ final class GameStore: ObservableObject {
             selected = selected == index ? nil : index
         case .debris?:
             show(L10n.t("toast.debris"))
+        case .chest(let chest)?:
+            // как генератор: первый тап выбирает, второй открывает
+            guard selected == index else {
+                Haptics.light()
+                selected = index
+                return nil
+            }
+            switch game.openChest(at: index) {
+            case .opened(let reward):
+                Haptics.success()
+                Audio.shared.play(reward.coins > 0 || reward.gems > 0 ? .coins : .sparkle)
+                lastOpenedChest = (index, chest, reward)
+                selected = nil
+                commit()
+                onBoardChange?()
+            case .needSpace(let n):
+                Audio.shared.play(.nope)
+                show(String(format: L10n.t("chest.need_space"), n))
+            case .notChest:
+                break
+            }
+        case .thicket(let item)?:
+            Haptics.light()
+            selected = nil
+            if game.isRevealed(index) {
+                show(String(format: L10n.t("thicket.hint"), catalog.emoji(for: item), item.tier + 1))
+            } else {
+                show(L10n.t("thicket.hidden"))
+            }
         case nil:
             selected = nil
         }
@@ -138,7 +169,7 @@ final class GameStore: ObservableObject {
     func move(from: Int, to: Int) -> Game.MoveResult {
         let result = game.move(from: from, to: to)
         switch result {
-        case .merged, .mergedGenerator:
+        case .merged, .mergedGenerator, .mergedChest, .unlocked:
             Haptics.success()
             Audio.shared.play(game.lastLuckyEnergy > 0 ? .coins : .merge)
             selected = to

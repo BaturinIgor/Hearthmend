@@ -309,5 +309,10 @@
   "top.boost_locked": "Przyspieszenie generatorów x2 od poziomu %d",
   "top.merchant_locked": "Wędrowny kupiec przyjeżdża od poziomu %d",
   "top.merchant_soon": "Kupiec przyjedzie za %@",
-  "selected.generator": "Stuknij jeszcze raz: przedmiot za ⚡️%d"
+  "selected.generator": "Stuknij jeszcze raz: przedmiot za ⚡️%d",
+  "chest.need_space": "Do tej skrzyni potrzeba jeszcze %d wolnych pól",
+  "thicket.hint": "Upuść tu taki sam przedmiot: %@ poziom %d",
+  "thicket.hidden": "W zaroślach coś się kryje. Najpierw oczyść pola obok",
+  "chest.items": "%d przedm.",
+  "chest.open": "Stuknij jeszcze raz, żeby otworzyć: %@"
 }

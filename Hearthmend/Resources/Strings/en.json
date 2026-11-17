@@ -309,5 +309,10 @@
   "top.boost_locked": "Generator boost x2 opens at level %d",
   "top.merchant_locked": "The wandering merchant comes from level %d",
   "top.merchant_soon": "The merchant arrives in %@",
-  "selected.generator": "Tap again: an item for ⚡️%d"
+  "selected.generator": "Tap again: an item for ⚡️%d",
+  "chest.need_space": "Need %d more free cells for this chest",
+  "thicket.hint": "Drop the same item here: %@ level %d",
+  "thicket.hidden": "Something is hidden in the thicket. Clear the cells around it first",
+  "chest.items": "%d items",
+  "chest.open": "Tap again to open: %@"
 }

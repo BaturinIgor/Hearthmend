@@ -309,5 +309,10 @@
   "top.boost_locked": "Accélération x2 des générateurs au niveau %d",
   "top.merchant_locked": "Le marchand ambulant vient dès le niveau %d",
   "top.merchant_soon": "Le marchand arrive dans %@",
-  "selected.generator": "Touche encore : un objet pour ⚡️%d"
+  "selected.generator": "Touche encore : un objet pour ⚡️%d",
+  "chest.need_space": "Il faut encore %d cases libres pour ce coffre",
+  "thicket.hint": "Pose ici le même objet : %@ niveau %d",
+  "thicket.hidden": "Quelque chose se cache dans les fourrés. Dégage d'abord les cases voisines",
+  "chest.items": "%d objets",
+  "chest.open": "Touche encore pour ouvrir : %@"
 }

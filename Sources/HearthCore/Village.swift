@@ -124,6 +124,7 @@ extension Game {
             state.pendingGenerators.removeFirst()
             placed.append(cell)
         }
+        placePendingChests()
         return placed
     }
 
