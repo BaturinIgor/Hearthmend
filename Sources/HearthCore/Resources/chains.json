@@ -9,7 +9,10 @@
         "garden_cabbage",
         "garden_pumpkin",
         "garden_barrel",
-        "garden_hay"
+        "garden_hay",
+        "garden_planter",
+        "garden_scarecrow",
+        "garden_well"
       ],
       "emoji": [
         "🫘",
@@ -18,11 +21,15 @@
         "🥬",
         "🎃",
         "🛢️",
-        "🌾"
+        "🌾",
+        "🌿",
+        "🧑‍🌾",
+        "⛲"
       ],
       "generator": "gen_garden",
       "generatorEmoji": "🪴",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 6
     },
     {
       "id": "forest",
@@ -33,7 +40,10 @@
         "forest_stool",
         "forest_mossy",
         "forest_bench",
-        "forest_barrel"
+        "forest_barrel",
+        "forest_sapling",
+        "forest_spruce",
+        "forest_bigoak"
       ],
       "emoji": [
         "🌿",
@@ -42,11 +52,15 @@
         "🪑",
         "🪵",
         "🛋️",
-        "🛢️"
+        "🛢️",
+        "🌳",
+        "🌲",
+        "🌳"
       ],
       "generator": "gen_forest",
       "generatorEmoji": "🌳",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 6
     },
     {
       "id": "quarry",
@@ -57,7 +71,11 @@
         "quarry_copper",
         "quarry_gold",
         "quarry_pickaxe",
-        "quarry_lantern"
+        "quarry_lantern",
+        "quarry_anvil",
+        "quarry_cart",
+        "quarry_cart_copper",
+        "quarry_cart_gold"
       ],
       "emoji": [
         "🔘",
@@ -66,11 +84,16 @@
         "🟧",
         "🥇",
         "⛏️",
-        "🏮"
+        "🏮",
+        "⚒️",
+        "🛒",
+        "🛒",
+        "🛒"
       ],
       "generator": "gen_quarry",
       "generatorEmoji": "⛰️",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 6
     },
     {
       "id": "apiary",
@@ -80,7 +103,11 @@
         "apiary_violet",
         "apiary_pot",
         "apiary_honey",
-        "apiary_mead"
+        "apiary_mead",
+        "apiary_potted",
+        "apiary_comb",
+        "apiary_lupin",
+        "apiary_fountain"
       ],
       "emoji": [
         "🌺",
@@ -88,11 +115,16 @@
         "🪻",
         "🪴",
         "🍯",
-        "🧉"
+        "🧉",
+        "🌷",
+        "🍯",
+        "💐",
+        "⛲"
       ],
       "generator": "gen_apiary",
       "generatorEmoji": "🐝",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 5
     },
     {
       "id": "farm",
@@ -102,7 +134,10 @@
         "farm_milk",
         "farm_cheese",
         "farm_bread",
-        "farm_picnic"
+        "farm_picnic",
+        "farm_nest",
+        "farm_trough",
+        "farm_cellar"
       ],
       "emoji": [
         "🥚",
@@ -110,11 +145,15 @@
         "🥛",
         "🧀",
         "🍞",
-        "🧺"
+        "🧺",
+        "🪺",
+        "🪣",
+        "🛢️"
       ],
       "generator": "gen_farm",
       "generatorEmoji": "🐔",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 5
     },
     {
       "id": "orchard",
@@ -124,7 +163,11 @@
         "orchard_apple",
         "orchard_peach",
         "orchard_grapes",
-        "orchard_melon"
+        "orchard_melon",
+        "orchard_berries",
+        "orchard_sapling",
+        "orchard_tree",
+        "orchard_arbor"
       ],
       "emoji": [
         "🍒",
@@ -132,11 +175,16 @@
         "🍎",
         "🍑",
         "🍇",
-        "🍉"
+        "🍉",
+        "🫐",
+        "🌱",
+        "🌳",
+        "🍇"
       ],
       "generator": "gen_orchard",
       "generatorEmoji": "🌳",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 5
     },
     {
       "id": "fishing",
@@ -148,7 +196,9 @@
         "fishing_carp",
         "fishing_salmon",
         "fishing_catfish",
-        "fishing_goldfish"
+        "fishing_goldfish",
+        "fishing_pond",
+        "fishing_boat"
       ],
       "emoji": [
         "🐟",
@@ -158,11 +208,14 @@
         "🐟",
         "🐠",
         "🐡",
-        "🐠"
+        "🐠",
+        "🌊",
+        "🛶"
       ],
       "generator": "gen_fishing",
       "generatorEmoji": "🎣",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 7
     },
     {
       "id": "crystal",
@@ -174,7 +227,9 @@
         "crystal_druse",
         "crystal_spire",
         "crystal_ingot",
-        "crystal_orb"
+        "crystal_orb",
+        "crystal_cart_blue",
+        "crystal_cart_pink"
       ],
       "emoji": [
         "✨",
@@ -184,11 +239,14 @@
         "💎",
         "💎",
         "🔷",
-        "🔮"
+        "🔮",
+        "🛒",
+        "🛒"
       ],
       "generator": "gen_crystal",
       "generatorEmoji": "🪨",
-      "generatorTiers": 3
+      "generatorTiers": 6,
+      "orderMaxTier": 7
     }
   ]
 }

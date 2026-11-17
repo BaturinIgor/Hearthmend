@@ -96,6 +96,54 @@ SPRITES = {
     "debris": (DECOR, 3, 6, 1, 1),
 }
 
+# верхние ступени цепочек (1.1): большие предметы из декора. ("px", файл, x0, y0, x1, y1) - рамка в пикселях
+TREES = "Trees/"
+SPRITES.update({
+    "garden_planter": ("px", "Buildings/House_Decor/Planters.png", 88, 12, 121, 31),
+    "garden_scarecrow": ("px", "Outdoor decoration/Scarecrows.png", 2, 0, 30, 31),
+    "garden_well": ("px", "Outdoor decoration/Well.png", 2, 8, 29, 47),
+    "forest_sapling": ("px", TREES + "Small_Oak_Tree.png", 42, 32, 54, 52),
+    "forest_spruce": ("px", TREES + "Medium_Spruce_Tree.png", 40, 0, 57, 37),
+    "forest_bigoak": ("px", TREES + "Big_Oak_Tree.png", 75, 9, 116, 72),
+    "quarry_anvil": ("Buildings/House_Decor/Anvil_Anim.png", 0, 0, 1, 1),
+    "quarry_cart": ("px", "Outdoor decoration/Minecrats.png", 16, 45, 32, 61),
+    "quarry_cart_copper": ("px", "Outdoor decoration/Minecrats.png", 16, 77, 32, 93),
+    "quarry_cart_gold": ("px", "Outdoor decoration/Minecrats.png", 16, 109, 32, 125),
+    "apiary_potted": ("Outdoor decoration/Flowers.png", 5, 0, 1, 1),
+    "apiary_comb": ("Outdoor decoration/Nests.png", 2, 0, 1, 1),
+    "apiary_lupin": ("px", DECOR, 86, 345, 106, 367),
+    "apiary_fountain": ("px", "Outdoor decoration/Fountain.png", 0, 42, 32, 78),
+    "farm_nest": ("Outdoor decoration/Nests.png", 0, 3, 1, 1),
+    "farm_trough": ("px", "Outdoor decoration/Water_Troughs.png", 17, 1, 47, 15),
+    "farm_cellar": ("px", BARRELS, 16, 34, 64, 64),
+    "orchard_berries": ("Crops/Berries.png", 0, 0, 1, 1),
+    "orchard_sapling": ("px", TREES + "Small_Fruit_Tree.png", 41, 30, 54, 52),
+    "orchard_tree": ("px", TREES + "Big_Fruit_Tree.png", 34, 7, 61, 53),
+    "orchard_arbor": ("px", "Crops/Grapes_Bower.png", 108, 93, 180, 149),
+    "fishing_pond": ("px", "Outdoor decoration/Fountain.png", 0, 2, 32, 30),
+    "fishing_boat": ("px", "Outdoor decoration/Boat.png", 2, 14, 42, 45),
+    "crystal_cart_blue": ("px", "Outdoor decoration/Minecrats.png", 16, 173, 32, 189),
+    "crystal_cart_pink": ("px", "Outdoor decoration/Minecrats.png", 16, 269, 32, 285),
+})
+# у иконок пака светлая обводка, у декора нет: добавляем, чтобы верхние ступени смотрелись так же
+OUTLINED = {k for k, v in SPRITES.items() if v[0] == "px" or k in ("quarry_anvil", "apiary_comb", "farm_nest", "apiary_potted", "orchard_berries")}
+CREAM = (249, 230, 207, 255)
+
+
+def outline(im):
+    out = Image.new("RGBA", (im.width + 2, im.height + 2), (0, 0, 0, 0))
+    out.paste(im, (1, 1))
+    src = out.copy().load()
+    px = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            if src[x, y][3] > 0:
+                continue
+            if any(0 <= x + dx < out.width and 0 <= y + dy < out.height and src[x + dx, y + dy][3] > 100
+                   for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                px[x, y] = CREAM
+    return out
+
 
 # заросли и ящики на поле: не из каталога, вырезаются всегда
 CHEST = "Buildings/House_Decor/Chest_Anim.png"
@@ -126,6 +174,10 @@ def crop_opaque(im):
 
 
 def cut(pack, spec):
+    if spec[0] == "px":
+        _, path, x0, y0, x1, y1 = spec
+        sheet = Image.open(os.path.join(pack, path)).convert("RGBA")
+        return crop_opaque(sheet.crop((x0, y0, x1, y1)))
     path, c, r, w, h = spec
     sheet = Image.open(os.path.join(pack, path)).convert("RGBA")
     return crop_opaque(sheet.crop((c * 16, r * 16, (c + w) * 16, (r + h) * 16)))
@@ -145,6 +197,8 @@ def main():
     images = {}
     for key in need:
         im = cut(pack, SPRITES[key])
+        if key in OUTLINED:
+            im = outline(im)
         if im.getbbox() is None:
             sys.exit(f"{key}: пустая клетка")
         im.save(os.path.join(out, key + ".png"))

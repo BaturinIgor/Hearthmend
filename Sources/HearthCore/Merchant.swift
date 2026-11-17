@@ -84,7 +84,7 @@ extension Game {
         for i in 0..<3 {
             let chain = chains[i % chains.count]
             let best = state.bestTier[chain] ?? 1
-            let top = min(catalog.maxTier(of: chain), max(2, best))
+            let top = min(catalog.orderTop(of: chain), max(2, best))
             let tier = max(1, top - Int.random(in: 0...1, using: &rng))
             needs.append(Item(chain: chain, tier: tier))
         }

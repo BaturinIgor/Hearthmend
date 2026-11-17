@@ -362,7 +362,8 @@ final class BoardScene: SKScene {
         let side = Pixel.crisp(cellSize * 0.24, source: 16)
         for i in 0..<count {
             let star = SKSpriteNode(texture: texture, size: CGSize(width: side, height: side))
-            star.position = CGPoint(x: -cellSize * 0.36 + CGFloat(i) * side * 0.7, y: cellSize * 0.36)
+            // больше трех звезд - вторым рядом, чтобы не вылезали за клетку
+            star.position = CGPoint(x: -cellSize * 0.36 + CGFloat(i % 3) * side * 0.7, y: cellSize * (i < 3 ? 0.36 : 0.22))
             node.addChild(star)
         }
         node.zPosition = 1

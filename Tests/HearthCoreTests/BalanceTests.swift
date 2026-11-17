@@ -128,11 +128,10 @@ final class BalanceTests: XCTestCase {
     /// Продажа предмета не окупает энергию на него с запасом: иначе генератор превращается в станок монет.
     /// С учетом шанса сразу получить вторую ступень ожидаемая цена продажи за 1 энергию не выше 2 монет.
     func testSellingIsNotAMoneyPrinter() {
-        let b = Balance()
-        let maxGenTier = Catalog.bundled.chains.map(\.generatorTiers).max() ?? 1
-        let upgrade = min(1, b.generatorUpgradeChance * Double(maxGenTier))
-        let expectedCoinsPerEnergy = (1 - upgrade) * 1 + upgrade * 2
-        XCTAssertLessThanOrEqual(expectedCoinsPerEnergy, 2)
+        // продажа за 1 энергию на любом уровне генератора не выше 2 монет
+        for level in Balance.generatorOdds.indices {
+            XCTAssertLessThanOrEqual(Balance.generatorValuePerEnergy(level: level), 2, "уровень \(level + 1)")
+        }
         // а заказы платят втрое больше ценности
         let item = Item(chain: "garden", tier: 3)
         let game = Game(seed: 1)

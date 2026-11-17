@@ -86,6 +86,11 @@ extension Game {
         state.friendClaimed[resident] = level
         let reward = Friends.reward(level: level, resident: resident)
         grant(reward)
+        // лучший друг дарит генератор своей цепочки: его можно слить с таким же
+        if level == Friends.maxLevel, let chain = Friends.chain(of: resident), state.unlockedChains.contains(chain) {
+            state.pendingGenerators.append(chain)
+            placePendingGenerators()
+        }
         return reward
     }
 

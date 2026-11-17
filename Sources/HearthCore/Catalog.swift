@@ -12,8 +12,11 @@ public struct ChainDef: Codable, Equatable {
     public let generatorEmoji: String
     /// Сколько ступеней у генератора (два одинаковых сливаются в следующий).
     public let generatorTiers: Int
+    /// Выше этой ступени заказы и торговец не просят: верхние ступени для альбома, достижений и гордости.
+    public let orderMaxTier: Int?
 
     public var maxTier: Int { items.count - 1 }
+    public var orderTop: Int { min(orderMaxTier ?? maxTier, maxTier) }
 }
 
 public struct Catalog: Codable, Equatable {
@@ -29,6 +32,10 @@ public struct Catalog: Codable, Equatable {
 
     public func maxTier(of chain: String) -> Int {
         self.chain(chain)?.maxTier ?? 0
+    }
+
+    public func orderTop(of chain: String) -> Int {
+        self.chain(chain)?.orderTop ?? 0
     }
 
     /// Следующая ступень предмета или nil, если ступень последняя.
