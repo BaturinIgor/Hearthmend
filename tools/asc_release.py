@@ -158,7 +158,13 @@ def main():
         s, d = call("POST", "/v1/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails",
                     "attributes": {"notes": REVIEW_NOTES, "demoAccountRequired": False},
                     "relationships": {"appStoreVersion": rel("appStoreVersions", vid)}}})
-        ok(s, d, "заметка для проверки")
+        # без контактов Apple не создает раздел: тогда заметку вписывает человек вместе с контактами
+        if 200 <= s < 300:
+            print("заметка для проверки: добавлена")
+        elif any(e.get("code", "").endswith("ATTRIBUTE.REQUIRED") for e in d.get("errors", [])):
+            todo.append("App Review Information: Notes: " + REVIEW_NOTES)
+        else:
+            ok(s, d, "заметка для проверки")
     if not (a.get("contactEmail") and a.get("contactPhone") and a.get("contactFirstName")):
         todo.append("App Review Information: имя, телефон и почта для связи с проверяющим")
 
