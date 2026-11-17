@@ -35,11 +35,10 @@
 ## Сборка
 
 - Тесты ядра (`.github/workflows/tests.yml`) идут на Linux на каждый push и PR
-- `.ipa` (`.github/workflows/build.yml`) собирается на macOS при push в `main` и по кнопке Run workflow, публикуется в Releases. Репозиторий приватный, а минуты macOS считаются x10, поэтому на PR сборка идёт только с меткой `build-ipa`
+- Сборка для устройства (`.github/workflows/build.yml`) проверяется на macOS при push в `main`, по кнопке Run workflow и на PR с меткой `build-ipa`. Готовый `.ipa` нигде не публикуется: в нем спрайты пака
 
 Локально: `xcodegen generate`, затем открыть `Hearthmend.xcodeproj`.
 
-## Установка через SideStore
+## Установка
 
-1. Открой последний релиз в Safari на iPhone и скачай `Hearthmend.ipa` в Файлы.
-2. В SideStore открой вкладку "My Apps", нажми "+" и выбери `Hearthmend.ipa`.
+Через TestFlight: workflow `testflight.yml` (Run workflow) собирает и отправляет сборку в App Store Connect.
