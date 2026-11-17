@@ -77,6 +77,7 @@ public struct SimReport: CustomStringConvertible {
     public var adventureDepth: [Int] = []
     public var islandFogLeft: [Int] = []
     public var adventureKinds: [AdventureKind] = []
+    public var adventurePoints: [Int] = []
     public var islandMerges = 0
     public var islandWashed = 0
     public var greenhouseHarvests = 0
@@ -410,6 +411,7 @@ public enum Simulator {
         guard !track.isEmpty else { return }
         report.adventureProgress.append(Double(a.claimed) / Double(track.count))
         report.adventureKinds.append(a.kind)
+        report.adventurePoints.append(a.points)
         report.adventureValue += track.prefix(a.claimed).reduce(0) { $0 + prizeValue($1.prize) }
         if let s = a.island {
             report.islandFogLeft.append(s.fogLeft)

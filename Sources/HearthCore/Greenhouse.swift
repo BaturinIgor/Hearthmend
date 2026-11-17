@@ -34,7 +34,7 @@ public enum Greenhouse {
     /// Сколько растет растение каждой ступени, если его посадить с нуля.
     public static let growTime: [TimeInterval] = [3600, 1.5 * 3600, 2.5 * 3600, 4 * 3600, 6 * 3600]
     /// Очки за урожай: каждая ступень больше чем вдвое, поэтому сливать выгодно.
-    public static let tierPoints = [2, 5, 12, 28, 65]
+    public static let tierPoints = [1, 3, 7, 16, 36]
     public static let waterEvery: TimeInterval = 4 * 3600
     public static let waterBoost: TimeInterval = 3600
     /// Урожай последней ступени приносит еще и ящик на главное поле.

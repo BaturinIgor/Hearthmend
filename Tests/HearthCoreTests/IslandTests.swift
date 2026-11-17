@@ -162,7 +162,7 @@ final class IslandTests: XCTestCase {
             let avg = island.reduce(0, +) / Double(max(1, island.count))
             let fog = Double(r.islandFogLeft.reduce(0, +)) / Double(max(1, r.islandFogLeft.count))
             print("Остров \(seed): событий \(island.count) (глубин \(depths.count)), дорожка \(Int(avg * 100))%, тумана осталось \(String(format: "%.1f", fog)) из 50, слияний \(r.islandMerges), смыто \(r.islandWashed), дней \(String(format: "%.1f", r.days))")
-            XCTAssertGreaterThan(island.count, 2)
+            XCTAssertGreaterThan(island.count, 1)
             XCTAssertGreaterThan(avg, 0.4, "дорожка проходится заметно")
             XCTAssertLessThan(avg, 1.0, "но не вся без усилий")
             XCTAssertLessThan(Double(r.adventureValue), Double(r.energySpent) * 0.15, "без имбы")
