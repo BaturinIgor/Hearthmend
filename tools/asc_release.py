@@ -17,7 +17,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from asc_iap import app_id, call, errors, get_all, ok, rel, territories  # noqa: E402
+from asc_iap import EXCLUDED_TERRITORIES, app_id, call, errors, get_all, ok, rel, territories  # noqa: E402
 from asc_listing import EDITABLE  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -115,6 +115,14 @@ def main():
     s, d = call("GET", f"/v1/apps/{app}/appAvailabilityV2")
     if s == 200 and d.get("data"):
         print("страны: уже заданы")
+        avail = d["data"]["id"]
+        for ta in get_all(f"/v2/appAvailabilities/{avail}/territoryAvailabilities?include=territory&limit=200"):
+            terr = ta.get("relationships", {}).get("territory", {}).get("data", {}).get("id")
+            if terr in EXCLUDED_TERRITORIES and ta["attributes"].get("available"):
+                s2, d2 = call("PATCH", f"/v1/territoryAvailabilities/{ta['id']}", {"data": {
+                    "type": "territoryAvailabilities", "id": ta["id"], "attributes": {"available": False}}})
+                if ok(s2, d2, f"страна {terr} выключена"):
+                    print(f"страны: {terr} убрана")
     else:
         terrs = territories()
         s, d = call("POST", "/v2/appAvailabilities", {
