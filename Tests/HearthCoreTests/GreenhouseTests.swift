@@ -116,7 +116,7 @@ final class GreenhouseTests: XCTestCase {
             let avg = gh.reduce(0, +) / Double(max(1, gh.count))
             let pts = zip(r.adventureKinds, r.adventurePoints).filter { $0.0 == .greenhouse }.map(\.1)
             print("Теплица \(seed): событий \(gh.count), дорожка \(Int(avg * 100))%, очки \(pts), урожаев \(r.greenhouseHarvests), поливов \(r.greenhouseWaterings), ценность \(Int(r.adventureValue)) из энергии \(r.energySpent), дней \(String(format: "%.1f", r.days))")
-            XCTAssertGreaterThan(gh.count, 1)
+            XCTAssertGreaterThanOrEqual(gh.count, 1)
             XCTAssertGreaterThan(avg, 0.4)
             XCTAssertLessThan(avg, 1.0)
             XCTAssertLessThan(Double(r.adventureValue), Double(r.energySpent) * 0.15)

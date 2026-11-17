@@ -82,6 +82,9 @@ public struct SimReport: CustomStringConvertible {
     public var islandWashed = 0
     public var greenhouseHarvests = 0
     public var greenhouseWaterings = 0
+    public var mosaicWindows = 0
+    public var mosaicWasted = 0
+    public var mosaicShattered = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -448,6 +451,11 @@ public enum Simulator {
             lastState = game.adventure
             return
         }
+        if a.kind == .mosaic {
+            playMosaic(game, report: &report)
+            lastState = game.adventure
+            return
+        }
         guard a.kind == .depths else { return }
         for _ in 0..<3000 {
             if mergeFinds(game) { continue }
@@ -513,6 +521,72 @@ public enum Simulator {
             }
             if case .planted = game.plantSeed() { continue }
             return
+        }
+    }
+
+    /// Витраж: кладет кусочек, который закрывает область почти без потерь; сливает пары, если
+    /// в окне есть область под больший кусочек; при полном верстаке кладет самый выгодный или разбивает лишний.
+    private static func playMosaic(_ game: Game, report: inout SimReport) {
+        func record(_ r: Game.MosaicSet?) {
+            guard let r else { return }
+            report.mosaicWasted += r.wasted
+            if r.windowDone {
+                report.mosaicWindows += 1
+                report.adventureValue += prizeValue(Mosaic.windowPrize)
+            }
+        }
+        for _ in 0..<3000 {
+            guard let m = game.adventure?.mosaic else { return }
+            // лучшая область для каждого кусочка: самая большая пустая часть своего цвета
+            var options: [(slot: Int, cell: Int, open: Int, cover: Int)] = []
+            for (slot, item) in m.bench.enumerated() {
+                guard let item, let color = MosaicState.color(of: item) else { continue }
+                var best: (cell: Int, open: Int)?
+                for region in Set(m.regions).sorted() {
+                    guard let cell = m.regions.indices.first(where: { m.regions[$0] == region && !m.filled[$0] && m.colors[$0] == color }) else { continue }
+                    let open = m.openCells(region: region, near: cell).count
+                    if best == nil || open > best!.open { best = (cell, open) }
+                }
+                if let best { options.append((slot, best.cell, best.open, Mosaic.cover[item.tier])) }
+            }
+            // закрывает область целиком, потеряв не больше трети
+            if let o = options.first(where: { $0.open <= $0.cover && ($0.cover - $0.open) * 3 <= $0.cover }) {
+                record(game.setGlass(slot: o.slot, cell: o.cell)); continue
+            }
+            // пара, которой есть куда лечь после слияния
+            var merged = false
+            for a in m.bench.indices {
+                for b in m.bench.indices where b > a && game.canMergeGlass(a, b) {
+                    let next = Mosaic.cover[(m.bench[a]?.tier ?? 0) + 1]
+                    if let o = options.first(where: { $0.slot == a }), o.open * 3 >= next * 2 {
+                        merged = game.moveGlass(from: a, to: b)
+                        break
+                    }
+                }
+                if merged { break }
+            }
+            if merged { continue }
+            if m.freeSlots.isEmpty {
+                // самый крупный вклад без большой потери
+                if let o = options.max(by: { min($0.open, $0.cover) < min($1.open, $1.cover) }) {
+                    record(game.setGlass(slot: o.slot, cell: o.cell)); continue
+                }
+                if let slot = m.bench.indices.min(by: { (m.bench[$0]?.tier ?? 0) < (m.bench[$1]?.tier ?? 0) }) {
+                    game.shatterGlass(slot)
+                    report.mosaicShattered += 1
+                    continue
+                }
+                return
+            }
+            switch game.cutGlass() {
+            case .cut, .noRoom: continue
+            case .noMoves:
+                // ходы кончились: кладет все, что не ждет пары
+                guard let o = options.first(where: { o in
+                    !m.bench.indices.contains { $0 != o.slot && game.canMergeGlass($0, o.slot) }
+                }) else { return }
+                record(game.setGlass(slot: o.slot, cell: o.cell))
+            }
         }
     }
 
