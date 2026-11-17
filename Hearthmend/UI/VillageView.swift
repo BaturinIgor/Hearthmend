@@ -17,9 +17,12 @@ struct VillageView: View {
         ZStack(alignment: .top) {
             Color(red: 0.36, green: 0.55, blue: 0.29).ignoresSafeArea()
             GeometryReader { geo in
-                let scale = geo.size.width / Self.mapSize.width
+                // пиксель-арт четкий только при целом числе точек экрана на пиксель карты:
+                // 4 на 3x-экранах, 3 на 2x. Карта шире экрана и листается во все стороны.
+                let screen = UIScreen.main.scale
+                let scale = max(geo.size.width / Self.mapSize.width, (screen * 1.34).rounded() / screen)
                 ScrollViewReader { proxy in
-                    ScrollView(.vertical, showsIndicators: false) {
+                    ScrollView([.vertical, .horizontal], showsIndicators: false) {
                         map(scale: scale)
                             .frame(width: Self.mapSize.width * scale, height: Self.mapSize.height * scale)
                             .padding(.top, 70)
@@ -92,9 +95,12 @@ struct VillageView: View {
             // точки для прокрутки: у постройки рамка от верха карты (отступы), а scrollTo
             // целится в середину рамки. Здесь рамка 1x1 ровно на постройке.
             ForEach(store.game.village.allTasks) { task in
-                VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
                     Color.clear.frame(width: 1, height: max(0, (CGFloat(task.y) - 2) * 16 * scale))
-                    Color.clear.frame(width: 1, height: 1).id("focus_\(task.id)")
+                    HStack(spacing: 0) {
+                        Color.clear.frame(width: max(0, CGFloat(task.x) * 16 * scale), height: 1)
+                        Color.clear.frame(width: 1, height: 1).id("focus_\(task.id)")
+                    }
                 }
                 .allowsHitTesting(false)
             }
