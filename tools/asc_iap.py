@@ -104,8 +104,12 @@ def app_id():
     return apps[0]["id"]
 
 
+# Материковый Китай: игры там требуют государственной лицензии (ISBN от NPPA), без нее не выпускаем.
+EXCLUDED_TERRITORIES = {"CHN"}
+
+
 def territories():
-    return [t["id"] for t in get_all("/v1/territories?limit=200")]
+    return [t["id"] for t in get_all("/v1/territories?limit=200") if t["id"] not in EXCLUDED_TERRITORIES]
 
 
 def price_point(path, price):
