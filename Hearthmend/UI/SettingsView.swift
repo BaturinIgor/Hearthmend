@@ -14,11 +14,11 @@ struct SettingsView: View {
                 Section {
                     HStack {
                         Text(String(format: L10n.t("settings.level"), store.state.level))
-                            .font(.system(size: 17, weight: .heavy, design: .rounded))
+                            .font(Pixel.font(17))
                         if store.game.isVIP { Text("👑") }
                         Spacer()
                         Text("🏡 \(store.state.completedTasks.count)/\(store.game.village.allTasks.count)")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(15))
                     }
                 }
                 Section {

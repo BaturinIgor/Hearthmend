@@ -57,11 +57,11 @@ struct ShotFrame: View {
     private var caption: some View {
         VStack(spacing: 6) {
             Text(L10n.t("shot.\(name).title"))
-                .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .font(Pixel.font(34))
                 .foregroundColor(.white)
                 .shadow(color: Color(red: 0.16, green: 0.3, blue: 0.12).opacity(0.6), radius: 0, x: 0, y: 3)
             Text(L10n.t("shot.\(name).sub"))
-                .font(.system(size: 19, weight: .semibold, design: .rounded))
+                .font(Pixel.font(19))
                 .foregroundColor(Color.white.opacity(0.95))
                 .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
         }

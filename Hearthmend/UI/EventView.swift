@@ -19,17 +19,17 @@ struct EventBanner: View {
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {
                             Text(L10n.t("event.\(def.id).title"))
-                                .font(.system(size: 13, weight: .heavy, design: .rounded))
+                                .font(Pixel.font(13))
                             Spacer()
                             if let ends = store.game.eventEndsAt {
-                                Text(timeLeft(ends)).font(.system(size: 11, weight: .semibold, design: .rounded)).opacity(0.7)
+                                Text(timeLeft(ends)).font(Pixel.font(11)).opacity(0.7)
                             }
                         }
                         ProgressBar(value: Double(store.state.eventTokens) / Double(max(1, next)))
                             .frame(height: 7)
                     }
                     Text("\(store.state.eventTokens)/\(next)")
-                        .font(.system(size: 12, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(12))
                 }
                 .foregroundColor(Theme.text)
                 .padding(.horizontal, 10)
@@ -82,7 +82,7 @@ struct EventSheet: View {
                         .font(.system(size: 15, design: .rounded))
                         .multilineTextAlignment(.center)
                     Text(L10n.t("event.how"))
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .font(Pixel.font(13))
                         .opacity(0.75)
                         .multilineTextAlignment(.center)
                     choice
@@ -106,15 +106,15 @@ struct EventSheet: View {
     private var choice: some View {
         if let picked = store.state.eventChoice {
             Text(L10n.t("event.\(def.id).after.\(picked)"))
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .font(Pixel.font(14))
                 .multilineTextAlignment(.center)
                 .padding(12)
                 .frame(maxWidth: .infinity)
-                .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
+                .background(PixelSlice(key: "ui_paper", inset: 4))
         } else {
             VStack(spacing: 8) {
                 Text(L10n.t("event.choose"))
-                    .font(.system(size: 16, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(16))
                 HStack(spacing: 10) {
                     ForEach(def.choices, id: \.id) { c in
                         Button {
@@ -122,7 +122,7 @@ struct EventSheet: View {
                         } label: {
                             VStack(spacing: 6) {
                                 Text(c.id == "mila" ? "👩‍🌾" : "🧑‍🌾").font(.system(size: 34))
-                                Text(L10n.t("resident.\(c.id)")).font(.system(size: 15, weight: .heavy, design: .rounded))
+                                Text(L10n.t("resident.\(c.id)")).font(Pixel.font(15))
                                 Text(L10n.t("event.\(def.id).choice.\(c.id)"))
                                     .font(.system(size: 12, design: .rounded))
                                     .multilineTextAlignment(.center)
@@ -132,7 +132,7 @@ struct EventSheet: View {
                             .foregroundColor(Theme.text)
                             .padding(10)
                             .frame(maxWidth: .infinity)
-                            .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
+                            .background(PixelSlice(key: "ui_paper", inset: 4))
                             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.pink.opacity(0.5), lineWidth: 1.5))
                         }
                     }
@@ -146,7 +146,7 @@ struct EventSheet: View {
         if !store.game.hasEventPass {
             VStack(spacing: 6) {
                 Text(L10n.t("shop.pass_hint"))
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .font(Pixel.font(13))
                     .multilineTextAlignment(.center)
                 BuyButton(title: "🎟️ " + (shop.price(Products.eventPass) ?? L10n.t("shop.unavailable")),
                           busy: shop.purchasing == Products.eventPass) {
@@ -157,7 +157,7 @@ struct EventSheet: View {
             .background(RoundedRectangle(cornerRadius: 14).fill(Color.purple.opacity(0.12)))
         } else {
             Text("🎟️ " + L10n.t("shop.pass_active"))
-                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .font(Pixel.font(14))
                 .foregroundColor(.purple)
         }
     }
@@ -167,7 +167,7 @@ struct EventSheet: View {
         let r = Products.eventPassRewards.indices.contains(i) ? Products.eventPassRewards[i] : EventReward()
         return HStack(spacing: 4) {
             if let decor = r.decor { DecorIcon(key: decor, size: 22) }
-            Text(EventBanner.describe(r)).font(.system(size: 12, weight: .bold, design: .rounded))
+            PixelText(EventBanner.describe(r), size: 12)
             if !pass { Image(systemName: "lock.fill").font(.system(size: 11)).opacity(0.6) }
         }
         .padding(.horizontal, 6)
@@ -182,7 +182,7 @@ struct EventSheet: View {
                 let done = i < store.state.eventClaimed
                 HStack {
                     Text("🎀 \(m.tokens)")
-                        .font(.system(size: 14, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(14))
                         .frame(width: 70, alignment: .leading)
                     if m.choiceDecor == true {
                         if let picked = store.state.eventChoice, let c = def.choices.first(where: { $0.id == picked }) {
@@ -192,8 +192,7 @@ struct EventSheet: View {
                         }
                     }
                     if let decor = m.decor { DecorIcon(key: decor, size: 26) }
-                    Text(EventBanner.describe(EventReward(gems: m.gems ?? 0, energy: m.energy ?? 0, coins: m.coins ?? 0)))
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                    PixelText(EventBanner.describe(EventReward(gems: m.gems ?? 0, energy: m.energy ?? 0, coins: m.coins ?? 0)), size: 12)
                     Spacer()
                     passReward(i)
                     Image(systemName: done ? "checkmark.circle.fill" : "circle")

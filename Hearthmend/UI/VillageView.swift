@@ -152,19 +152,18 @@ struct VillageView: View {
         return VStack(spacing: 6) {
             HStack {
                 Text(district.map { L10n.t("district.\($0.id)") } ?? L10n.t("village.done"))
-                    .font(.system(size: 18, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(18))
                 SeasonChip(season: store.season)
                 Spacer()
-                Text("⭐️ \(store.state.stars)")
-                    .font(.system(size: 17, weight: .heavy, design: .rounded))
+                PixelText("⭐️ \(store.state.stars)", size: 14)
+                    .font(Pixel.font(17))
             }
             ProgressBar(value: district == nil ? 1 : Double(done) / Double(total))
                 .frame(height: 10)
         }
         .foregroundColor(Theme.text)
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card.opacity(0.96)))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
         .padding(.horizontal, 12)
         .padding(.top, 4)
     }
@@ -218,7 +217,7 @@ private struct DecorTray: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(L10n.t("decor.hint"))
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Pixel.font(12))
                 .foregroundColor(Theme.text.opacity(0.8))
             if store.state.decorOwned.isEmpty {
                 Text(L10n.t("decor.empty"))
@@ -232,9 +231,9 @@ private struct DecorTray: View {
                                 ZStack(alignment: .topTrailing) {
                                     DecorIcon(key: key, size: 40)
                                         .frame(width: 52, height: 52)
-                                        .background(RoundedRectangle(cornerRadius: 10).fill(Theme.card))
+                                        .background(PixelSlice(key: "ui_paper", inset: 4))
                                     Text("\(store.state.decorOwned[key] ?? 0)")
-                                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                                        .font(Pixel.font(11))
                                         .foregroundColor(.white)
                                         .padding(4)
                                         .background(Circle().fill(Theme.wood))
@@ -246,8 +245,7 @@ private struct DecorTray: View {
             }
         }
         .padding(10)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card.opacity(0.97)))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.4), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 }
 
@@ -354,8 +352,8 @@ struct BuildingView: View {
 
     private var badge: some View {
         HStack(spacing: 2) {
-            Text("⭐️").font(.system(size: 12))
-            Text("\(task.cost)").font(.system(size: 13, weight: .heavy, design: .rounded))
+            PixelText("⭐️", size: 12)
+            Text("\(task.cost)").font(Pixel.font(13))
         }
         .foregroundColor(.white)
         .padding(.horizontal, 8)
@@ -423,15 +421,15 @@ private struct TaskCard: View {
                     .frame(width: 64, height: 64)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(L10n.t("task.\(task.id)"))
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(18))
                     if let resident = task.resident {
                         Text(String(format: L10n.t("task.resident"), L10n.t("resident.\(resident)")))
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(13))
                             .foregroundColor(Theme.accent)
                     }
                     if let gems = task.gems {
                         Text(String(format: L10n.t("task.gems"), gems))
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(13))
                     }
                 }
                 Spacer()
@@ -442,7 +440,7 @@ private struct TaskCard: View {
             Button(action: build) {
                 Text(enough ? String(format: L10n.t("task.build"), task.cost)
                             : String(format: L10n.t("task.need_stars"), task.cost - store.state.stars))
-                    .font(.system(size: 17, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(17))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 48)
                     .background(RoundedRectangle(cornerRadius: 12).fill(enough ? Theme.accent : Color.gray.opacity(0.55)))
@@ -451,8 +449,7 @@ private struct TaskCard: View {
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
         .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
     }
 }
@@ -463,7 +460,7 @@ private struct BackToBoardButton: View {
     var body: some View {
         Button(action: action) {
             Label(L10n.t("nav.board"), systemImage: "square.grid.3x3.fill")
-                .font(.system(size: 17, weight: .heavy, design: .rounded))
+                .font(Pixel.font(17))
                 .foregroundColor(.white)
                 .padding(.horizontal, 24)
                 .frame(minHeight: 50)
@@ -515,7 +512,7 @@ private struct LockedFog: View {
             .opacity(0.9)
             if let next {
                 Label { Text(String(format: L10n.t("village.fog_next"), next)) } icon: { Text("🔒") }
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(Pixel.font(14))
                     .foregroundColor(Theme.text.opacity(0.75))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)

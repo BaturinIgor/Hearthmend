@@ -19,24 +19,24 @@ struct PostcardSheet: View {
             ScrollView {
                 VStack(spacing: 14) {
                     Text(L10n.t("district.\(view)"))
-                        .font(.system(size: 20, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(20))
                     picture(view: view, opened: opened, total: total)
                     ProgressBar(value: Double(opened) / Double(total)).frame(height: 10)
                     Text(String(format: L10n.t("postcard.progress"), opened, total))
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .font(Pixel.font(14))
                     Text(L10n.t("postcard.how"))
                         .font(.system(size: 13, design: .rounded))
                         .multilineTextAlignment(.center)
                         .opacity(0.8)
                     HStack(spacing: 14) {
-                        Text("💎 \(store.balance.postcardGems)")
-                        Text("🪙 \(store.balance.postcardCoins)")
+                        PixelText("💎 \(store.balance.postcardGems)", size: 14)
+                        PixelText("🪙 \(store.balance.postcardCoins)", size: 14)
                         DecorIcon(key: decor, size: 30)
                     }
-                    .font(.system(size: 17, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(17))
                     .padding(12)
                     .frame(maxWidth: .infinity)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
+                    .background(PixelSlice(key: "ui_paper", inset: 4))
                     Text(String(format: L10n.t("postcard.collected"), store.state.postcardIndex))
                         .font(.system(size: 12, design: .rounded))
                         .opacity(0.6)
@@ -70,7 +70,7 @@ struct PostcardSheet: View {
                         ZStack {
                             Rectangle().fill(Color(red: 0.93, green: 0.86, blue: 0.70))
                             Rectangle().stroke(Theme.wood.opacity(0.35), lineWidth: 1)
-                            Text("?").font(.system(size: 26, weight: .heavy, design: .rounded)).foregroundColor(Theme.wood.opacity(0.4))
+                            Text("?").font(Pixel.font(26)).foregroundColor(Theme.wood.opacity(0.4))
                         }
                         .frame(width: w, height: h)
                         .offset(x: CGFloat(i % 3) * w, y: CGFloat(i / 3) * h)

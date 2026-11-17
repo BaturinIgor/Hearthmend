@@ -24,7 +24,7 @@ final class BoardScene: SKScene {
     override init(size: CGSize) {
         super.init(size: size)
         scaleMode = .resizeFill
-        backgroundColor = Palette.board
+        backgroundColor = .clear
         anchorPoint = .zero
         addChild(boardNode)
     }
@@ -74,11 +74,18 @@ final class BoardScene: SKScene {
         let state = store.game.state
         let needed = store.game.neededItems
         for i in state.cells.indices {
-            let tile = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
-            tile.position = center(of: i)
             let r = i / cols, c = i % cols
-            tile.fillColor = (r + c) % 2 == 0 ? Palette.tileA : Palette.tileB
-            tile.strokeColor = .clear
+            let tile: SKNode
+            if let texture = Sprites.texture((r + c) % 2 == 0 ? "ui_cell_a" : "ui_cell_b") {
+                // пиксельные клетки травы из tools/ui_kit.py
+                tile = SKSpriteNode(texture: texture, size: CGSize(width: cellSize - 1, height: cellSize - 1))
+            } else {
+                let shape = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
+                shape.fillColor = (r + c) % 2 == 0 ? Palette.tileA : Palette.tileB
+                shape.strokeColor = .clear
+                tile = shape
+            }
+            tile.position = center(of: i)
             tile.zPosition = 0
             boardNode.addChild(tile)
 
@@ -157,11 +164,15 @@ final class BoardScene: SKScene {
             node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.62))
             node.addChild(badge("\(item.tier + 1)"))
         case .generator(let gen):
-            let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
-            base.fillColor = Palette.generator
-            base.strokeColor = Palette.generatorStroke
-            base.lineWidth = 2
-            node.addChild(base)
+            if let crate = Sprites.texture("ui_crate") {
+                node.addChild(SKSpriteNode(texture: crate, size: CGSize(width: cellSize * 0.9, height: cellSize * 0.9)))
+            } else {
+                let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
+                base.fillColor = Palette.generator
+                base.strokeColor = Palette.generatorStroke
+                base.lineWidth = 2
+                node.addChild(base)
+            }
             let def = catalog.chain(gen.chain)
             node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.6))
             node.addChild(badge(String(repeating: "★", count: gen.tier + 1)))
@@ -207,8 +218,8 @@ final class BoardScene: SKScene {
 
     private func badge(_ text: String) -> SKLabelNode {
         let label = SKLabelNode(text: text)
-        label.fontName = "AvenirNext-Bold"
-        label.fontSize = cellSize * 0.2
+        label.fontName = "Tiny5"
+        label.fontSize = cellSize * 0.24
         label.fontColor = Palette.badge
         label.horizontalAlignmentMode = .right
         label.verticalAlignmentMode = .bottom
