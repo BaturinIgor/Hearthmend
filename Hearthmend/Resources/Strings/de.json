@@ -272,5 +272,9 @@
   "achievements.decor": "Dekorationen aufgestellt: %d",
   "merchant.arrived": "Ein fahrender Händler ist angekommen!",
   "merchant.thanks": "Der Händler dankt dir!",
-  "merchant.about": "Fahrender Händler: Bring alle drei Gegenstände, bevor er weiterzieht. Jedes dritte Mal zahlt er mit einer seltenen Dekoration."
+  "merchant.about": "Fahrender Händler: Bring alle drei Gegenstände, bevor er weiterzieht. Jedes dritte Mal zahlt er mit einer seltenen Dekoration.",
+  "resident.merchant": "Händler",
+  "story.merchant.intro.1": "Hallo! Ich ziehe mit meinem Wagen durch die Täler. Man sagt, dein Dorf erwacht wieder zum Leben.",
+  "story.merchant.intro.2": "Bring mir drei Dinge, bevor ich weiterziehe, und ich zahle gut. Jedes dritte Mal bringe ich etwas Seltenes mit!",
+  "story.friends.intro.1": "Wir Bewohner merken uns jeden Auftrag. Schau ins Tagebuch: Dort siehst du, wer dich ins Herz geschlossen hat, und Geschenke warten!"
 }

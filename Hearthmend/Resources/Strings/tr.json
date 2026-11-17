@@ -272,5 +272,9 @@
   "achievements.decor": "Yerleştirilen süsler: %d",
   "merchant.arrived": "Gezgin bir tüccar geldi!",
   "merchant.thanks": "Tüccar teşekkür ediyor!",
-  "merchant.about": "Gezgin tüccar: o gitmeden üç eşyayı da getir. Her üç ziyarette bir nadir bir süsle öder."
+  "merchant.about": "Gezgin tüccar: o gitmeden üç eşyayı da getir. Her üç ziyarette bir nadir bir süsle öder.",
+  "resident.merchant": "Tüccar",
+  "story.merchant.intro.1": "Merhaba! Arabamla vadileri dolaşırım. Köyünün yeniden canlandığını duydum.",
+  "story.merchant.intro.2": "Ben gitmeden üç şey getir, iyi öderim. Her üç seferde bir nadir bir şey getireceğim!",
+  "story.friends.intro.1": "Biz köylüler her siparişini hatırlarız. Günlüğü aç: kimin seni sevdiğini görürsün, hediyeler de seni bekliyor!"
 }

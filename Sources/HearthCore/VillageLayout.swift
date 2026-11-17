@@ -66,6 +66,9 @@ extension Game {
             if open, !state.storySeen.contains(intro) { return intro }
             if finished, !state.storySeen.contains(done) { return done }
         }
+        // знакомство с новыми линиями: торговец при первом приезде, журнал жителей при первом подарке
+        if state.merchant != nil, !state.storySeen.contains("merchant.intro") { return "merchant.intro" }
+        if friendsClaimable > 0, !state.storySeen.contains("friends.intro") { return "friends.intro" }
         return nil
     }
 

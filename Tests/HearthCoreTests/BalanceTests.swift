@@ -186,4 +186,12 @@ final class BalanceTests: XCTestCase {
             XCTAssertLessThanOrEqual(Double(energy), Double(r.energySpent) * 0.12, "зерно \(seed): параллельные линии не заменяют энергию")
         }
     }
+
+    func testLuckyMergesAreASmallTreat() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.energyFromLucky, 0, "зерно \(seed): счастливые слияния случаются")
+            XCTAssertLessThanOrEqual(Double(r.energyFromLucky), Double(r.energySpent) * 0.05, "зерно \(seed)")
+        }
+    }
 }

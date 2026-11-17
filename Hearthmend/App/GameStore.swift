@@ -132,7 +132,7 @@ final class GameStore: ObservableObject {
         switch result {
         case .merged, .mergedGenerator:
             Haptics.success()
-            Audio.shared.play(.merge)
+            Audio.shared.play(game.lastLuckyEnergy > 0 ? .coins : .merge)
             selected = to
         case .moved, .swapped:
             Audio.shared.play(.drop)

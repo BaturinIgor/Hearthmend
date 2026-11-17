@@ -57,6 +57,7 @@ public struct SimReport: CustomStringConvertible {
     public var gemsFromMerchant = 0
     public var energyFromMerchant = 0
     public var bestFriends = 0
+    public var energyFromLucky = 0
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -75,7 +76,7 @@ public struct SimReport: CustomStringConvertible {
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
         пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), с заданий \(energyFromQuests), застреваний \(stalledSessions)
         кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection), дружба \(gemsFromFriends), достижения \(gemsFromAchievements), торговец \(gemsFromMerchant); монеты из альбома \(coinsFromCollection)
-        торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends)
+        торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends), счастливые слияния \(energyFromLucky)
         районы: \(districts)
         """
     }
@@ -256,6 +257,7 @@ public enum Simulator {
         for (_, idx) in candidates {
             if case .merged = game.move(from: idx[0], to: idx[1]) {
                 report.merges += 1
+                report.energyFromLucky += game.lastLuckyEnergy
                 return true
             }
         }

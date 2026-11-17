@@ -18,6 +18,11 @@ public enum Merchant {
 }
 
 extension Balance {
+    /// Счастливое слияние: с какой ступени, как часто и сколько энергии максимум.
+    public static let luckyMinTier = 2
+    public static let luckyChance = 0.04
+    public static let luckyMaxEnergy = 4
+
     /// Торговец приходит с этого уровня игрока.
     public static let merchantLevel = 6
     /// Сколько торговец ждет и через сколько приходит снова.

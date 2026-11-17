@@ -272,5 +272,9 @@
   "achievements.decor": "Dekoracje w wiosce: %d",
   "merchant.arrived": "Do wioski przyjechał wędrowny kupiec!",
   "merchant.thanks": "Kupiec dziękuje!",
-  "merchant.about": "Wędrowny kupiec: przynieś wszystkie trzy przedmioty, zanim odjedzie. Co trzeci raz płaci rzadką dekoracją."
+  "merchant.about": "Wędrowny kupiec: przynieś wszystkie trzy przedmioty, zanim odjedzie. Co trzeci raz płaci rzadką dekoracją.",
+  "resident.merchant": "Kupiec",
+  "story.merchant.intro.1": "Witaj! Jeżdżę wozem po dolinach. Słyszałem, że twoja wioska wraca do życia.",
+  "story.merchant.intro.2": "Przynieś mi trzy rzeczy, zanim odjadę, a dobrze zapłacę. Co trzeci raz przywiozę coś rzadkiego!",
+  "story.friends.intro.1": "My, mieszkańcy, pamiętamy każde zamówienie. Zajrzyj do dziennika: zobaczysz, kto cię polubił, a prezenty już czekają!"
 }

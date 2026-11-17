@@ -272,5 +272,9 @@
   "achievements.decor": "Decorations placed: %d",
   "merchant.arrived": "A wandering merchant has arrived!",
   "merchant.thanks": "The merchant thanks you!",
-  "merchant.about": "Wandering merchant: bring all three items before he leaves. Every third visit he pays with a rare decoration."
+  "merchant.about": "Wandering merchant: bring all three items before he leaves. Every third visit he pays with a rare decoration.",
+  "resident.merchant": "Merchant",
+  "story.merchant.intro.1": "Hello there! I travel the valleys with my wagon. I heard your village is coming back to life.",
+  "story.merchant.intro.2": "Bring me three things before I move on and I'll pay you well. Every third time I'll bring something rare!",
+  "story.friends.intro.1": "We residents remember every order you fill for us. Open the journal: you'll see who's grown fond of you, and gifts are waiting!"
 }

@@ -272,5 +272,9 @@
   "achievements.decor": "摆放%d件装饰",
   "merchant.arrived": "流浪商人来到了村子！",
   "merchant.thanks": "商人向你道谢！",
-  "merchant.about": "流浪商人：在他离开前送来全部三件物品。每三次他会用一件稀有装饰付款。"
+  "merchant.about": "流浪商人：在他离开前送来全部三件物品。每三次他会用一件稀有装饰付款。",
+  "resident.merchant": "商人",
+  "story.merchant.intro.1": "你好！我赶着马车走遍山谷。听说你们的村子正在复苏。",
+  "story.merchant.intro.2": "在我离开前带来三样东西，我会好好付钱。每三次我还会带来稀罕物！",
+  "story.friends.intro.1": "我们居民记得你完成的每个订单。打开日志看看：谁和你亲近一目了然，还有礼物在等你！"
 }

@@ -218,4 +218,48 @@ final class ParallelTests: XCTestCase {
         XCTAssertEqual(g.achievementsClaimable, 2)
         XCTAssertNil(g.state.merchant)
     }
+
+    // MARK: - Знакомство и счастливые слияния
+
+    func testMerchantAndFriendsGetIntroScenes() {
+        let g = makeGame()
+        for d in g.village.districts { g.markStorySeen("\(d.id).intro"); g.markStorySeen("\(d.id).done") }
+        XCTAssertNil(g.pendingStory)
+        g.testSetLevel(Balance.merchantLevel)
+        g.updateMerchant()
+        XCTAssertEqual(g.pendingStory, "merchant.intro")
+        g.markStorySeen("merchant.intro")
+        g.state.friendHearts["tim"] = 3
+        XCTAssertEqual(g.pendingStory, "friends.intro")
+        g.markStorySeen("friends.intro")
+        XCTAssertNil(g.pendingStory)
+    }
+
+    func testLuckyMergeGivesALittleEnergySometimes() {
+        let g = makeGame()
+        var lucky = 0, merges = 0
+        let item = Item(chain: "garden", tier: 2)
+        for _ in 0..<400 {
+            for i in g.state.cells.indices { g.testSet(i, nil) }
+            g.testSet(0, .item(item)); g.testSet(1, .item(item))
+            let before = g.state.energy
+            guard case .merged = g.move(from: 0, to: 1) else { return XCTFail("слияние") }
+            merges += 1
+            XCTAssertEqual(g.state.energy - before, g.lastLuckyEnergy)
+            XCTAssertLessThanOrEqual(g.lastLuckyEnergy, Balance.luckyMaxEnergy)
+            if g.lastLuckyEnergy > 0 { lucky += 1 }
+        }
+        XCTAssertGreaterThan(lucky, 3)
+        XCTAssertLessThan(Double(lucky) / Double(merges), 0.1)
+    }
+
+    func testLowTierMergesAreNeverLucky() {
+        let g = makeGame()
+        let item = Item(chain: "garden", tier: 0)
+        for _ in 0..<200 {
+            g.testSet(0, .item(item)); g.testSet(1, .item(item))
+            _ = g.move(from: 0, to: 1)
+            XCTAssertEqual(g.lastLuckyEnergy, 0)
+        }
+    }
 }

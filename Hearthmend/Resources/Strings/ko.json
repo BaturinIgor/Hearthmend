@@ -272,5 +272,9 @@
   "achievements.decor": "장식 %d개 놓기",
   "merchant.arrived": "떠돌이 상인이 왔어요!",
   "merchant.thanks": "상인이 고마워해요!",
-  "merchant.about": "떠돌이 상인: 떠나기 전에 세 가지 아이템을 가져다주세요. 세 번에 한 번은 희귀한 장식으로 보답해요."
+  "merchant.about": "떠돌이 상인: 떠나기 전에 세 가지 아이템을 가져다주세요. 세 번에 한 번은 희귀한 장식으로 보답해요.",
+  "resident.merchant": "상인",
+  "story.merchant.intro.1": "안녕! 나는 마차를 끌고 골짜기를 떠돌아. 이 마을이 다시 살아난다고 들었지.",
+  "story.merchant.intro.2": "내가 떠나기 전에 세 가지를 가져다주면 넉넉히 줄게. 세 번에 한 번은 희귀한 것도 가져올게!",
+  "story.friends.intro.1": "우리 주민들은 네 주문을 하나하나 기억해. 일지를 열어 봐. 누가 너를 좋아하게 됐는지 보이고, 선물도 기다리고 있어!"
 }

@@ -271,6 +271,7 @@ struct PixelSheet<Content: View>: View {
         }
         .foregroundColor(Theme.text)
         .background(PixelTile(key: "ui_bg").ignoresSafeArea())
+        .overlay(alignment: .bottom) { SheetToast() }
     }
 }
 
@@ -306,8 +307,33 @@ struct ResidentIcon: View {
     var body: some View {
         if Sprites.image("npc_\(id)") != nil {
             PixelIcon(key: "npc_\(id)", size: size)
+        } else if id == "merchant" {
+            PixelIcon(key: "ui_wagon", size: size)
         } else {
             PixelIcon(key: "ui_house", size: size)
         }
+    }
+}
+
+
+/// Тост поверх открытого окна: награда за кнопку в окне видна сразу, а не после закрытия.
+struct SheetToast: View {
+    @EnvironmentObject private var store: GameStore
+
+    var body: some View {
+        ZStack {
+            if let toast = store.toast {
+                PixelText(toast, size: 15)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Capsule().fill(Color.black.opacity(0.75)))
+                    .padding(.bottom, 30)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.35, dampingFraction: 0.75), value: store.toast)
+        .allowsHitTesting(false)
     }
 }
