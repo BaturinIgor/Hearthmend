@@ -74,6 +74,7 @@ final class DepthsTests: XCTestCase {
 
     func testNoMovesNoDigging() {
         let (game, _) = makeGame()
+        _ = game.adventure
         game.state.adventure?.moves = 0
         let first = (0..<DepthsState.width).first { game.canDig($0) }!
         XCTAssertEqual(game.dig(first), .noMoves)
