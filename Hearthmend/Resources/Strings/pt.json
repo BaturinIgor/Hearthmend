@@ -301,5 +301,12 @@
   "shortage.gems": "Faltam 💎%d",
   "shortage.gems_hint": "Cristais vêm de tarefas, conquistas e do álbum, ou da loja",
   "shortage.gems_free": "Recompensas no diário: %d!",
-  "shortage.shop": "Ir à loja"
+  "shortage.shop": "Ir à loja",
+  "top.daily": "Presente",
+  "top.journal": "Diário",
+  "top.full": "Cheio!",
+  "top.level": "nív. %d",
+  "top.boost_locked": "O impulso x2 dos geradores abre no nível %d",
+  "top.merchant_locked": "O mercador viajante vem a partir do nível %d",
+  "top.merchant_soon": "O mercador chega em %@"
 }

@@ -301,5 +301,12 @@
   "shortage.gems": "Mancano 💎%d",
   "shortage.gems_hint": "I cristalli arrivano da compiti, obiettivi e album, o dal negozio",
   "shortage.gems_free": "Premi nel diario: %d!",
-  "shortage.shop": "Al negozio"
+  "shortage.shop": "Al negozio",
+  "top.daily": "Regalo",
+  "top.journal": "Diario",
+  "top.full": "Piena!",
+  "top.level": "liv. %d",
+  "top.boost_locked": "Il turbo x2 dei generatori si sblocca al livello %d",
+  "top.merchant_locked": "Il mercante girovago arriva dal livello %d",
+  "top.merchant_soon": "Il mercante arriva tra %@"
 }

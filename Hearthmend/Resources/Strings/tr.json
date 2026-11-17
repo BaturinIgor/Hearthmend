@@ -301,5 +301,12 @@
   "shortage.gems": "💎%d eksik",
   "shortage.gems_hint": "Kristaller görevlerden, başarılardan, albümden veya dükkândan gelir",
   "shortage.gems_free": "Günlükte ödül bekliyor: %d!",
-  "shortage.shop": "Dükkâna"
+  "shortage.shop": "Dükkâna",
+  "top.daily": "Hediye",
+  "top.journal": "Günlük",
+  "top.full": "Dolu!",
+  "top.level": "Sv %d",
+  "top.boost_locked": "Üretici x2 hızlandırma %d. seviyede açılır",
+  "top.merchant_locked": "Gezgin tüccar %d. seviyeden itibaren gelir",
+  "top.merchant_soon": "Tüccar %@ sonra gelir"
 }

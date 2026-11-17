@@ -301,5 +301,12 @@
   "shortage.gems": "Need 💎%d more",
   "shortage.gems_hint": "Gems come from quests, achievements and the album, or from the shop",
   "shortage.gems_free": "%d rewards are waiting in the journal!",
-  "shortage.shop": "Open shop"
+  "shortage.shop": "Open shop",
+  "top.daily": "Gift",
+  "top.journal": "Journal",
+  "top.full": "Full!",
+  "top.level": "Lv %d",
+  "top.boost_locked": "Generator boost x2 opens at level %d",
+  "top.merchant_locked": "The wandering merchant comes from level %d",
+  "top.merchant_soon": "The merchant arrives in %@"
 }

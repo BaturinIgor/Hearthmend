@@ -301,5 +301,12 @@
   "shortage.gems": "Brakuje 💎%d",
   "shortage.gems_hint": "Kryształy dają zadania, osiągnięcia i album, są też w sklepie",
   "shortage.gems_free": "Nagrody w dzienniku: %d!",
-  "shortage.shop": "Do sklepu"
+  "shortage.shop": "Do sklepu",
+  "top.daily": "Prezent",
+  "top.journal": "Dziennik",
+  "top.full": "Pełna!",
+  "top.level": "poz. %d",
+  "top.boost_locked": "Przyspieszenie generatorów x2 od poziomu %d",
+  "top.merchant_locked": "Wędrowny kupiec przyjeżdża od poziomu %d",
+  "top.merchant_soon": "Kupiec przyjedzie za %@"
 }

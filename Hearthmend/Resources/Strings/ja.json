@@ -301,5 +301,12 @@
   "shortage.gems": "💎あと%d",
   "shortage.gems_hint": "クリスタルはデイリー、実績、図鑑、ショップで手に入ります",
   "shortage.gems_free": "日誌に報酬が%d個！",
-  "shortage.shop": "ショップへ"
+  "shortage.shop": "ショップへ",
+  "top.daily": "ギフト",
+  "top.journal": "日誌",
+  "top.full": "満タン！",
+  "top.level": "Lv%d",
+  "top.boost_locked": "発生器2倍速はレベル%dで開放",
+  "top.merchant_locked": "旅の行商人はレベル%dから来ます",
+  "top.merchant_soon": "行商人の到着まで %@"
 }

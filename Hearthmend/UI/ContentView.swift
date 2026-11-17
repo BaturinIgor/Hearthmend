@@ -71,6 +71,9 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             PixelTile(key: "ui_bg").ignoresSafeArea()
             VStack(spacing: 8) {
+                TopIcons(openDaily: { withAnimation(.spring(response: 0.35)) { showDaily = true } },
+                         openShop: { showShop = true },
+                         openVillage: { screen = .village })
                 TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
                 EventBanner()

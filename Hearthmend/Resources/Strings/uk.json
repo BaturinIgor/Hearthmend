@@ -301,5 +301,12 @@
   "shortage.gems": "Бракує 💎%d",
   "shortage.gems_hint": "Кристали дають завдання, досягнення й альбом, а ще вони є в крамниці",
   "shortage.gems_free": "У журналі чекають нагород: %d!",
-  "shortage.shop": "До крамниці"
+  "shortage.shop": "До крамниці",
+  "top.daily": "Подарунок",
+  "top.journal": "Журнал",
+  "top.full": "Повна!",
+  "top.level": "рів. %d",
+  "top.boost_locked": "Прискорення генераторів x2 відкриється на %d рівні",
+  "top.merchant_locked": "Мандрівний торговець приїде з %d рівня",
+  "top.merchant_soon": "Торговець приїде через %@"
 }

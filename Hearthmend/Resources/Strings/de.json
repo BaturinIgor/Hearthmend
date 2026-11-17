@@ -301,5 +301,12 @@
   "shortage.gems": "Es fehlen 💎%d",
   "shortage.gems_hint": "Kristalle gibt es für Aufgaben, Erfolge und das Album oder im Laden",
   "shortage.gems_free": "Im Tagebuch warten Belohnungen: %d!",
-  "shortage.shop": "Zum Laden"
+  "shortage.shop": "Zum Laden",
+  "top.daily": "Geschenk",
+  "top.journal": "Tagebuch",
+  "top.full": "Voll!",
+  "top.level": "St. %d",
+  "top.boost_locked": "Generator-Boost x2 ab Stufe %d",
+  "top.merchant_locked": "Der fahrende Händler kommt ab Stufe %d",
+  "top.merchant_soon": "Der Händler kommt in %@"
 }

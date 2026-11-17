@@ -301,5 +301,12 @@
   "shortage.gems": "💎%d 부족",
   "shortage.gems_hint": "크리스털은 일일 과제, 업적, 도감, 상점에서 얻어요",
   "shortage.gems_free": "일지에 보상 %d개!",
-  "shortage.shop": "상점으로"
+  "shortage.shop": "상점으로",
+  "top.daily": "선물",
+  "top.journal": "일지",
+  "top.full": "가득!",
+  "top.level": "Lv%d",
+  "top.boost_locked": "생성기 2배속은 레벨 %d에 열려요",
+  "top.merchant_locked": "떠돌이 상인은 레벨 %d부터 와요",
+  "top.merchant_soon": "상인 도착까지 %@"
 }

@@ -57,8 +57,7 @@ private struct ShortageCard: View {
             }
             .padding(.bottom, -18)
             PixelIcon(key: icon, size: 52)
-            Text(title)
-                .font(Pixel.font(20))
+            PixelText(title, size: 20)
                 .multilineTextAlignment(.center)
             if let sub = subtitle {
                 PixelText(sub, size: 14)

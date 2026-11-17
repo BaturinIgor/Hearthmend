@@ -301,5 +301,12 @@
   "shortage.gems": "Il manque 💎%d",
   "shortage.gems_hint": "Les cristaux viennent des quêtes, succès et de l'album, ou de la boutique",
   "shortage.gems_free": "Récompenses dans le journal : %d !",
-  "shortage.shop": "Boutique"
+  "shortage.shop": "Boutique",
+  "top.daily": "Cadeau",
+  "top.journal": "Journal",
+  "top.full": "Pleine !",
+  "top.level": "niv. %d",
+  "top.boost_locked": "Accélération x2 des générateurs au niveau %d",
+  "top.merchant_locked": "Le marchand ambulant vient dès le niveau %d",
+  "top.merchant_soon": "Le marchand arrive dans %@"
 }

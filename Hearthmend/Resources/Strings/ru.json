@@ -301,5 +301,12 @@
   "shortage.gems": "Не хватает 💎%d",
   "shortage.gems_hint": "Кристаллы дают задания, достижения и альбом, а ещё они есть в лавке",
   "shortage.gems_free": "В журнале ждут наград: %d!",
-  "shortage.shop": "В лавку"
+  "shortage.shop": "В лавку",
+  "top.daily": "Подарок",
+  "top.journal": "Журнал",
+  "top.full": "Полна!",
+  "top.level": "ур. %d",
+  "top.boost_locked": "Ускорение генераторов x2 откроется на %d уровне",
+  "top.merchant_locked": "Странствующий торговец приедет с %d уровня",
+  "top.merchant_soon": "Торговец приедет через %@"
 }
