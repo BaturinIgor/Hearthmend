@@ -13,7 +13,7 @@
   "toast.sold": "Für %d Münzen verkauft",
   "toast.basket_full": "Der Korb ist voll",
   "toast.order_done": "Auftrag erledigt: +%d Münzen, +%d Sterne",
-  "hint.start": "Ziehe zwei gleiche Objekte zusammen, um sie zu kombinieren. Tippe auf einen Generator für neue Objekte.",
+  "hint.start": "Ziehe zwei gleiche Gegenstände aufeinander, um sie zu verschmelzen. Tippe auf einen Generator und dann noch einmal für neue Gegenstände.",
   "nav.board": "Zum Feld",
   "village.done": "Das Dorf ist wieder aufgebaut!",
   "district.square": "Marktplatz",
@@ -119,7 +119,7 @@
   "decor.stored": "Deko weggeräumt",
   "decor.hint": "Tippen zum Platzieren. Ziehen zum Verschieben, lange drücken zum Wegräumen.",
   "decor.empty": "Dekorationen gibt es für Postkarten, Events, Freundschaft und den Händler",
-  "tutorial.spawn": "Hallo! Ich bin Mila. Das Dorf liegt in Trümmern, aber wir bauen es wieder auf. Tippe auf den leuchtenden Generator, um ein Objekt zu bekommen.",
+  "tutorial.spawn": "Hallo! Ich bin Mila. Das Dorf liegt in Trümmern, aber wir bauen es wieder auf. Tippe auf den leuchtenden Generator, um ihn zu wählen, und tippe noch einmal für einen Gegenstand.",
   "tutorial.merge": "Super! Ziehe nun ein Objekt auf ein gleiches, um daraus etwas Besseres zu machen.",
   "tutorial.deliver": "Oben stehen die Aufträge der Dorfbewohner. Ist ein Objekt fertig, tippe auf „Abgeben“ und erhalte Sterne.",
   "tutorial.build": "Du hast Sterne! Lass uns ins Dorf gehen und etwas bauen.",
@@ -308,5 +308,6 @@
   "top.level": "St. %d",
   "top.boost_locked": "Generator-Boost x2 ab Stufe %d",
   "top.merchant_locked": "Der fahrende Händler kommt ab Stufe %d",
-  "top.merchant_soon": "Der Händler kommt in %@"
+  "top.merchant_soon": "Der Händler kommt in %@",
+  "selected.generator": "Noch einmal tippen: Gegenstand für ⚡️%d"
 }

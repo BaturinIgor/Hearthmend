@@ -13,7 +13,7 @@
   "toast.sold": "Vendido por %d monedas",
   "toast.basket_full": "La cesta está llena",
   "toast.order_done": "Pedido listo: +%d monedas, +%d estrellas",
-  "hint.start": "Arrastra dos objetos iguales juntos para combinarlos. Toca un generador para obtener objetos nuevos.",
+  "hint.start": "Arrastra dos objetos iguales uno sobre otro para fusionarlos. Toca un generador y luego tócalo otra vez para obtener objetos.",
   "nav.board": "Al tablero",
   "village.done": "¡La aldea está restaurada!",
   "district.square": "Plaza",
@@ -119,7 +119,7 @@
   "decor.stored": "Decoración guardada",
   "decor.hint": "Toca para colocar. Arrastra para mover, mantén pulsado para guardar.",
   "decor.empty": "Las decoraciones salen de postales, eventos, amistades y el mercader",
-  "tutorial.spawn": "¡Hola! Soy Mila. La aldea está en ruinas, pero la reconstruiremos. Toca el generador brillante para conseguir un objeto.",
+  "tutorial.spawn": "¡Hola! Soy Mila. La aldea está en ruinas, pero la reconstruiremos. Toca el generador brillante para elegirlo y tócalo otra vez para obtener un objeto.",
   "tutorial.merge": "¡Genial! Ahora arrastra un objeto sobre otro igual para combinarlos en algo mejor.",
   "tutorial.deliver": "Arriba están los pedidos de los vecinos. Cuando un objeto esté listo, toca «Entregar» para ganar estrellas.",
   "tutorial.build": "¡Tienes estrellas! Vamos a la aldea a construir algo.",
@@ -308,5 +308,6 @@
   "top.level": "niv. %d",
   "top.boost_locked": "El impulso x2 de generadores se abre en el nivel %d",
   "top.merchant_locked": "El mercader ambulante llega desde el nivel %d",
-  "top.merchant_soon": "El mercader llega en %@"
+  "top.merchant_soon": "El mercader llega en %@",
+  "selected.generator": "Toca otra vez: un objeto por ⚡️%d"
 }

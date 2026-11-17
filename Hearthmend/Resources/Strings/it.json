@@ -13,7 +13,7 @@
   "toast.sold": "Venduto per %d monete",
   "toast.basket_full": "Il cesto è pieno",
   "toast.order_done": "Ordine consegnato: +%d monete, +%d stelle",
-  "hint.start": "Trascina due oggetti uguali uno sull'altro per unirli. Tocca un generatore per ottenere nuovi oggetti.",
+  "hint.start": "Trascina due oggetti uguali uno sull'altro per unirli. Tocca un generatore, poi toccalo di nuovo per ottenere oggetti.",
   "nav.board": "Alla plancia",
   "village.done": "Il villaggio è restaurato!",
   "district.square": "Piazza",
@@ -119,7 +119,7 @@
   "decor.stored": "Decorazione riposta",
   "decor.hint": "Tocca per posizionare. Trascina per spostare, tieni premuto per riporre.",
   "decor.empty": "Le decorazioni arrivano da cartoline, eventi, amicizie e dal mercante",
-  "tutorial.spawn": "Ciao! Sono Mila. Il villaggio è in rovina, ma lo ricostruiremo. Tocca il generatore luminoso per ottenere un oggetto.",
+  "tutorial.spawn": "Ciao! Sono Mila. Il villaggio è in rovina, ma lo ricostruiremo. Tocca il generatore luminoso per sceglierlo, poi toccalo di nuovo per ottenere un oggetto.",
   "tutorial.merge": "Ottimo! Ora trascina un oggetto su uno uguale per unirli in qualcosa di meglio.",
   "tutorial.deliver": "In alto ci sono gli ordini degli abitanti. Quando un oggetto è pronto, tocca «Consegna» per ottenere stelle.",
   "tutorial.build": "Hai delle stelle! Andiamo al villaggio a costruire qualcosa.",
@@ -308,5 +308,6 @@
   "top.level": "liv. %d",
   "top.boost_locked": "Il turbo x2 dei generatori si sblocca al livello %d",
   "top.merchant_locked": "Il mercante girovago arriva dal livello %d",
-  "top.merchant_soon": "Il mercante arriva tra %@"
+  "top.merchant_soon": "Il mercante arriva tra %@",
+  "selected.generator": "Tocca di nuovo: un oggetto per ⚡️%d"
 }

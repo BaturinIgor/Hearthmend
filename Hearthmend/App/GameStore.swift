@@ -93,6 +93,13 @@ final class GameStore: ObservableObject {
     func tap(_ index: Int) -> Game.SpawnResult? {
         switch game.piece(at: index) {
         case .generator?:
+            // первый тап выбирает генератор, следующие тапы по выбранному дают предметы:
+            // случайное касание не тратит энергию
+            guard selected == index else {
+                Haptics.light()
+                selected = index
+                return nil
+            }
             let result = game.spawn(from: index)
             switch result {
             case .spawned:
@@ -106,7 +113,6 @@ final class GameStore: ObservableObject {
             case .notGenerator:
                 break
             }
-            selected = nil
             commit()
             return result
         case .bubble?:

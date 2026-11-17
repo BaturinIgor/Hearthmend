@@ -13,7 +13,7 @@
   "toast.sold": "以%d金币售出",
   "toast.basket_full": "篮子满了",
   "toast.order_done": "订单完成：+%d金币，+%d星星",
-  "hint.start": "把两个相同的物品拖到一起即可合成。点击生成器获得新物品。",
+  "hint.start": "把两个相同的物品拖到一起即可合成。点一下生成器选中，再点一次获得新物品。",
   "nav.board": "回到棋盘",
   "village.done": "村庄重建完成！",
   "district.square": "广场",
@@ -119,7 +119,7 @@
   "decor.stored": "装饰已收起",
   "decor.hint": "点击放置。拖动移动，长按收起。",
   "decor.empty": "装饰来自明信片、活动、友谊和商人",
-  "tutorial.spawn": "你好！我是米拉。村庄成了废墟，但我们会重建它。点一下发光的生成器来获得物品吧。",
+  "tutorial.spawn": "你好！我是米拉。村庄成了废墟，但我们会重建它。点一下发光的生成器选中它，再点一次就能得到物品。",
   "tutorial.merge": "太棒了！现在把一个物品拖到相同的物品上，合成更好的东西。",
   "tutorial.deliver": "上方是村民的订单。物品准备好后，点“交付”获得星星。",
   "tutorial.build": "你有星星了！我们去村里建点什么吧。",
@@ -308,5 +308,6 @@
   "top.level": "%d级",
   "top.boost_locked": "生成器2倍加速在%d级开放",
   "top.merchant_locked": "流浪商人从%d级开始到访",
-  "top.merchant_soon": "商人将在%@后到达"
+  "top.merchant_soon": "商人将在%@后到达",
+  "selected.generator": "再点一次：⚡️%d 换一个物品"
 }

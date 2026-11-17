@@ -13,7 +13,7 @@
   "toast.sold": "%d altına satıldı",
   "toast.basket_full": "Sepet dolu",
   "toast.order_done": "Sipariş tamam: +%d altın, +%d yıldız",
-  "hint.start": "Birleştirmek için iki aynı eşyayı üst üste sürükle. Yeni eşyalar için bir üretece dokun.",
+  "hint.start": "Birleştirmek için iki aynı eşyayı üst üste sürükle. Bir jeneratöre dokun, yeni eşyalar için bir kez daha dokun.",
   "nav.board": "Tahtaya",
   "village.done": "Köy yeniden canlandı!",
   "district.square": "Meydan",
@@ -119,7 +119,7 @@
   "decor.stored": "Süs kaldırıldı",
   "decor.hint": "Yerleştirmek için dokun. Taşımak için sürükle, kaldırmak için basılı tut.",
   "decor.empty": "Süsler kartpostallardan, etkinliklerden, dostluktan ve tüccardan gelir",
-  "tutorial.spawn": "Merhaba! Ben Mila. Köy harabe hâlinde ama onu yeniden kuracağız. Eşya almak için parlayan üretece dokun.",
+  "tutorial.spawn": "Merhaba! Ben Mila. Köy harabe halinde ama onu yeniden kuracağız. Seçmek için parlayan jeneratöre dokun, eşya almak için bir kez daha dokun.",
   "tutorial.merge": "Harika! Şimdi bir eşyayı aynısının üzerine sürükle, daha iyi bir şeye dönüşsünler.",
   "tutorial.deliver": "Köylülerin siparişleri yukarıda. Eşya hazır olunca «Teslim et»e dokun ve yıldız kazan.",
   "tutorial.build": "Yıldızların var! Hadi köye gidip bir şey inşa edelim.",
@@ -308,5 +308,6 @@
   "top.level": "Sv %d",
   "top.boost_locked": "Üretici x2 hızlandırma %d. seviyede açılır",
   "top.merchant_locked": "Gezgin tüccar %d. seviyeden itibaren gelir",
-  "top.merchant_soon": "Tüccar %@ sonra gelir"
+  "top.merchant_soon": "Tüccar %@ sonra gelir",
+  "selected.generator": "Bir kez daha dokun: ⚡️%d karşılığı eşya"
 }

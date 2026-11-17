@@ -402,6 +402,13 @@ private struct SelectedBar: View {
                 Spacer()
                 ActionButton(title: String(format: L10n.t("selected.sell"), store.game.sellPrice(item))) { store.sellSelected() }
                 ActionButton(title: L10n.t("selected.store")) { store.storeSelected() }
+            } else if let index = store.selected, case .generator(let gen)? = store.game.piece(at: index) {
+                let def = store.catalog.chain(gen.chain)
+                PixelIcon(key: def?.generator ?? "ui_crate", size: 30)
+                PixelText(String(format: L10n.t("selected.generator"), store.game.boostActive ? 2 : 1), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
             } else {
                 JarButton()
                 BasketButton()

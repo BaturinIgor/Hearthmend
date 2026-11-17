@@ -13,7 +13,7 @@
   "toast.sold": "Vendido por %d moedas",
   "toast.basket_full": "O cesto está cheio",
   "toast.order_done": "Pedido entregue: +%d moedas, +%d estrelas",
-  "hint.start": "Arraste dois itens iguais um sobre o outro para juntá-los. Toque num gerador para receber novos itens.",
+  "hint.start": "Arraste dois itens iguais um sobre o outro para fundi-los. Toque em um gerador e toque de novo para ganhar itens.",
   "nav.board": "Ao tabuleiro",
   "village.done": "A vila foi restaurada!",
   "district.square": "Praça",
@@ -119,7 +119,7 @@
   "decor.stored": "Decoração guardada",
   "decor.hint": "Toque para colocar. Arraste para mover, toque longo para guardar.",
   "decor.empty": "Decorações vêm de cartões-postais, eventos, amizades e do mercador",
-  "tutorial.spawn": "Oi! Eu sou a Mila. A vila está em ruínas, mas vamos reconstruí-la. Toque no gerador brilhante para ganhar um item.",
+  "tutorial.spawn": "Oi! Eu sou a Mila. A vila está em ruínas, mas vamos reconstruí-la. Toque no gerador brilhante para escolhê-lo e toque de novo para ganhar um item.",
   "tutorial.merge": "Ótimo! Agora arraste um item sobre outro igual para juntá-los em algo melhor.",
   "tutorial.deliver": "Os moradores fazem pedidos lá em cima. Quando um item estiver pronto, toque em «Entregar» para ganhar estrelas.",
   "tutorial.build": "Você tem estrelas! Vamos à vila construir algo.",
@@ -308,5 +308,6 @@
   "top.level": "nív. %d",
   "top.boost_locked": "O impulso x2 dos geradores abre no nível %d",
   "top.merchant_locked": "O mercador viajante vem a partir do nível %d",
-  "top.merchant_soon": "O mercador chega em %@"
+  "top.merchant_soon": "O mercador chega em %@",
+  "selected.generator": "Toque de novo: um item por ⚡️%d"
 }

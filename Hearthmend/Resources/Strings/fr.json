@@ -13,7 +13,7 @@
   "toast.sold": "Vendu pour %d pièces",
   "toast.basket_full": "Le panier est plein",
   "toast.order_done": "Commande livrée : +%d pièces, +%d étoiles",
-  "hint.start": "Fais glisser deux objets identiques l'un sur l'autre pour les fusionner. Touche un générateur pour obtenir de nouveaux objets.",
+  "hint.start": "Glisse deux objets identiques l'un sur l'autre pour les fusionner. Touche un générateur, puis touche-le encore pour obtenir des objets.",
   "nav.board": "Au plateau",
   "village.done": "Le village est restauré !",
   "district.square": "Place",
@@ -119,7 +119,7 @@
   "decor.stored": "Décoration rangée",
   "decor.hint": "Touche pour placer. Fais glisser pour déplacer, appui long pour ranger.",
   "decor.empty": "Les décorations viennent des cartes postales, des événements, de l'amitié et du marchand",
-  "tutorial.spawn": "Salut ! Je suis Mila. Le village est en ruines, mais nous allons le reconstruire. Touche le générateur lumineux pour obtenir un objet.",
+  "tutorial.spawn": "Salut ! Je suis Mila. Le village est en ruines, mais on va le reconstruire. Touche le générateur lumineux pour le choisir, puis touche-le encore pour obtenir un objet.",
   "tutorial.merge": "Bravo ! Fais maintenant glisser un objet sur un objet identique pour les fusionner en quelque chose de mieux.",
   "tutorial.deliver": "Les villageois passent commande en haut. Quand un objet est prêt, touche « Donner » pour gagner des étoiles.",
   "tutorial.build": "Tu as des étoiles ! Allons au village construire quelque chose.",
@@ -308,5 +308,6 @@
   "top.level": "niv. %d",
   "top.boost_locked": "Accélération x2 des générateurs au niveau %d",
   "top.merchant_locked": "Le marchand ambulant vient dès le niveau %d",
-  "top.merchant_soon": "Le marchand arrive dans %@"
+  "top.merchant_soon": "Le marchand arrive dans %@",
+  "selected.generator": "Touche encore : un objet pour ⚡️%d"
 }

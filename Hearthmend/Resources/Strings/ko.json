@@ -13,7 +13,7 @@
   "toast.sold": "%d코인에 팔았어요",
   "toast.basket_full": "바구니가 가득 찼어요",
   "toast.order_done": "주문 완료: 코인 +%d, 별 +%d",
-  "hint.start": "같은 아이템 두 개를 겹쳐 합치세요. 생성기를 탭하면 새 아이템이 나와요.",
+  "hint.start": "같은 아이템 두 개를 겹치면 합쳐집니다. 생성기를 탭해서 고르고 한 번 더 탭하면 아이템이 나옵니다.",
   "nav.board": "보드로",
   "village.done": "마을이 되살아났어요!",
   "district.square": "광장",
@@ -119,7 +119,7 @@
   "decor.stored": "장식을 보관했어요",
   "decor.hint": "탭해서 놓기. 끌어서 옮기고, 길게 눌러 보관하세요.",
   "decor.empty": "장식은 엽서, 이벤트, 우정, 상인에게서 받아요",
-  "tutorial.spawn": "안녕! 나는 밀라야. 마을이 폐허가 됐지만 우리가 다시 세울 거야. 빛나는 생성기를 탭해서 아이템을 얻어 봐.",
+  "tutorial.spawn": "안녕! 나는 밀라야. 마을이 폐허가 됐지만 우리가 다시 세울 거야. 빛나는 생성기를 탭해서 고르고, 한 번 더 탭하면 아이템이 나와.",
   "tutorial.merge": "좋아! 이제 같은 아이템 위로 끌어다 놓아 더 좋은 것으로 합쳐 봐.",
   "tutorial.deliver": "위쪽에 주민들의 주문이 있어. 아이템이 준비되면 '전달'을 눌러 별을 받아.",
   "tutorial.build": "별이 생겼어! 마을로 가서 뭔가 지어 보자.",
@@ -308,5 +308,6 @@
   "top.level": "Lv%d",
   "top.boost_locked": "생성기 2배속은 레벨 %d에 열려요",
   "top.merchant_locked": "떠돌이 상인은 레벨 %d부터 와요",
-  "top.merchant_soon": "상인 도착까지 %@"
+  "top.merchant_soon": "상인 도착까지 %@",
+  "selected.generator": "한 번 더 탭: ⚡️%d로 아이템"
 }
