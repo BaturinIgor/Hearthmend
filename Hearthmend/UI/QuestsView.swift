@@ -53,7 +53,7 @@ struct BadgeButton: View {
 /// Задания дня: три задачи с полосками, награда за каждую и сундук за все.
 struct QuestsSheet: View {
     @EnvironmentObject private var store: GameStore
-    @State private var now = Date()
+    @State private var now: Date?
     private let timer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -71,12 +71,12 @@ struct QuestsSheet: View {
                 .padding(16)
             }
         }
-        .onReceive(timer) { now = $0 }
+        .onReceive(timer) { _ in now = store.game.now() }
     }
 
     private var timeLeft: String {
         let next = Date(timeIntervalSince1970: Double(store.game.questDay + 1) * 86_400)
-        let s = max(0, Int(next.timeIntervalSince(now)))
+        let s = max(0, Int(next.timeIntervalSince(now ?? store.game.now())))
         return String(format: "%d:%02d", s / 3600, (s % 3600) / 60)
     }
 

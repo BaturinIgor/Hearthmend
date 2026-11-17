@@ -440,9 +440,10 @@ struct DailyRewardView: View {
                         VStack(spacing: 2) {
                             Text(String(format: L10n.t("daily.day"), i + 1))
                                 .font(Pixel.font(11))
-                            PixelText(Self.short(reward), size: 13)
-                                .minimumScaleFactor(0.6)
-                                .lineLimit(2)
+                            // каждая часть награды своей строкой: «⚡100» и «💎20» не рвутся посередине
+                            ForEach(Self.short(reward).split(separator: " ").map(String.init), id: \.self) { part in
+                                PixelText(part, size: 13).lineLimit(1).fixedSize()
+                            }
                         }
                         .frame(maxWidth: .infinity, minHeight: 56)
                         .background(PixelSlice(key: i == today ? "ui_paper_green" : "ui_paper", inset: 4))

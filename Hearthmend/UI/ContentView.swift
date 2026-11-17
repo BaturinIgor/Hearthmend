@@ -413,10 +413,11 @@ private struct BasketBar: View {
             PixelIcon(key: "ui_basket", size: 26)
             if store.state.basket.isEmpty {
                 Text(L10n.t("basket.hint"))
-                    .font(Pixel.body(12))
+                    .font(Pixel.body(11))
                     .foregroundColor(Theme.text.opacity(0.65))
                     .lineLimit(2)
-                    .frame(maxWidth: 110, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(width: 96, alignment: .leading)
             }
             ForEach(0..<store.state.basketSize, id: \.self) { i in
                 let item = i < store.state.basket.count ? store.state.basket[i] : nil
