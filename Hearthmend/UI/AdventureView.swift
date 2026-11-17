@@ -205,25 +205,25 @@ struct DepthsView: View {
     @ViewBuilder
     private func cell(_ i: Int, side: CGFloat) -> some View {
         let d = store.state.adventure?.depths
-        let c = d?.cells[i] ?? DepthCell(hardness: -1, content: nil)
+        let c = d?.cells[i]
         let can = d?.diggable(i) ?? false
         ZStack {
-            if c.isOpen {
+            if let c = c, c.isOpen {
                 PixelTile(key: "ui_mine_open", scale: side / 16)
                 if case .find(let item)? = c.content {
                     FindIcon(item: item, size: side * 0.7)
                         .modifier(Bob())
                 }
-            } else if c.isRock {
-                PixelTile(key: "ui_mine_3", scale: side / 16).brightness(-0.25)
-                PixelIcon(key: "depth_rock", size: side * 0.7)
-            } else {
+            } else if let c = c, !c.isRock {
                 PixelTile(key: "ui_mine_\(min(3, c.hardness))", scale: side / 16)
                     .brightness(can ? 0.05 : -0.18)
                 content(c, index: i, side: side, can: can, treasure: d?.treasureVisible(i) ?? false)
                 if c.hardness >= 2 {
                     Cracks(level: 3 - c.hardness).frame(width: side, height: side)
                 }
+            } else {
+                PixelTile(key: "ui_mine_3", scale: side / 16).brightness(-0.25)
+                PixelIcon(key: "depth_rock", size: side * 0.7)
             }
         }
         .frame(width: side, height: side)
