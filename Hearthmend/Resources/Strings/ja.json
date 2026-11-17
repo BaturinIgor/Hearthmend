@@ -310,9 +310,9 @@
   "top.merchant_locked": "旅の行商人はレベル%dから来ます",
   "top.merchant_soon": "行商人の到着まで %@",
   "selected.generator": "もう一度タップ：⚡️%dでアイテム",
-  "chest.need_space": "この宝箱にはあと%dマス空きが必要です",
+  "chest.need_space": "宝箱から取り出すには空きマスが必要です",
   "thicket.hint": "同じアイテムをここに置こう：%@ レベル%d",
   "thicket.hidden": "しげみに何かが隠れています。まず隣のマスを開けよう",
-  "chest.items": "アイテム%d個",
-  "chest.open": "もう一度タップで開ける：%@"
+  "chest.items": "もう一度タップでアイテムを取り出す。残り：%d",
+  "chest.open": "もう一度タップで受け取る：%@"
 }

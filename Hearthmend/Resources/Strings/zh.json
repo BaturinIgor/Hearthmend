@@ -310,9 +310,9 @@
   "top.merchant_locked": "流浪商人从%d级开始到访",
   "top.merchant_soon": "商人将在%@后到达",
   "selected.generator": "再点一次：⚡️%d 换一个物品",
-  "chest.need_space": "打开这个宝箱还需要 %d 个空格",
+  "chest.need_space": "腾出一个空格才能从宝箱里取出物品",
   "thicket.hint": "把相同的物品放到这里：%@ %d级",
   "thicket.hidden": "灌木丛里藏着东西。先清理旁边的格子",
-  "chest.items": "%d 件物品",
-  "chest.open": "再点一次打开：%@"
+  "chest.items": "再点一次取出物品。剩余：%d",
+  "chest.open": "再点一次领取：%@"
 }

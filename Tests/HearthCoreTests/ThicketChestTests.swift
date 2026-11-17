@@ -139,32 +139,40 @@ final class ThicketChestTests: XCTestCase {
     // MARK: - Ящики
 
     func testChestsMergeUpToTopLevel() {
-        let game = emptyGame()
-        for level in 0..<(Balance.chestLevels - 1) {
-            game.testSet(0, .chest(Chest(kind: .coins, level: level)))
-            game.testSet(1, .chest(Chest(kind: .coins, level: level)))
-            XCTAssertEqual(game.move(from: 0, to: 1), .mergedChest(Chest(kind: .coins, level: level + 1)))
+        for kind in ChestKind.allCases {
+            let game = emptyGame()
+            let top = Balance.chestAmounts(kind).count - 1
+            for level in 0..<top {
+                game.testSet(0, .chest(Chest(kind: kind, level: level)))
+                game.testSet(1, .chest(Chest(kind: kind, level: level)))
+                XCTAssertEqual(game.move(from: 0, to: 1), .mergedChest(Chest(kind: kind, level: level + 1)))
+            }
+            game.testSet(0, .chest(Chest(kind: kind, level: top)))
+            XCTAssertEqual(game.move(from: 0, to: 1), .swapped, "\(kind): самый большой не растет")
         }
-        game.testSet(0, .chest(Chest(kind: .coins, level: Balance.chestLevels - 1)))
-        XCTAssertEqual(game.move(from: 0, to: 1), .swapped, "самый большой ящик не растет")
+        XCTAssertEqual(Balance.chestEnergy.count, 6)
+        XCTAssertEqual(Balance.chestGems.count, 8)
+        XCTAssertEqual(Balance.chestCoins.count, 10)
+        let game = emptyGame()
         game.testSet(0, .chest(Chest(kind: .energy, level: 0)))
         game.testSet(1, .chest(Chest(kind: .coins, level: 0)))
-        XCTAssertEqual(game.move(from: 0, to: 1), .swapped, "разные ящики не сливаются")
+        XCTAssertEqual(game.move(from: 0, to: 1), .swapped, "разные не сливаются")
+        game.testSet(0, .chest(Chest(kind: .items, level: 1, left: 2)))
+        game.testSet(1, .chest(Chest(kind: .items, level: 1, left: 2)))
+        XCTAssertEqual(game.move(from: 0, to: 1), .swapped, "начатые ящики не сливаются")
     }
 
-    func testMergingChestsIsWorthWaiting() {
-        for amounts in [Balance.chestCoins, Balance.chestEnergy, Balance.chestGems, Balance.chestItems] {
-            XCTAssertEqual(amounts.count, Balance.chestLevels)
-        }
+    func testMergingIsWorthWaiting() {
+        XCTAssertEqual(Balance.chestItems.count, Balance.chestItemTiers.count)
         for amounts in [Balance.chestCoins, Balance.chestEnergy, Balance.chestGems] {
             for l in 1..<amounts.count {
-                XCTAssertGreaterThan(amounts[l], amounts[l - 1] * 2, "слить выгоднее, чем открыть по одному")
-                XCTAssertLessThanOrEqual(Double(amounts[l]), Double(amounts[l - 1]) * 2.6, "но без перекоса")
+                XCTAssertGreaterThan(amounts[l], amounts[l - 1] * 2, "слить выгоднее, чем забрать по одному")
+                XCTAssertLessThanOrEqual(Double(amounts[l]), Double(amounts[l - 1]) * 3, "но без перекоса")
             }
         }
     }
 
-    func testOpenResourceChests() {
+    func testCollectResources() {
         let game = emptyGame()
         let (coins, energy, gems) = (game.state.coins, game.state.energy, game.state.gems)
         game.testSet(0, .chest(Chest(kind: .coins, level: 1)))
@@ -181,20 +189,30 @@ final class ThicketChestTests: XCTestCase {
         XCTAssertEqual(game.openChest(at: 0), .notChest)
     }
 
-    func testItemChestNeedsSpace() {
+    func testItemChestGivesOneItemPerTap() {
         let game = emptyGame()
         let n = game.balance.cellCount
         for i in 0..<n { game.testSet(i, .item(Item(chain: "quarry", tier: 5))) }
-        game.testSet(0, .chest(Chest(kind: .items, level: 2)))
-        game.testSet(1, nil)
-        XCTAssertEqual(game.openChest(at: 0), .needSpace(Balance.chestItems[2] - 2))
-        if case .chest? = game.piece(at: 0) {} else { XCTFail("ящик остался") }
-        for i in 2..<6 { game.testSet(i, nil) }
-        guard case .opened(let r) = game.openChest(at: 0) else { return XCTFail() }
-        XCTAssertEqual(r.items.count, Balance.chestItems[2])
-        for spill in r.items {
-            XCTAssertEqual(game.piece(at: spill.cell), .item(spill.item))
-            XCTAssertTrue(Balance.chestItemTiers[2].contains(spill.item.tier))
+        let level = 1
+        game.testSet(0, .chest(Chest(kind: .items, level: level)))
+        XCTAssertEqual(game.openChest(at: 0), .needSpace(1), "некуда положить")
+        for i in 1...3 { game.testSet(i, nil) }
+        let total = Balance.chestItems[level]
+        var got: [ChestSpill] = []
+        for k in 0..<total {
+            if k > 0, game.state.cells.filter({ $0 == nil }).isEmpty { game.testSet(got[0].cell, nil) }
+            guard case .opened(let r) = game.openChest(at: 0) else { return XCTFail("тап \(k)") }
+            XCTAssertEqual(r.items.count, 1)
+            got += r.items
+            if k < total - 1 {
+                XCTAssertEqual(game.piece(at: 0), .chest(Chest(kind: .items, level: level, left: total - k - 1)))
+            }
+        }
+        XCTAssertEqual(got.last?.cell, 0, "последний предмет на месте ящика")
+        if case .item? = game.piece(at: 0) {} else { XCTFail() }
+        XCTAssertEqual(game.state.chestsOpened, 1)
+        for spill in got {
+            XCTAssertTrue(Balance.chestItemTiers[level].contains(spill.item.tier))
             XCTAssertTrue(game.state.unlockedChains.contains(spill.item.chain))
         }
     }

@@ -310,9 +310,9 @@
   "top.merchant_locked": "Gezgin tüccar %d. seviyeden itibaren gelir",
   "top.merchant_soon": "Tüccar %@ sonra gelir",
   "selected.generator": "Bir kez daha dokun: ⚡️%d karşılığı eşya",
-  "chest.need_space": "Bu sandık için %d boş hücre daha gerekli",
+  "chest.need_space": "Sandıktan eşya almak için bir hücre boşalt",
   "thicket.hint": "Aynı eşyayı buraya bırak: %@ seviye %d",
   "thicket.hidden": "Çalılıkta bir şey saklı. Önce yanındaki hücreleri temizle",
-  "chest.items": "%d eşya",
-  "chest.open": "Açmak için bir kez daha dokun: %@"
+  "chest.items": "Eşya için bir kez daha dokun. Kalan: %d",
+  "chest.open": "Toplamak için bir kez daha dokun: %@"
 }

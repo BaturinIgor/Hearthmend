@@ -322,7 +322,7 @@ public final class Game {
             state.cells[from] = nil
             return .mergedGenerator(next)
         case (.chest(let x), .chest(let y)?) where x == y:
-            guard x.level + 1 < Balance.chestLevels else { return swap(from, to) }
+            guard x.canMerge else { return swap(from, to) }
             let next = Chest(kind: x.kind, level: x.level + 1)
             state.cells[to] = .chest(next)
             state.cells[from] = nil

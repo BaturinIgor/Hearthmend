@@ -1,7 +1,8 @@
 import Foundation
 
-/// Ящики на поле. Четыре вида и четыре размера: два одинаковых ящика сливаются в следующий,
-/// и в нем чуть больше, чем в двух по отдельности, поэтому копить выгодно. Открывается двойным тапом.
+/// Ящики и ресурсы на поле: ящик с предметами, монеты, энергия и кристаллы. Два одинаковых сливаются
+/// в следующий уровень, и там чуть больше, чем в двух по отдельности, поэтому копить выгодно.
+/// Первый тап выбирает, второй забирает: ресурс целиком, а из ящика по одному предмету.
 public enum ChestKind: String, Codable, CaseIterable {
     case items, coins, energy, gems
 }
@@ -9,11 +10,25 @@ public enum ChestKind: String, Codable, CaseIterable {
 public struct Chest: Codable, Hashable {
     public let kind: ChestKind
     public let level: Int
+    /// Сколько предметов осталось в начатом ящике. nil - ящик целый.
+    public var left: Int?
 
-    public init(kind: ChestKind, level: Int) {
+    public init(kind: ChestKind, level: Int, left: Int? = nil) {
         self.kind = kind
         self.level = level
+        self.left = left
     }
+
+    public var maxLevel: Int { Balance.chestAmounts(kind).count - 1 }
+    /// Сколько всего внутри: предметов, монет, энергии или кристаллов.
+    public var amount: Int {
+        let amounts = Balance.chestAmounts(kind)
+        return amounts[min(max(level, 0), amounts.count - 1)]
+    }
+    /// Сколько предметов еще можно достать (для ресурсов - вся сумма).
+    public var remaining: Int { left ?? amount }
+    /// Начатый ящик уже не сливается.
+    public var canMerge: Bool { left == nil && level < maxLevel }
 }
 
 /// Предмет, выпавший из ящика, и клетка, куда он лег.
@@ -30,15 +45,25 @@ public struct ChestReward: Equatable {
 }
 
 extension Balance {
-    public static let chestLevels = 4
-    public static let chestCoins = [20, 45, 100, 220]
-    public static let chestEnergy = [5, 11, 24, 52]
-    public static let chestGems = [2, 5, 11, 24]
-    public static let chestItems = [2, 3, 4, 5]
+    /// Каждый уровень примерно в 2,2 раза больше предыдущего: слить выгоднее, чем забрать по одному.
+    public static let chestItems = [3, 5, 6, 8]
     public static let chestItemTiers: [ClosedRange<Int>] = [0...1, 1...1, 1...2, 2...3]
-    /// Ящик может выпасть при слиянии в предмет этой ступени и выше (3-я на экране).
+    public static let chestEnergy = [2, 5, 11, 24, 52, 110]
+    public static let chestGems = [1, 3, 7, 15, 33, 72, 160, 350]
+    public static let chestCoins = [10, 22, 48, 105, 230, 500, 1_100, 2_400, 5_200, 11_500]
+
+    public static func chestAmounts(_ kind: ChestKind) -> [Int] {
+        switch kind {
+        case .items: return chestItems
+        case .coins: return chestCoins
+        case .energy: return chestEnergy
+        case .gems: return chestGems
+        }
+    }
+
+    /// Ящик или ресурс может выпасть при слиянии в предмет этой ступени и выше (3-я на экране).
     public static let chestMinTier = 2
-    public static let chestChance = 0.02
+    public static let chestChance = 0.03
     /// Какой ящик выпадает при слиянии: предметы чаще всего, кристаллы реже всего.
     public static let chestWeights: [(ChestKind, Double)] = [(.items, 50), (.coins, 25), (.energy, 20), (.gems, 5)]
     /// Ящик за расчищенный ряд зарослей: щедрее на ресурсы.
@@ -53,50 +78,38 @@ extension Game {
         case notChest
     }
 
-    /// Что лежит в ящике (для подсказки): монеты, энергия, кристаллы или число предметов.
-    public static func chestAmount(_ chest: Chest) -> Int {
-        let l = min(max(chest.level, 0), Balance.chestLevels - 1)
-        switch chest.kind {
-        case .items: return Balance.chestItems[l]
-        case .coins: return Balance.chestCoins[l]
-        case .energy: return Balance.chestEnergy[l]
-        case .gems: return Balance.chestGems[l]
-        }
-    }
-
+    /// Забирает ресурс целиком или достает из ящика один предмет в ближайшую свободную клетку.
+    /// Последний предмет ложится на место ящика.
     public func openChest(at index: Int) -> ChestResult {
         guard case .chest(let chest) = piece(at: index) else { return .notChest }
-        let l = min(max(chest.level, 0), Balance.chestLevels - 1)
         var reward = ChestReward()
         switch chest.kind {
         case .coins:
-            reward.coins = Balance.chestCoins[l]
+            reward.coins = chest.amount
             state.coins += reward.coins
             state.cells[index] = nil
         case .energy:
-            reward.energy = Balance.chestEnergy[l]
+            reward.energy = chest.amount
             state.energy += reward.energy
             state.cells[index] = nil
         case .gems:
-            reward.gems = Balance.chestGems[l]
+            reward.gems = chest.amount
             state.gems += reward.gems
             state.cells[index] = nil
         case .items:
-            let count = Balance.chestItems[l]
-            // клетка самого ящика тоже освободится
-            let free = state.cells.filter { $0 == nil }.count + 1
-            guard free >= count else { return .needSpace(count - free) }
-            state.cells[index] = nil
+            let left = chest.remaining
+            let last = left <= 1
+            guard let cell = last ? index : nearestEmpty(to: index) else { return .needSpace(1) }
             let chains = state.unlockedChains.filter { catalog.chain($0) != nil }
+            guard let chain = chains.randomElement(using: &rng) else { return .notChest }
+            let tiers = Balance.chestItemTiers[min(max(chest.level, 0), Balance.chestItemTiers.count - 1)]
+            let item = Item(chain: chain, tier: min(Int.random(in: tiers, using: &rng), catalog.maxTier(of: chain)))
+            state.cells[cell] = .item(item)
+            if !last { state.cells[index] = .chest(Chest(kind: .items, level: chest.level, left: left - 1)) }
             lastDiscovery = nil
-            for _ in 0..<count {
-                guard let chain = chains.randomElement(using: &rng), let cell = nearestEmpty(to: index) else { break }
-                let tier = min(Int.random(in: Balance.chestItemTiers[l], using: &rng), catalog.maxTier(of: chain))
-                let item = Item(chain: chain, tier: tier)
-                state.cells[cell] = .item(item)
-                discover(item)
-                reward.items.append(ChestSpill(cell: cell, item: item))
-            }
+            discover(item)
+            reward.items.append(ChestSpill(cell: cell, item: item))
+            guard last else { return .opened(reward) }
         }
         state.chestsOpened += 1
         placePendingGenerators()

@@ -142,12 +142,13 @@ final class GameStore: ObservableObject {
                 Haptics.success()
                 Audio.shared.play(reward.coins > 0 || reward.gems > 0 ? .coins : .sparkle)
                 lastOpenedChest = (index, chest, reward)
-                selected = nil
+                // из начатого ящика можно сразу тапать дальше
+                if case .chest? = game.piece(at: index) {} else { selected = nil }
                 commit()
                 onBoardChange?()
-            case .needSpace(let n):
+            case .needSpace:
                 Audio.shared.play(.nope)
-                show(String(format: L10n.t("chest.need_space"), n))
+                show(L10n.t("chest.need_space"))
             case .notChest:
                 break
             }

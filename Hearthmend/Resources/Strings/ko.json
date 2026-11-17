@@ -310,9 +310,9 @@
   "top.merchant_locked": "떠돌이 상인은 레벨 %d부터 와요",
   "top.merchant_soon": "상인 도착까지 %@",
   "selected.generator": "한 번 더 탭: ⚡️%d로 아이템",
-  "chest.need_space": "이 상자를 열려면 빈칸이 %d개 더 필요해요",
+  "chest.need_space": "상자에서 꺼내려면 빈칸을 만드세요",
   "thicket.hint": "같은 아이템을 여기에 놓으세요: %@ %d단계",
   "thicket.hidden": "덤불 속에 뭔가 숨어 있어요. 먼저 옆 칸을 치우세요",
-  "chest.items": "아이템 %d개",
-  "chest.open": "한 번 더 탭해서 열기: %@"
+  "chest.items": "한 번 더 탭해서 아이템 꺼내기. 남음: %d",
+  "chest.open": "한 번 더 탭해서 받기: %@"
 }

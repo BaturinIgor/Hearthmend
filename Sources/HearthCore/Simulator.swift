@@ -304,14 +304,16 @@ public enum Simulator {
         for (i, piece) in game.state.cells.enumerated() {
             if case .chest(let c)? = piece { positions[c, default: []].append(i) }
         }
-        for (chest, idx) in positions where idx.count >= 2 && chest.level + 1 < Balance.chestLevels {
+        for (chest, idx) in positions where idx.count >= 2 && chest.canMerge {
             if case .mergedChest = game.move(from: idx[0], to: idx[1]) { return true }
         }
         let empty = game.state.cells.filter { $0 == nil }.count
         for (chest, idx) in positions {
-            if chest.kind == .items, empty < 6 { continue }
+            if chest.kind == .items, empty < 3, chest.remaining > 1 { continue }
             if case .opened(let r) = game.openChest(at: idx[0]) {
-                report.chestsOpened += 1
+                if game.piece(at: idx[0]).map({ if case .chest = $0 { return false } else { return true } }) ?? true {
+                    report.chestsOpened += 1
+                }
                 report.energyFromChests += r.energy
                 report.coinsFromChests += r.coins
                 report.gemsFromChests += r.gems

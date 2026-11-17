@@ -310,9 +310,9 @@
   "top.merchant_locked": "Il mercante girovago arriva dal livello %d",
   "top.merchant_soon": "Il mercante arriva tra %@",
   "selected.generator": "Tocca di nuovo: un oggetto per ⚡️%d",
-  "chest.need_space": "Servono ancora %d caselle libere per questo forziere",
+  "chest.need_space": "Libera una casella per prendere un oggetto dal forziere",
   "thicket.hint": "Lascia qui lo stesso oggetto: %@ livello %d",
   "thicket.hidden": "Qualcosa è nascosto nella boscaglia. Prima libera le caselle vicine",
-  "chest.items": "%d oggetti",
-  "chest.open": "Tocca di nuovo per aprire: %@"
+  "chest.items": "Tocca di nuovo per un oggetto. Rimasti: %d",
+  "chest.open": "Tocca di nuovo per raccogliere: %@"
 }

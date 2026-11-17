@@ -256,12 +256,23 @@ final class BoardScene: SKScene {
             glow.fillColor = Palette.chestGlow
             glow.strokeColor = .clear
             node.addChild(glow)
-            node.addChild(icon(key: Self.chestKey(chest), fallback: "🎁", scale: 0.6))
-            let kind = icon(key: Self.chestIcon(chest.kind), fallback: "", scale: 0.2)
-            kind.position = CGPoint(x: -cellSize * 0.28, y: -cellSize * 0.28)
-            kind.zPosition = 2
-            node.addChild(kind)
-            node.addChild(stars(chest.level + 1))
+            if chest.kind == .items {
+                node.addChild(icon(key: Self.chestKey(chest), fallback: "🎁", scale: 0.6))
+                if let left = chest.left { node.addChild(badge("\(left)", icon: "ui_basket")) }
+                else { node.addChild(stars(chest.level + 1)) }
+            } else {
+                // кучка ресурса растет с уровнем: 1-3 значка, дальше мешочек, банка, сундучок
+                let (key, count) = Self.resourceArt(chest)
+                let offsets: [[CGPoint]] = [[.zero],
+                                            [CGPoint(x: -0.12, y: -0.06), CGPoint(x: 0.12, y: 0.06)],
+                                            [CGPoint(x: -0.14, y: -0.1), CGPoint(x: 0.14, y: -0.1), CGPoint(x: 0, y: 0.12)]]
+                for p in offsets[max(0, min(count, 3) - 1)] {
+                    let sprite = icon(key: key, fallback: "✨", scale: count > 1 ? 0.4 : 0.55)
+                    sprite.position = CGPoint(x: p.x * cellSize, y: p.y * cellSize)
+                    node.addChild(sprite)
+                }
+                node.addChild(badge("\(chest.level + 1)"))
+            }
             node.run(.repeatForever(.sequence([.wait(forDuration: 2.5 + Double(index % 5) * 0.4),
                                               .rotate(byAngle: 0.08, duration: 0.07), .rotate(byAngle: -0.16, duration: 0.1),
                                               .rotate(byAngle: 0.08, duration: 0.07)])))
@@ -272,6 +283,17 @@ final class BoardScene: SKScene {
     nonisolated static func chestKey(_ chest: Chest, open: Bool = false) -> String {
         let base = chest.level >= 3 ? "chest_3_\(chest.kind.rawValue)" : "chest_\(max(0, chest.level))"
         return open ? base + "_open" : base
+    }
+
+    /// Картинка ресурса на поле и сколько раз ее повторить.
+    nonisolated static func resourceArt(_ chest: Chest) -> (String, Int) {
+        let l = chest.level
+        switch chest.kind {
+        case .coins: return l < 3 ? ("ui_coin", l + 1) : l < 6 ? ("ui_pouch", 1) : ("ui_vault", 1)
+        case .energy: return l < 3 ? ("ui_energy", l + 1) : ("ui_jar", 1)
+        case .gems: return l < 3 ? ("ui_gem", l + 1) : l < 5 ? ("ui_bag", 1) : ("ui_chest", 1)
+        case .items: return (chestKey(chest), 1)
+        }
     }
 
     nonisolated static func chestIcon(_ kind: ChestKind) -> String {
@@ -605,7 +627,13 @@ final class BoardScene: SKScene {
     /// Ящик открывается: крышка поднимается, награда разлетается.
     func openChest(at index: Int, chest: Chest, reward: ChestReward) {
         let c = center(of: index)
-        if let tex = Sprites.texture(Self.chestKey(chest, open: true)) {
+        if chest.kind == .items, let spill = reward.items.first, spill.cell != index {
+            // из ящика достали один предмет: ящик подпрыгивает, предмет летит в клетку
+            squish(at: index)
+            fly(spill.cell, from: c)
+            return
+        }
+        if chest.kind == .items, let tex = Sprites.texture(Self.chestKey(chest, open: true)) {
             let side = Pixel.crisp(cellSize * 0.72, source: 16)
             let lid = SKSpriteNode(texture: tex, size: CGSize(width: side, height: side))
             lid.position = c

@@ -310,9 +310,9 @@
   "top.merchant_locked": "O mercador viajante vem a partir do nível %d",
   "top.merchant_soon": "O mercador chega em %@",
   "selected.generator": "Toque de novo: um item por ⚡️%d",
-  "chest.need_space": "Faltam %d casas livres para este baú",
+  "chest.need_space": "Libere uma casa para tirar um item do baú",
   "thicket.hint": "Solte aqui o mesmo item: %@ nível %d",
   "thicket.hidden": "Há algo escondido no matagal. Limpe primeiro as casas ao lado",
-  "chest.items": "%d itens",
-  "chest.open": "Toque de novo para abrir: %@"
+  "chest.items": "Toque de novo para tirar um item. Restam: %d",
+  "chest.open": "Toque de novo para coletar: %@"
 }

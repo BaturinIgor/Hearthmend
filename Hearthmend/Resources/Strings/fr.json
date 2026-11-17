@@ -310,9 +310,9 @@
   "top.merchant_locked": "Le marchand ambulant vient dès le niveau %d",
   "top.merchant_soon": "Le marchand arrive dans %@",
   "selected.generator": "Touche encore : un objet pour ⚡️%d",
-  "chest.need_space": "Il faut encore %d cases libres pour ce coffre",
+  "chest.need_space": "Libère une case pour sortir un objet du coffre",
   "thicket.hint": "Pose ici le même objet : %@ niveau %d",
   "thicket.hidden": "Quelque chose se cache dans les fourrés. Dégage d'abord les cases voisines",
-  "chest.items": "%d objets",
-  "chest.open": "Touche encore pour ouvrir : %@"
+  "chest.items": "Touche encore pour un objet. Reste : %d",
+  "chest.open": "Touche encore pour récupérer : %@"
 }

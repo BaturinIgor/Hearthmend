@@ -310,9 +310,9 @@
   "top.merchant_locked": "Wędrowny kupiec przyjeżdża od poziomu %d",
   "top.merchant_soon": "Kupiec przyjedzie za %@",
   "selected.generator": "Stuknij jeszcze raz: przedmiot za ⚡️%d",
-  "chest.need_space": "Do tej skrzyni potrzeba jeszcze %d wolnych pól",
+  "chest.need_space": "Zwolnij pole, żeby wyjąć przedmiot ze skrzyni",
   "thicket.hint": "Upuść tu taki sam przedmiot: %@ poziom %d",
   "thicket.hidden": "W zaroślach coś się kryje. Najpierw oczyść pola obok",
-  "chest.items": "%d przedm.",
-  "chest.open": "Stuknij jeszcze raz, żeby otworzyć: %@"
+  "chest.items": "Stuknij jeszcze raz po przedmiot. Zostało: %d",
+  "chest.open": "Stuknij jeszcze raz, żeby zebrać: %@"
 }

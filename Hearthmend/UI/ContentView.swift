@@ -410,7 +410,7 @@ private struct SelectedBar: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
             } else if let index = store.selected, case .chest(let chest)? = store.game.piece(at: index) {
-                PixelIcon(key: BoardScene.chestKey(chest), size: 30)
+                PixelIcon(key: BoardScene.resourceArt(chest).0, size: 30)
                 PixelText(chestText(chest), size: 13)
                     .foregroundColor(Theme.text)
                     .fixedSize(horizontal: false, vertical: true)
@@ -440,10 +440,10 @@ private struct SelectedBar: View {
     }
 
     private func chestText(_ chest: Chest) -> String {
-        let n = Game.chestAmount(chest)
+        let n = chest.remaining
         let what: String
         switch chest.kind {
-        case .items: what = String(format: L10n.t("chest.items"), n)
+        case .items: return String(format: L10n.t("chest.items"), n)
         case .coins: what = "🪙\(n)"
         case .energy: what = "⚡️\(n)"
         case .gems: what = "💎\(n)"
