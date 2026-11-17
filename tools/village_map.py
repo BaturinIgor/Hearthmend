@@ -108,6 +108,8 @@ DECOR = {
     "decor_lantern": (OD + "Lantern.png", 0, 0, 16, 16),
     "decor_barrel_green": (OD + "barrels.png", 0, 32, 16, 32),
     "decor_barrel_red": (OD + "barrels.png", 64, 32, 16, 32),
+    # большие события
+    "decor_minecart": (OD + "Minecrats.png", 16, 106, 16, 22),
 }
 BUILDINGS.update(DECOR)
 

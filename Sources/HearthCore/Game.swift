@@ -466,6 +466,7 @@ public final class Game {
         advanceTutorial(from: .deliver)
         lastLevelUps = addXP(order.xp)
         lastEventRewards = addEventTokens(order.stars)
+        addAdventureMoves(for: order)
         fillPiggy()
         lastPostcard = addPostcardPiece()
         placePendingGenerators()

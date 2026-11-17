@@ -22,6 +22,8 @@ public struct SimConfig {
     public var keepPets = true
     /// Выполнять заказы странствующего торговца.
     public var serveMerchant = true
+    /// Играть в большие события (Глубины и др.) на ходы с заказов.
+    public var playAdventures = true
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -69,6 +71,10 @@ public struct SimReport: CustomStringConvertible {
     public var chestsOpened = 0
     public var energyFromShopGift = 0
     public var bestGeneratorLevel = 0
+    /// Большие события: сколько сыграно, доля пройденной дорожки в каждом, ценность наград в энергии.
+    public var adventureProgress: [Double] = []
+    public var adventureValue = 0.0
+    public var adventureDepth: [Int] = []
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -110,6 +116,8 @@ public enum Simulator {
         var rng = SplitMix64(seed: config.seed &+ 99)
         let sessionGap = 24 * 3600 / Double(config.sessionsPerDay)
         let start = clock.date
+        var adventureKey: String?
+        var adventureLast: AdventureState?
 
         for session in 0..<(config.maxDays * config.sessionsPerDay) {
             if session > 0 {
@@ -131,6 +139,7 @@ public enum Simulator {
             report.sessions += 1
             let stalled = playSession(game, config: config, report: &report)
             if stalled { report.stalledSessions += 1 }
+            if config.playAdventures { playAdventure(game, report: &report, lastKey: &adventureKey, lastState: &adventureLast) }
             if config.claimQuests { claimRewards(game, report: &report) }
             let day = clock.date.timeIntervalSince(start) / 86400
             if config.keepPets {
@@ -149,6 +158,7 @@ public enum Simulator {
                 if config.stopWhenVillageDone { break }
             }
         }
+        if let last = adventureLast { finishAdventure(last, game: game, report: &report) }
         report.level = game.state.level
         report.tasksDone = game.state.completedTasks.count
         report.bestFriends = game.bestFriends
@@ -371,6 +381,109 @@ public enum Simulator {
             }
         }
         return false
+    }
+
+    // MARK: - Большие события
+
+    static func prizeValue(_ prize: AdventurePrize) -> Double {
+        switch prize {
+        case .chest(let c):
+            switch c.kind {
+            case .energy: return Double(c.amount)
+            case .coins: return Double(c.amount) / 12
+            case .gems: return Double(c.amount * 2)
+            case .items: return Double(c.amount) * 1.5
+            }
+        case .generator: return 20
+        case .decor: return 0
+        }
+    }
+
+    private static func finishAdventure(_ a: AdventureState, game: Game, report: inout SimReport) {
+        let track = game.adventureTrack(a.kind)
+        guard !track.isEmpty else { return }
+        report.adventureProgress.append(Double(a.claimed) / Double(track.count))
+        report.adventureValue += track.prefix(a.claimed).reduce(0) { $0 + prizeValue($1.prize) }
+        if let d = a.depths {
+            let deepest = d.cells.indices.filter { d.cells[$0].isOpen }.map { $0 / DepthsState.width }.max() ?? -1
+            report.adventureDepth.append(deepest + 1)
+            for (i, row) in Depths.treasureRows.enumerated() where deepest >= row {
+                report.adventureValue += prizeValue(Depths.treasures[i])
+            }
+        }
+    }
+
+    private static func playAdventure(_ game: Game, report: inout SimReport, lastKey: inout String?, lastState: inout AdventureState?) {
+        let current = game.adventure
+        if let last = lastState, last.key != current?.key {
+            finishAdventure(last, game: game, report: &report)
+            lastState = nil
+        }
+        guard let a = current, a.kind == .depths else { return }
+        lastKey = a.key
+        game.claimAdventureDaily()
+        for _ in 0..<3000 {
+            if mergeFinds(game) { continue }
+            if deliverFinds(game, all: false) { continue }
+            if collectWaiting(game) { continue }
+            guard (game.adventure?.moves ?? 0) > 0, let target = digTarget(game) else { break }
+            _ = game.dig(target)
+        }
+        // в последний день сдает все, что осталось
+        if let ends = game.adventureEndsAt, ends.timeIntervalSince(game.now()) < 9 * 3600 {
+            while deliverFinds(game, all: true) {}
+        }
+        lastState = game.adventure
+    }
+
+    private static func mergeFinds(_ game: Game) -> Bool {
+        guard let board = game.adventure?.depths?.board else { return false }
+        var seen: [Item: Int] = [:]
+        for (i, item) in board.enumerated() {
+            guard let item, item.tier < Depths.maxTier else { continue }
+            if let j = seen[item] { return game.moveFind(from: i, to: j) }
+            seen[item] = i
+        }
+        return false
+    }
+
+    private static func deliverFinds(_ game: Game, all: Bool) -> Bool {
+        guard let board = game.adventure?.depths?.board else { return false }
+        let filled = board.compactMap { $0 }
+        var counts: [Item: Int] = [:]
+        for item in filled { counts[item, default: 0] += 1 }
+        let crowded = filled.count > DepthsState.boardSize - 4
+        let pick = board.indices.filter { i in
+            guard let item = board[i] else { return false }
+            if all { return true }
+            if item.tier >= Depths.maxTier { return true }
+            return crowded && (counts[item] ?? 0) < 2
+        }.min { (board[$0]?.tier ?? 0) < (board[$1]?.tier ?? 0) }
+        guard let slot = pick else { return false }
+        return game.deliverFind(slot) != nil
+    }
+
+    private static func collectWaiting(_ game: Game) -> Bool {
+        guard let d = game.adventure?.depths, d.board.contains(where: { $0 == nil }) else { return false }
+        for i in d.cells.indices where d.cells[i].isOpen {
+            if case .find? = d.cells[i].content, game.collectDepth(i) != nil { return true }
+        }
+        return false
+    }
+
+    private static func digTarget(_ game: Game) -> Int? {
+        guard let d = game.adventure?.depths else { return nil }
+        let w = DepthsState.width
+        let treasure = d.cells.indices.first { game.depthTreasureVisible($0) }
+        let options = d.cells.indices.filter { game.canDig($0) }
+        return options.min { a, b in
+            func score(_ i: Int) -> Double {
+                var s = Double(d.cells[i].hardness) * 2 - Double(i / w) * 0.3
+                if let t = treasure { s += Double(abs(t / w - i / w) + abs(t % w - i % w)) * 0.5 }
+                return s
+            }
+            return score(a) < score(b)
+        }
     }
 
     private static func generatorCount(_ game: Game) -> Int {
