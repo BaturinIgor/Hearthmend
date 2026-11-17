@@ -16,28 +16,27 @@ struct TutorialTip: View {
                     .offset(y: bounce ? -3 : 2)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(L10n.t("tutorial.\(step)"))
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .font(Pixel.font(14))
                         .fixedSize(horizontal: false, vertical: true)
                     HStack {
                         if step == .build {
                             Button(L10n.t("tutorial.go_village"), action: openVillage)
-                                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                                .font(Pixel.font(14))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(Capsule().fill(Theme.accent))
+                                .background(PixelSlice(key: "ui_btn_green", inset: 5, scale: 2))
                         }
                         Spacer()
                         Button(L10n.t("tutorial.skip")) { store.skipTutorial() }
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(12))
                             .foregroundColor(Theme.wood.opacity(0.8))
                     }
                 }
             }
             .foregroundColor(Theme.text)
             .padding(12)
-            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.accent, lineWidth: 2))
+            .background(PixelSlice(key: "ui_paper_green", inset: 4))
             .shadow(color: .black.opacity(0.2), radius: 6, y: 2)
             .padding(.horizontal, 10)
             .transition(.move(edge: .bottom).combined(with: .opacity))

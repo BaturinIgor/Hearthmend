@@ -176,7 +176,57 @@ def compose_background(pack):
     # площадь вокруг фонтана
     path |= {(x, y) for x in range(8, 15) for y in range(NORTH + 22, NORTH + 28)}
     autotile(bg, path, grass_sheet, 0, 5, dirt_fill)
-    return bg
+    return bg, path | water
+
+
+def scenery(pack, bg, blocked):
+    """Деревья по краям и в пустых местах, кусты, цветы и камни на траве.
+
+    blocked - клетки, где ничего ставить нельзя (дорожки, вода, постройки с запасом).
+    Деревья не перекрывают друг друга и постройки: занятой считается вся их картинка.
+    """
+    rnd = random.Random(11)
+    T = "Trees/"
+
+    def frame(path, w, h, i=1):
+        return crop_opaque(load(pack, path).crop((w * i, 0, w * (i + 1), h)))
+
+    trees = [frame(T + "Big_Oak_Tree.png", 64, 80), frame(T + "Medium_Oak_Tree.png", 32, 48),
+             frame(T + "Medium_Spruce_Tree.png", 32, 48), frame(T + "Big_Birch_Tree.png", 32, 80),
+             frame(T + "Medium_Birch_Tree.png", 32, 48), frame(T + "Small_Oak_Tree.png", 32, 64)]
+    od = load(pack, OD + "Outdoor_Decor.png")
+    small = [od.crop((x, y, x + 16, y + 16)) for x, y in
+             ((0, 0), (16, 0), (48, 0), (64, 16), (80, 16), (96, 32), (112, 32), (0, 48), (16, 48),
+              (160, 144), (176, 144), (192, 144), (96, 144), (208, 32), (224, 48), (160, 16))]
+    small = [crop_opaque(i) for i in small if i.getbbox()]
+    taken = set(blocked)
+
+    def fits(cx, cy, im):
+        w, h = (im.width + CELL - 1) // CELL, (im.height + CELL - 1) // CELL
+        cells = {(x, y) for x in range(cx - w // 2, cx - w // 2 + w) for y in range(cy - h + 1, cy + 1)}
+        if any(x < 0 or x >= MAP_W or y < 0 or y >= MAP_H for x, y in cells) or cells & taken:
+            return None
+        return cells
+
+    spots = [(x, y) for y in range(2, MAP_H) for x in range(MAP_W)]
+    rnd.shuffle(spots)
+    placed = []
+    for x, y in spots:
+        edge = x < 3 or x > MAP_W - 4
+        if rnd.random() > (0.8 if edge else 0.14):
+            continue
+        im = rnd.choice(trees[:3] if edge else trees)
+        cells = fits(x, y, im)
+        if cells:
+            taken |= {(cx + dx, cy + dy) for cx, cy in cells for dx in (-1, 0, 1) for dy in (0, 1)}
+            placed.append((y, x, im))
+    for x, y in spots:
+        if (x, y) not in taken and rnd.random() < 0.12:
+            placed.append((y - 0.5, x, rnd.choice(small)))
+            taken.add((x, y))
+    for y, x, im in sorted(placed, key=lambda p: p[0]):
+        bg.alpha_composite(im, (int(x * CELL + CELL / 2 - im.width / 2), int((y + 1) * CELL - im.height)))
+    return len(placed)
 
 
 def place(canvas, im, x, y):
@@ -197,7 +247,16 @@ def main():
     images = {k: building(pack, k) for k in BUILDINGS}
     for k, im in images.items():
         im.save(os.path.join(out, k + ".png"))
-    bg = compose_background(pack)
+    bg, blocked = compose_background(pack)
+    # места построек с запасом: деревья и цветы туда не ставим
+    for t in tasks:
+        im = images[t["building"]]
+        w, h = im.width / CELL, im.height / CELL
+        for yy in range(int(t["y"] - h) - 1, int(t["y"]) + 2):
+            for xx in range(int(t["x"] - w / 2) - 1, int(t["x"] + w / 2) + 2):
+                blocked.add((xx, yy))
+    n = scenery(pack, bg, blocked)
+    print(f"деревьев и мелочей: {n}")
     bg.save(os.path.join(out, "map_bg.png"))
     print(f"{len(images)} построек и фон {bg.width}x{bg.height} в {out}")
 

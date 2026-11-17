@@ -13,7 +13,7 @@ struct ShopView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationView {
+        PixelSheet(L10n.t("shop.title")) {
             ScrollView {
                 VStack(spacing: 14) {
                     wallet
@@ -55,25 +55,16 @@ struct ShopView: View {
                 }
                 .padding(14)
             }
-            .background(Theme.background.ignoresSafeArea())
-            .navigationTitle(L10n.t("shop.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(L10n.t("common.close")) { dismiss() }
-                }
-            }
         }
-        .navigationViewStyle(.stack)
     }
 
     private var wallet: some View {
         HStack(spacing: 16) {
-            Text("💎 \(store.state.gems)")
-            Text("🪙 \(store.state.coins)")
-            Text("⚡️ \(store.state.energy)")
+            PixelText("💎 \(store.state.gems)", size: 14)
+            PixelText("🪙 \(store.state.coins)", size: 14)
+            PixelText("⚡️ \(store.state.energy)", size: 14)
         }
-        .font(.system(size: 17, weight: .heavy, design: .rounded))
+        .font(Pixel.font(17))
         .foregroundColor(Theme.text)
     }
 
@@ -90,14 +81,14 @@ struct ShopView: View {
             if showPass { passCard }
             if showWeekend {
                 OfferCard(icon: "🎁", title: L10n.t("shop.weekend"), hint: L10n.t("shop.weekend_hint"),
-                          reward: Products.rewards[Products.weekendBundle]!, tint: .pink,
+                          reward: Products.rewards[Products.weekendBundle]!, card: "ui_paper_pink",
                           price: priceTitle(Products.weekendBundle), busy: shop.purchasing == Products.weekendBundle) {
                     Task { await shop.buy(Products.weekendBundle) }
                 }
             }
             if showBuilder {
                 OfferCard(icon: "🛠️", title: L10n.t("shop.builder"), hint: L10n.t("shop.builder_hint"),
-                          reward: Products.rewards[Products.builder]!, tint: Theme.wood,
+                          reward: Products.rewards[Products.builder]!, card: "ui_paper",
                           price: priceTitle(Products.builder), busy: shop.purchasing == Products.builder) {
                     Task { await shop.buy(Products.builder) }
                 }
@@ -115,16 +106,16 @@ struct ShopView: View {
                     .scaleEffect(store.game.piggyFull ? 1.08 : 1)
                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: store.game.piggyFull)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(L10n.t("shop.piggy")).font(.system(size: 18, weight: .heavy, design: .rounded))
+                    Text(L10n.t("shop.piggy")).font(Pixel.font(18))
                     Text(store.game.piggyFull ? L10n.t("shop.piggy_full")
                          : String(format: L10n.t("shop.piggy_hint"), b.piggyPerOrder, b.piggyMin))
-                        .font(.system(size: 12, design: .rounded)).opacity(0.75)
+                        .font(Pixel.font(12)).opacity(0.75)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
-                Text("💎 \(gems)").font(.system(size: 18, weight: .heavy, design: .rounded))
+                PixelText("💎 \(gems)", size: 18)
             }
-            ProgressBar(value: Double(gems) / Double(b.piggyMax)).frame(height: 9)
+            ProgressBar(value: Double(gems) / Double(b.piggyMax), fill: "ui_bar_pink").frame(height: 12)
             if ready {
                 BuyButton(title: priceTitle(Products.piggy), busy: shop.purchasing == Products.piggy) {
                     Task { await shop.buy(Products.piggy) }
@@ -133,8 +124,7 @@ struct ShopView: View {
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.pink.opacity(ready ? 0.7 : 0.3), lineWidth: 2))
+        .background(PixelSlice(key: ready ? "ui_paper_pink" : "ui_paper", inset: 4))
     }
 
     private var passCard: some View {
@@ -143,7 +133,7 @@ struct ShopView: View {
         }
         let decor = Products.eventPassRewards.first { $0.decor != nil }?.decor
         return OfferCard(icon: "🎟️", title: L10n.t("shop.pass"), hint: L10n.t("shop.pass_hint"),
-                         reward: ProductReward(gems: total.gems, energy: total.energy, decor: decor), tint: .purple,
+                         reward: ProductReward(gems: total.gems, energy: total.energy, decor: decor), card: "ui_paper_lilac",
                          price: priceTitle(Products.eventPass), busy: shop.purchasing == Products.eventPass) {
             Task { await shop.buy(Products.eventPass) }
         }
@@ -152,51 +142,50 @@ struct ShopView: View {
     private var vipCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("👑 VIP").font(.system(size: 22, weight: .heavy, design: .rounded))
+                Text("👑 VIP").font(Pixel.font(22))
                 Spacer()
-                Text(L10n.t("shop.vip_month")).font(.system(size: 13, weight: .semibold, design: .rounded)).opacity(0.8)
+                Text(L10n.t("shop.vip_month")).font(Pixel.font(13)).opacity(0.8)
             }
             ForEach(["shop.vip_1", "shop.vip_2", "shop.vip_3"], id: \.self) { key in
                 Label(L10n.t(key), systemImage: "checkmark.seal.fill")
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .font(Pixel.font(14))
             }
             BuyButton(title: priceTitle(Products.vipMonthly, suffix: L10n.t("shop.per_month")),
                       busy: shop.purchasing == Products.vipMonthly) {
                 Task { await shop.buy(Products.vipMonthly) }
             }
             Text(L10n.t("shop.vip_terms"))
-                .font(.system(size: 11, design: .rounded))
+                .font(Pixel.font(11))
                 .opacity(0.7)
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(LinearGradient(colors: [Color(red: 1, green: 0.93, blue: 0.7), Theme.card], startPoint: .topLeading, endPoint: .bottomTrailing)))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.orange.opacity(0.7), lineWidth: 2))
+        .background(PixelSlice(key: "ui_paper_gold", inset: 4))
     }
 
     private var vipActive: some View {
         HStack {
             Text("👑").font(.system(size: 28))
             VStack(alignment: .leading) {
-                Text(L10n.t("shop.vip_active")).font(.system(size: 16, weight: .heavy, design: .rounded))
+                Text(L10n.t("shop.vip_active")).font(Pixel.font(16))
                 if let until = store.state.vipUntil {
-                    Text(until, style: .date).font(.system(size: 13, design: .rounded)).opacity(0.8)
+                    Text(until, style: .date).font(Pixel.font(13)).opacity(0.8)
                 }
             }
             Spacer()
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 
     private var starterCard: some View {
         let reward = Products.rewards[Products.starter]!
         return VStack(spacing: 8) {
-            Text(L10n.t("shop.starter")).font(.system(size: 20, weight: .heavy, design: .rounded))
-            Text("💎 \(reward.gems)   ⚡️ \(reward.energy)   🪙 \(reward.coins)")
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-            Text(L10n.t("shop.starter_hint")).font(.system(size: 12, design: .rounded)).opacity(0.75)
+            Text(L10n.t("shop.starter")).font(Pixel.font(20))
+            PixelText("💎 \(reward.gems)   ⚡️ \(reward.energy)   🪙 \(reward.coins)", size: 14)
+                .font(Pixel.font(16))
+            Text(L10n.t("shop.starter_hint")).font(Pixel.font(12)).opacity(0.75)
             BuyButton(title: priceTitle(Products.starter), busy: shop.purchasing == Products.starter) {
                 Task { await shop.buy(Products.starter) }
             }
@@ -204,23 +193,21 @@ struct ShopView: View {
         .foregroundColor(Theme.text)
         .frame(maxWidth: .infinity)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.accent, lineWidth: 2))
+        .background(PixelSlice(key: "ui_paper_green", inset: 4))
     }
 
     private func gemPack(_ id: String, icon: String) -> some View {
         VStack(spacing: 6) {
-            Text(icon).font(.system(size: 30))
+            PixelText(icon, size: 26)
             Text("\(Products.rewards[id]?.gems ?? 0)")
-                .font(.system(size: 18, weight: .heavy, design: .rounded))
+                .font(Pixel.font(18))
                 .foregroundColor(Theme.text)
             BuyButton(title: priceTitle(id), busy: shop.purchasing == id) {
                 Task { await shop.buy(id) }
             }
         }
         .padding(10)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.35), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 
     private func priceTitle(_ id: String, suffix: String = "") -> String {
@@ -231,7 +218,7 @@ struct ShopView: View {
     private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 15, weight: .heavy, design: .rounded))
+                .font(Pixel.font(15))
                 .foregroundColor(Theme.wood)
             content()
         }
@@ -240,12 +227,12 @@ struct ShopView: View {
     private var footer: some View {
         VStack(spacing: 8) {
             Button(L10n.t("shop.restore")) { Task { await shop.restore() } }
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .font(Pixel.font(14))
             HStack(spacing: 16) {
                 Link(L10n.t("shop.terms"), destination: Links.terms)
                 Link(L10n.t("shop.privacy"), destination: Links.privacy)
             }
-            .font(.system(size: 12, design: .rounded))
+            .font(Pixel.font(12))
         }
         .foregroundColor(Theme.wood)
         .padding(.top, 8)
@@ -258,7 +245,8 @@ struct OfferCard: View {
     let title: String
     let hint: String
     let reward: ProductReward
-    let tint: Color
+    /// Рамка карточки: ui_paper или ее цветной вариант.
+    let card: String
     let price: String
     var busy = false
     let action: () -> Void
@@ -268,27 +256,26 @@ struct OfferCard: View {
             HStack(spacing: 10) {
                 Text(icon).font(.system(size: 32))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(size: 18, weight: .heavy, design: .rounded))
-                    Text(hint).font(.system(size: 12, design: .rounded)).opacity(0.75)
+                    Text(title).font(Pixel.font(18))
+                    Text(hint).font(Pixel.font(12)).opacity(0.75)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
             }
             HStack(spacing: 12) {
-                if reward.gems > 0 { Text("💎 \(reward.gems)") }
-                if reward.energy > 0 { Text("⚡️ \(reward.energy)") }
-                if reward.coins > 0 { Text("🪙 \(reward.coins)") }
-                if reward.stars > 0 { Text("⭐️ \(reward.stars)") }
+                if reward.gems > 0 { PixelText("💎 \(reward.gems)", size: 14) }
+                if reward.energy > 0 { PixelText("⚡️ \(reward.energy)", size: 14) }
+                if reward.coins > 0 { PixelText("🪙 \(reward.coins)", size: 14) }
+                if reward.stars > 0 { PixelText("⭐️ \(reward.stars)", size: 14) }
                 if let decor = reward.decor { DecorIcon(key: decor, size: 26) }
                 Spacer()
             }
-            .font(.system(size: 16, weight: .bold, design: .rounded))
+            .font(Pixel.font(16))
             BuyButton(title: price, busy: busy, action: action)
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(LinearGradient(colors: [tint.opacity(0.18), Theme.card], startPoint: .topLeading, endPoint: .bottomTrailing)))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(tint.opacity(0.6), lineWidth: 2))
+        .background(PixelSlice(key: card, inset: 4))
     }
 }
 
@@ -303,10 +290,10 @@ struct BuyButton: View {
                 Text(title).opacity(busy ? 0 : 1)
                 if busy { ProgressView().tint(.white) }
             }
-            .font(.system(size: 15, weight: .heavy, design: .rounded))
+            .font(Pixel.font(15))
             .foregroundColor(.white)
             .frame(maxWidth: .infinity, minHeight: 40)
-            .background(RoundedRectangle(cornerRadius: 10).fill(Theme.accent))
+            .background(PixelSlice(key: "ui_btn_green", inset: 5))
         }
         .disabled(busy)
     }
@@ -321,28 +308,28 @@ private struct ShopRow: View {
 
     var body: some View {
         HStack {
-            Text(icon).font(.system(size: 26))
+            PixelText(icon, size: 22)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 17, weight: .heavy, design: .rounded))
+                Text(title).font(Pixel.font(17))
                 if let subtitle {
-                    Text(subtitle).font(.system(size: 12, design: .rounded)).opacity(0.75)
+                    Text(subtitle).font(Pixel.font(12)).opacity(0.75)
                 }
             }
             Spacer()
             if let button {
                 Button(action: action) {
-                    Text(button)
-                        .font(.system(size: 15, weight: .heavy, design: .rounded))
+                    PixelText(button, size: 15)
+                        .font(Pixel.font(15))
                         .foregroundColor(.white)
                         .padding(.horizontal, 14)
                         .frame(minHeight: 38)
-                        .background(RoundedRectangle(cornerRadius: 10).fill(Theme.wood))
+                        .background(PixelSlice(key: "ui_btn_wood", inset: 5, scale: 3))
                 }
             }
         }
         .foregroundColor(Theme.text)
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 }
 
@@ -399,36 +386,36 @@ private struct JarSheet: View {
     var body: some View {
         VStack(spacing: 14) {
             Text("🫙").font(.system(size: 56))
-            Text(L10n.t("jar.title")).font(.system(size: 22, weight: .heavy, design: .rounded))
+            Text(L10n.t("jar.title")).font(Pixel.font(22))
             Text(L10n.t("jar.about"))
-                .font(.system(size: 14, design: .rounded))
+                .font(Pixel.font(14))
                 .multilineTextAlignment(.center)
                 .opacity(0.8)
-            Text("⚡️ \(store.state.jarEnergy) / \(store.balance.jarCapacity)")
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
+            PixelText("⚡️ \(store.state.jarEnergy) / \(store.balance.jarCapacity)", size: 14)
+                .font(Pixel.font(20))
             if let left = store.game.jarFreeIn {
                 Text(String(format: L10n.t("jar.free_in"), Self.format(left)))
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .font(Pixel.font(14))
                 if store.state.jarEnergy > 0 {
                     Button {
                         store.openJar(paid: true)
                         dismiss()
                     } label: {
                         Text(store.game.isVIP ? L10n.t("jar.open_vip") : String(format: L10n.t("jar.open_gems"), store.game.jarOpenGems))
-                            .font(.system(size: 17, weight: .heavy, design: .rounded))
+                            .font(Pixel.font(17))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, minHeight: 48)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Theme.accent))
+                            .background(PixelSlice(key: "ui_btn_green", inset: 5))
                     }
                 }
             } else {
-                Text(L10n.t("jar.empty")).font(.system(size: 14, design: .rounded)).opacity(0.8)
+                Text(L10n.t("jar.empty")).font(Pixel.font(14)).opacity(0.8)
             }
         }
         .foregroundColor(Theme.text)
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.background.ignoresSafeArea())
+        .background(PixelTile(key: "ui_bg").ignoresSafeArea())
     }
 
     static func format(_ t: TimeInterval) -> String {
@@ -449,19 +436,18 @@ struct DailyRewardView: View {
         ZStack {
             Color.black.opacity(0.35).ignoresSafeArea()
             VStack(spacing: 14) {
-                Text(L10n.t("daily.title")).font(.system(size: 22, weight: .heavy, design: .rounded))
+                Text(L10n.t("daily.title")).font(Pixel.font(22))
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
                     ForEach(Array(Balance.dailyRewards.enumerated()), id: \.offset) { i, reward in
                         VStack(spacing: 2) {
                             Text(String(format: L10n.t("daily.day"), i + 1))
-                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                            Text(Self.short(reward)).font(.system(size: 13, weight: .heavy, design: .rounded))
+                                .font(Pixel.font(11))
+                            PixelText(Self.short(reward), size: 13)
                                 .minimumScaleFactor(0.6)
                                 .lineLimit(2)
                         }
                         .frame(maxWidth: .infinity, minHeight: 56)
-                        .background(RoundedRectangle(cornerRadius: 10).fill(i == today ? Theme.accent.opacity(0.25) : Theme.card))
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(i == today ? Theme.accent : Theme.wood.opacity(0.3), lineWidth: i == today ? 2.5 : 1))
+                        .background(PixelSlice(key: i == today ? "ui_paper_green" : "ui_paper", inset: 4))
                         .opacity(i < today ? 0.5 : 1)
                         .scaleEffect(i == today && claimed != nil ? 1.12 : 1)
                     }
@@ -475,19 +461,19 @@ struct DailyRewardView: View {
                     }
                 } label: {
                     Text(claimed == nil ? L10n.t("daily.claim") : "✓")
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(18))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Theme.accent))
+                        .background(PixelSlice(key: "ui_btn_green", inset: 5))
                 }
                 if store.game.isVIP {
-                    Text(L10n.t("daily.vip")).font(.system(size: 12, weight: .semibold, design: .rounded))
+                    Text(L10n.t("daily.vip")).font(Pixel.font(12))
                 }
             }
             .foregroundColor(Theme.text)
             .padding(20)
             .frame(maxWidth: 360)
-            .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
+            .background(PixelSlice(key: "ui_paper", inset: 4))
             .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
             .padding(20)
         }
@@ -511,9 +497,9 @@ struct StampCard: View {
         let have = store.state.stamps
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(L10n.t("shop.stamps")).font(.system(size: 17, weight: .heavy, design: .rounded))
+                Text(L10n.t("shop.stamps")).font(Pixel.font(17))
                 Spacer()
-                Text("\(have)/\(b.stampsPerCard)").font(.system(size: 14, weight: .heavy, design: .rounded)).opacity(0.7)
+                Text("\(have)/\(b.stampsPerCard)").font(Pixel.font(14)).opacity(0.7)
             }
             HStack(spacing: 6) {
                 ForEach(0..<b.stampsPerCard, id: \.self) { i in
@@ -535,12 +521,11 @@ struct StampCard: View {
             }
             .animation(.spring(response: 0.4, dampingFraction: 0.55), value: have)
             Text(String(format: L10n.t("shop.stamps_hint"), b.stampsPerCard, b.stampCardGems))
-                .font(.system(size: 12, design: .rounded)).opacity(0.75)
+                .font(Pixel.font(12)).opacity(0.75)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.wood.opacity(0.3), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 }

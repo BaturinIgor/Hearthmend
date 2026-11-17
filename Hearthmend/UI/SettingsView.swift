@@ -9,43 +9,47 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
+        PixelSheet(L10n.t("settings.title")) {
+            ScrollView {
+                VStack(spacing: 12) {
                     HStack {
                         Text(String(format: L10n.t("settings.level"), store.state.level))
-                            .font(.system(size: 17, weight: .heavy, design: .rounded))
+                            .font(Pixel.font(17))
                         if store.game.isVIP { Text("👑") }
                         Spacer()
                         Text("🏡 \(store.state.completedTasks.count)/\(store.game.village.allTasks.count)")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(15))
                     }
-                }
-                Section {
-                    Toggle(L10n.t("settings.sound"), isOn: $audio.soundOn)
-                    Toggle(L10n.t("settings.music"), isOn: $audio.musicOn)
-                    Toggle(L10n.t("settings.haptics"), isOn: $audio.hapticsOn)
-                }
-                Section {
-                    Button(L10n.t("shop.restore")) { Task { await shop.restore() } }
-                    Link(L10n.t("shop.privacy"), destination: Links.privacy)
-                    Link(L10n.t("shop.terms"), destination: Links.terms)
-                }
-                Section {
-                    HStack {
-                        Text(L10n.t("settings.version"))
-                        Spacer()
-                        Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-                            .foregroundColor(.secondary)
+                    .woodPanel(padding: 16)
+                    VStack(spacing: 10) {
+                        toggle("settings.sound", $audio.soundOn)
+                        toggle("settings.music", $audio.musicOn)
+                        toggle("settings.haptics", $audio.hapticsOn)
                     }
+                    .paperPanel(padding: 14)
+                    VStack(spacing: 10) {
+                        Button(L10n.t("shop.restore")) { Task { await shop.restore() } }
+                            .buttonStyle(PixelButtonStyle(kind: .wood, size: 15))
+                        HStack(spacing: 18) {
+                            Link(L10n.t("shop.privacy"), destination: Links.privacy)
+                            Link(L10n.t("shop.terms"), destination: Links.terms)
+                        }
+                        .font(Pixel.font(13))
+                        .foregroundColor(Theme.wood)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .paperPanel(padding: 14)
+                    Text("\(L10n.t("settings.version")) \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                        .font(Pixel.font(12))
+                        .opacity(0.6)
                 }
-            }
-            .navigationTitle(L10n.t("settings.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button(L10n.t("common.close")) { dismiss() } }
+                .padding(16)
             }
         }
-        .navigationViewStyle(.stack)
+    }
+
+    private func toggle(_ key: String, _ value: Binding<Bool>) -> some View {
+        Toggle(isOn: value) { Text(L10n.t(key)).font(Pixel.font(16)) }
+            .tint(Theme.accent)
     }
 }

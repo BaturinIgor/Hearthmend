@@ -45,15 +45,16 @@ struct ContentView: View {
 
     private var board: some View {
         ZStack(alignment: .bottom) {
-            Theme.background.ignoresSafeArea()
+            PixelTile(key: "ui_bg").ignoresSafeArea()
             VStack(spacing: 8) {
                 TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
                 EventBanner()
                 SpriteView(scene: scene, options: [.allowsTransparency])
                     .aspectRatio(CGFloat(store.balance.cols) / CGFloat(store.balance.rows), contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .padding(.horizontal, 8)
+                    .padding(10)
+                    .background(PixelSlice(key: "ui_panel", inset: 6, scale: 2))
+                    .padding(.horizontal, 6)
                 SelectedBar()
                 BasketBar()
             }
@@ -62,8 +63,8 @@ struct ContentView: View {
                 .padding(.bottom, 54)
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.tutorialStep)
             if let toast = store.toast {
-                Text(toast)
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                PixelText(toast, size: 15)
+                    .font(Pixel.font(15))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
@@ -99,18 +100,16 @@ private struct CelebrationView: View {
                     .scaleEffect(glow ? 1.12 : 0.95)
                     .rotationEffect(.degrees(glow ? 6 : -6))
                 Text(celebration.title)
-                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(24))
                     .multilineTextAlignment(.center)
-                Text(celebration.subtitle)
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                PixelText(celebration.subtitle, size: 16)
                     .multilineTextAlignment(.center)
                     .opacity(0.85)
             }
             .foregroundColor(Theme.text)
-            .padding(24)
+            .padding(28)
             .frame(maxWidth: 320)
-            .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: 22).stroke(Theme.accent, lineWidth: 3))
+            .background(PixelSlice(key: "ui_panel", inset: 6))
             .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
             .onTapGesture(perform: close)
         }
@@ -139,9 +138,9 @@ private struct TopBar: View {
     var body: some View {
         HStack(spacing: 8) {
             Button(action: openSettings) { LevelBadge() }
-            Button(action: openShop) { Counter(icon: "⚡️", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
-            Counter(icon: "🪙", value: "\(store.state.coins)")
-            Button(action: openShop) { Counter(icon: "💎", value: "\(store.state.gems)", plus: true) }
+            Button(action: openShop) { Counter(icon: "ui_energy", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
+            Counter(icon: "ui_coin", value: "\(store.state.coins)")
+            Button(action: openShop) { Counter(icon: "ui_gem", value: "\(store.state.gems)", plus: true) }
             VillageButton(stars: store.state.stars, ready: store.canBuildSomething, action: openVillage)
         }
         .padding(.horizontal, 8)
@@ -169,7 +168,7 @@ private struct LevelBadge: View {
                 .rotationEffect(.degrees(-90))
                 .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)
             Text("\(store.state.level)")
-                .font(.system(size: 15, weight: .heavy, design: .rounded))
+                .font(Pixel.font(15))
                 .foregroundColor(Theme.text)
         }
         .frame(width: 38, height: 38)
@@ -190,12 +189,11 @@ private struct VillageButton: View {
         } label: {
             HStack(spacing: 4) {
                 Text("🏡")
-                Text("⭐️\(stars)").font(.system(size: 15, weight: .heavy, design: .rounded))
+                PixelText("⭐️\(stars)", size: 15)
             }
             .foregroundColor(ready ? .white : Theme.text)
             .frame(maxWidth: .infinity, minHeight: 36)
-            .background(RoundedRectangle(cornerRadius: 10).fill(ready ? Theme.accent : Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+            .background(PixelSlice(key: ready ? "ui_btn_green" : "ui_paper", inset: ready ? 5 : 4, scale: 2))
             .rotationEffect(.degrees(ready && wiggle ? 3 : 0))
             .scaleEffect(ready && wiggle ? 1.05 : 1)
         }
@@ -213,22 +211,21 @@ private struct Counter: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Text(icon)
+            PixelIcon(key: icon, size: 22)
             VStack(alignment: .leading, spacing: 0) {
-                Text(value).font(.system(size: 16, weight: .heavy, design: .rounded))
+                Text(value).font(Pixel.font(16))
                 if let sub {
-                    Text(sub).font(.system(size: 10, weight: .semibold, design: .rounded)).opacity(0.7)
+                    Text(sub).font(Pixel.font(10)).opacity(0.7)
                 }
             }
         }
         .foregroundColor(Theme.text)
         .frame(maxWidth: .infinity, minHeight: 36)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
         .overlay(alignment: .topTrailing) {
             if plus {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(Pixel.font(13))
                     .foregroundColor(Theme.accent)
                     .background(Circle().fill(.white))
                     .offset(x: 4, y: -4)
@@ -264,30 +261,26 @@ private struct OrderCard: View {
                     ZStack(alignment: .bottomTrailing) {
                         ItemIcon(item: item, size: 30)
                         Text("\(item.tier + 1)")
-                            .font(.system(size: 10, weight: .heavy, design: .rounded))
+                            .font(Pixel.font(10))
                             .foregroundColor(Theme.text)
                     }
                     .frame(width: 34, height: 34)
                 }
             }
-            Text("🪙\(order.coins) ⭐️\(order.stars)")
-                .font(.system(size: 11, weight: .bold, design: .rounded))
+            PixelText("🪙\(order.coins) ⭐️\(order.stars)", size: 14)
+                .font(Pixel.font(11))
                 .foregroundColor(Theme.text)
             Button {
                 store.deliver(order)
             } label: {
                 Text(L10n.t("orders.give"))
-                    .font(.system(size: 12, weight: .heavy, design: .rounded))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(ready ? Theme.accent : Color.gray.opacity(0.5)))
             }
+            .buttonStyle(PixelButtonStyle(kind: ready ? .green : .wood, size: 12, compact: true))
+            .opacity(ready ? 1 : 0.55)
             .disabled(!ready)
         }
         .padding(8)
-        .background(RoundedRectangle(cornerRadius: 12).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(ready ? Theme.accent : Theme.wood.opacity(0.4), lineWidth: ready ? 2.5 : 1.5))
+        .background(PixelSlice(key: ready ? "ui_paper_green" : "ui_paper", inset: 4))
         .contentShape(Rectangle())
         .onTapGesture {
             Haptics.light()
@@ -305,7 +298,7 @@ private struct SelectedBar: View {
             if let index = store.selected, let item = store.game.piece(at: index)?.item {
                 ItemIcon(item: item, size: 30)
                 Text(item.tier == store.catalog.maxTier(of: item.chain) ? L10n.t("selected.max") : "\(item.tier + 1)/\(store.catalog.maxTier(of: item.chain) + 1)")
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .font(Pixel.font(13))
                     .foregroundColor(Theme.text)
                 Spacer()
                 ActionButton(title: String(format: L10n.t("selected.sell"), store.game.sellPrice(item))) { store.sellSelected() }
@@ -315,7 +308,7 @@ private struct SelectedBar: View {
                 if store.game.boostUnlocked { BoostToggle() }
                 if store.state.level < 3 {
                     Text(L10n.t("hint.start"))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .font(Pixel.font(12))
                         .foregroundColor(Theme.text.opacity(0.8))
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -340,14 +333,13 @@ private struct BoostToggle: View {
         let on = store.state.boostOn
         Button { store.toggleBoost() } label: {
             HStack(spacing: 2) {
-                Text("⚡️")
-                Text("x2").font(.system(size: 14, weight: .heavy, design: .rounded))
+                PixelText("⚡️", size: 14)
+                Text("x2").font(Pixel.font(14))
             }
             .foregroundColor(on ? .white : Theme.text)
             .padding(.horizontal, 10)
             .frame(height: 34)
-            .background(Capsule().fill(on ? Color.orange : Theme.card))
-            .overlay(Capsule().stroke(Color.orange.opacity(0.8), lineWidth: 1.5))
+            .background(PixelSlice(key: on ? "ui_paper_gold" : "ui_paper", inset: 4, scale: 2))
             .shadow(color: on ? .orange.opacity(0.5) : .clear, radius: 6)
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: on)
@@ -367,13 +359,12 @@ private struct PostcardButton: View {
             HStack(spacing: 3) {
                 Text("🖼️")
                 Text("\(store.state.postcardPieces)/\(store.balance.postcardPieces)")
-                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(13))
             }
             .foregroundColor(Theme.text)
             .padding(.horizontal, 10)
             .frame(height: 34)
-            .background(Capsule().fill(Theme.card))
-            .overlay(Capsule().stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+            .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
         }
         .sheet(isPresented: $open) { PostcardSheet() }
     }
@@ -385,13 +376,9 @@ private struct ActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.system(size: 13, weight: .heavy, design: .rounded))
-                .foregroundColor(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Theme.wood))
+            PixelText(title, size: 13)
         }
+        .buttonStyle(PixelButtonStyle(kind: .wood, size: 13, compact: true))
     }
 }
 
@@ -413,8 +400,7 @@ private struct BasketBar: View {
                         if let item { ItemIcon(item: item, size: 26) } else { Color.clear }
                     }
                         .frame(width: 38, height: 38)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Theme.card))
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.wood.opacity(0.4), lineWidth: 1))
+                        .background(PixelSlice(key: "ui_paper", inset: 4))
                 }
                 .disabled(item == nil)
             }

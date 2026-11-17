@@ -17,9 +17,12 @@ struct VillageView: View {
         ZStack(alignment: .top) {
             Color(red: 0.36, green: 0.55, blue: 0.29).ignoresSafeArea()
             GeometryReader { geo in
-                let scale = geo.size.width / Self.mapSize.width
+                // пиксель-арт четкий только при целом числе точек экрана на пиксель карты:
+                // 4 на 3x-экранах, 3 на 2x. Карта шире экрана и листается во все стороны.
+                let screen = UIScreen.main.scale
+                let scale = max(geo.size.width / Self.mapSize.width, (screen * 1.34).rounded() / screen)
                 ScrollViewReader { proxy in
-                    ScrollView(.vertical, showsIndicators: false) {
+                    ScrollView([.vertical, .horizontal], showsIndicators: false) {
                         map(scale: scale)
                             .frame(width: Self.mapSize.width * scale, height: Self.mapSize.height * scale)
                             .padding(.top, 70)
@@ -92,9 +95,12 @@ struct VillageView: View {
             // точки для прокрутки: у постройки рамка от верха карты (отступы), а scrollTo
             // целится в середину рамки. Здесь рамка 1x1 ровно на постройке.
             ForEach(store.game.village.allTasks) { task in
-                VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
                     Color.clear.frame(width: 1, height: max(0, (CGFloat(task.y) - 2) * 16 * scale))
-                    Color.clear.frame(width: 1, height: 1).id("focus_\(task.id)")
+                    HStack(spacing: 0) {
+                        Color.clear.frame(width: max(0, CGFloat(task.x) * 16 * scale), height: 1)
+                        Color.clear.frame(width: 1, height: 1).id("focus_\(task.id)")
+                    }
                 }
                 .allowsHitTesting(false)
             }
@@ -152,19 +158,18 @@ struct VillageView: View {
         return VStack(spacing: 6) {
             HStack {
                 Text(district.map { L10n.t("district.\($0.id)") } ?? L10n.t("village.done"))
-                    .font(.system(size: 18, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(18))
                 SeasonChip(season: store.season)
                 Spacer()
-                Text("⭐️ \(store.state.stars)")
-                    .font(.system(size: 17, weight: .heavy, design: .rounded))
+                PixelText("⭐️ \(store.state.stars)", size: 14)
+                    .font(Pixel.font(17))
             }
             ProgressBar(value: district == nil ? 1 : Double(done) / Double(total))
-                .frame(height: 10)
+                .frame(height: 14)
         }
         .foregroundColor(Theme.text)
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card.opacity(0.96)))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
         .padding(.horizontal, 12)
         .padding(.top, 4)
     }
@@ -218,11 +223,11 @@ private struct DecorTray: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(L10n.t("decor.hint"))
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .font(Pixel.font(12))
                 .foregroundColor(Theme.text.opacity(0.8))
             if store.state.decorOwned.isEmpty {
                 Text(L10n.t("decor.empty"))
-                    .font(.system(size: 13, design: .rounded))
+                    .font(Pixel.font(13))
                     .foregroundColor(Theme.text)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -232,9 +237,9 @@ private struct DecorTray: View {
                                 ZStack(alignment: .topTrailing) {
                                     DecorIcon(key: key, size: 40)
                                         .frame(width: 52, height: 52)
-                                        .background(RoundedRectangle(cornerRadius: 10).fill(Theme.card))
+                                        .background(PixelSlice(key: "ui_paper", inset: 4))
                                     Text("\(store.state.decorOwned[key] ?? 0)")
-                                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                                        .font(Pixel.font(11))
                                         .foregroundColor(.white)
                                         .padding(4)
                                         .background(Circle().fill(Theme.wood))
@@ -246,8 +251,7 @@ private struct DecorTray: View {
             }
         }
         .padding(10)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card.opacity(0.97)))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.wood.opacity(0.4), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
     }
 }
 
@@ -354,14 +358,13 @@ struct BuildingView: View {
 
     private var badge: some View {
         HStack(spacing: 2) {
-            Text("⭐️").font(.system(size: 12))
-            Text("\(task.cost)").font(.system(size: 13, weight: .heavy, design: .rounded))
+            PixelText("⭐️", size: 12)
+            Text("\(task.cost)").font(Pixel.font(13))
         }
         .foregroundColor(.white)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Capsule().fill(affordable ? Theme.accent : Theme.wood))
-        .overlay(Capsule().stroke(.white, lineWidth: 1.5))
+        .background(PixelSlice(key: affordable ? "ui_btn_green" : "ui_btn_wood", inset: 5, scale: 2))
         .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
         .scaleEffect(affordable ? 1.1 : 0.95)
     }
@@ -423,36 +426,35 @@ private struct TaskCard: View {
                     .frame(width: 64, height: 64)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(L10n.t("task.\(task.id)"))
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
+                        .font(Pixel.font(18))
                     if let resident = task.resident {
                         Text(String(format: L10n.t("task.resident"), L10n.t("resident.\(resident)")))
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(13))
                             .foregroundColor(Theme.accent)
                     }
                     if let gems = task.gems {
                         Text(String(format: L10n.t("task.gems"), gems))
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .font(Pixel.font(13))
                     }
                 }
                 Spacer()
                 Button(action: close) {
-                    Image(systemName: "xmark.circle.fill").font(.system(size: 24)).foregroundColor(Theme.wood.opacity(0.6))
+                    PixelIcon(key: "ui_close", size: 30)
                 }
             }
             Button(action: build) {
                 Text(enough ? String(format: L10n.t("task.build"), task.cost)
                             : String(format: L10n.t("task.need_stars"), task.cost - store.state.stars))
-                    .font(.system(size: 17, weight: .heavy, design: .rounded))
+                    .font(Pixel.font(17))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 48)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(enough ? Theme.accent : Color.gray.opacity(0.55)))
+                    .background(PixelSlice(key: "ui_btn_green", inset: 5, scale: 3).saturation(enough ? 1 : 0).opacity(enough ? 1 : 0.6))
             }
             .disabled(!enough)
         }
         .foregroundColor(Theme.text)
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+        .background(PixelSlice(key: "ui_paper", inset: 4))
         .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
     }
 }
@@ -463,11 +465,11 @@ private struct BackToBoardButton: View {
     var body: some View {
         Button(action: action) {
             Label(L10n.t("nav.board"), systemImage: "square.grid.3x3.fill")
-                .font(.system(size: 17, weight: .heavy, design: .rounded))
+                .font(Pixel.font(17))
                 .foregroundColor(.white)
                 .padding(.horizontal, 24)
                 .frame(minHeight: 50)
-                .background(Capsule().fill(Theme.wood))
+                .background(PixelSlice(key: "ui_btn_wood", inset: 5, scale: 2))
                 .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
         }
     }
@@ -475,17 +477,9 @@ private struct BackToBoardButton: View {
 
 struct ProgressBar: View {
     let value: Double
+    var fill = "ui_bar_fill"
 
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.wood.opacity(0.2))
-                Capsule().fill(Theme.accent)
-                    .frame(width: max(8, geo.size.width * min(1, max(0, value))))
-                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: value)
-            }
-        }
-    }
+    var body: some View { PixelBar(value: value, fill: fill) }
 }
 
 /// Туман над закрытыми районами: облака и название района, который откроется следующим.
@@ -515,11 +509,11 @@ private struct LockedFog: View {
             .opacity(0.9)
             if let next {
                 Label { Text(String(format: L10n.t("village.fog_next"), next)) } icon: { Text("🔒") }
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(Pixel.font(14))
                     .foregroundColor(Theme.text.opacity(0.75))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(Capsule().fill(Color.white.opacity(0.85)))
+                    .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
                     .padding(.bottom, 40)
             }
         }
