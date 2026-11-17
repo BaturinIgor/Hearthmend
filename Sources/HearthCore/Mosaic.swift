@@ -106,21 +106,21 @@ public enum Mosaic {
     public static let regionPoints = 1
     public static let windowPoints = 30
     /// Каждое собранное окно приносит еще и ящик на главное поле.
-    public static let windowPrize: AdventurePrize = .chest(Chest(kind: .items, level: 1))
+    public static let windowPrize: AdventurePrize = .chest(Chest(kind: .items, level: 0))
 
     public static let track: [AdventureMilestone] = [
-        AdventureMilestone(points: 15, prize: .chest(Chest(kind: .energy, level: 1))),
-        AdventureMilestone(points: 40, prize: .chest(Chest(kind: .coins, level: 2))),
-        AdventureMilestone(points: 75, prize: .chest(Chest(kind: .items, level: 0))),
-        AdventureMilestone(points: 120, prize: .chest(Chest(kind: .energy, level: 2))),
-        AdventureMilestone(points: 175, prize: .chest(Chest(kind: .gems, level: 1))),
+        AdventureMilestone(points: 30, prize: .chest(Chest(kind: .energy, level: 1))),
+        AdventureMilestone(points: 80, prize: .chest(Chest(kind: .coins, level: 2))),
+        AdventureMilestone(points: 150, prize: .chest(Chest(kind: .items, level: 0))),
+        AdventureMilestone(points: 480, prize: .chest(Chest(kind: .energy, level: 2))),
+        AdventureMilestone(points: 350, prize: .chest(Chest(kind: .gems, level: 1))),
         AdventureMilestone(points: 240, prize: .chest(Chest(kind: .items, level: 1))),
-        AdventureMilestone(points: 320, prize: .chest(Chest(kind: .energy, level: 3))),
-        AdventureMilestone(points: 410, prize: .chest(Chest(kind: .coins, level: 4))),
-        AdventureMilestone(points: 510, prize: .generator("forest")),
-        AdventureMilestone(points: 630, prize: .chest(Chest(kind: .gems, level: 2))),
-        AdventureMilestone(points: 770, prize: .chest(Chest(kind: .energy, level: 4))),
-        AdventureMilestone(points: 930, prize: .decor("decor_lily")),
+        AdventureMilestone(points: 640, prize: .chest(Chest(kind: .energy, level: 3))),
+        AdventureMilestone(points: 820, prize: .chest(Chest(kind: .coins, level: 4))),
+        AdventureMilestone(points: 1020, prize: .generator("forest")),
+        AdventureMilestone(points: 1260, prize: .chest(Chest(kind: .gems, level: 2))),
+        AdventureMilestone(points: 1540, prize: .chest(Chest(kind: .energy, level: 4))),
+        AdventureMilestone(points: 1860, prize: .decor("decor_lily")),
     ]
 }
 
