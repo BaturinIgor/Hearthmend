@@ -75,6 +75,8 @@ jobs:
           status=$?
           echo "---- errors ----"
           grep -E "error:|fatal error" build.log | sort -u | head -150
+          # ошибки компиляции видны в аннотациях проверки
+          grep -E "error:|fatal error" build.log | sort -u | head -40 | while IFS= read -r line; do echo "::error::$line"; done
           echo "---- tail ----"
           tail -40 build.log
           exit $status
