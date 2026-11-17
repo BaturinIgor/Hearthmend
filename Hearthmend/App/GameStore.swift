@@ -132,7 +132,7 @@ final class GameStore: ObservableObject {
         switch result {
         case .merged, .mergedGenerator:
             Haptics.success()
-            Audio.shared.play(.merge)
+            Audio.shared.play(game.lastLuckyEnergy > 0 ? .coins : .merge)
             selected = to
         case .moved, .swapped:
             Audio.shared.play(.drop)
@@ -417,6 +417,23 @@ final class GameStore: ObservableObject {
     }
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
+
+    // MARK: - Животные
+
+    func adoptPet(_ id: String) {
+        guard game.adoptPet(id) else { return }
+        Haptics.success()
+        Audio.shared.play(.levelup)
+        show(String(format: L10n.t("pets.adopted"), L10n.t("pet.\(id)")))
+        commit()
+    }
+
+    @discardableResult
+    func collectPet(_ id: String) -> Bool {
+        guard let r = game.collectPet(id) else { return false }
+        rewarded(r)
+        return true
+    }
 
     private func rewarded(_ r: ProductReward) {
         Haptics.success()

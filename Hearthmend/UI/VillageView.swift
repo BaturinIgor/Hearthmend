@@ -65,6 +65,9 @@ struct VillageView: View {
                     if showDecor { DecorTray(place: placeDecor).transition(.move(edge: .bottom).combined(with: .opacity)) }
                     HStack(spacing: 10) {
                         BackToBoardButton { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { screen = .board } }
+                        if Pets.all.contains(where: { store.game.petAvailable($0.id) }) {
+                            PetsButton()
+                        }
                         if !store.state.decorOwned.isEmpty || !store.state.placedDecor.isEmpty {
                             Button {
                                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { showDecor.toggle() }
@@ -81,6 +84,7 @@ struct VillageView: View {
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 12)
+            SheetToast().padding(.bottom, 70).frame(maxHeight: .infinity, alignment: .bottom)
         }
         .onAppear {
             // один раз подсказать, что постройки можно двигать
@@ -117,6 +121,11 @@ struct VillageView: View {
             }
             ForEach(store.state.placedDecor) { decor in
                 DecorPiece(decor: decor, scale: scale)
+            }
+            ForEach(store.state.petsOwned, id: \.self) { pet in
+                if let area = store.game.petArea(pet) {
+                    PetWalker(pet: pet, area: area, scale: scale)
+                }
             }
             // точки для прокрутки: у постройки рамка от верха карты (отступы), а scrollTo
             // целится в середину рамки. Здесь рамка 1x1 ровно на постройке.

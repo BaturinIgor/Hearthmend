@@ -228,6 +228,7 @@ struct AchievementsPage: View {
         case .friends: return "ui_heart"
         case .merchant: return "ui_wagon"
         case .decor: return "ui_plant"
+        case .pets: return PetArt.frame("chicken", 0)
         }
     }
 

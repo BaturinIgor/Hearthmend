@@ -39,6 +39,7 @@ struct QAScreen: View {
         case "qa_album": JournalSheet(tab: .album)
         case "qa_friends": JournalSheet(tab: .friends)
         case "qa_achievements": JournalSheet(tab: .achievements)
+        case "qa_pets": PetsSheet()
         case "qa_settings": SettingsView()
         case "qa_daily":
             ZStack { ContentView(); DailyRewardView {} }

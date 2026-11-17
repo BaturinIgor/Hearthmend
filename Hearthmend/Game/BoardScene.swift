@@ -399,6 +399,7 @@ final class BoardScene: SKScene {
         case .merged(_, let cleared, let bubble):
             pop(at: to)
             sparkle(at: to)
+            if store.game.lastLuckyEnergy > 0 { lucky(at: to, energy: store.game.lastLuckyEnergy) }
             for i in cleared { dust(at: i) }
             if let bubble { fly(bubble, from: center(of: to)) }
         case .mergedGenerator:
@@ -491,6 +492,28 @@ final class BoardScene: SKScene {
             out.timingMode = .easeOut
             star.run(.sequence([.group([out, .fadeOut(withDuration: 0.3), .scale(to: 0.3, duration: 0.3)]), .removeFromParent()]))
         }
+    }
+
+    /// Счастливое слияние: золотое кольцо и «+N» с молнией, которые всплывают над клеткой.
+    private func lucky(at index: Int, energy: Int) {
+        let c = center(of: index)
+        let ring = SKShapeNode(circleOfRadius: cellSize * 0.3)
+        ring.strokeColor = UIColor(red: 1, green: 0.84, blue: 0.3, alpha: 1)
+        ring.lineWidth = 3
+        ring.fillColor = .clear
+        ring.position = c
+        ring.zPosition = 7
+        boardNode.addChild(ring)
+        ring.run(.sequence([.group([.scale(to: 2, duration: 0.45), .fadeOut(withDuration: 0.45)]), .removeFromParent()]))
+        let node = badge("+\(energy)", icon: "ui_energy")
+        node.setScale(1.5)
+        node.position = CGPoint(x: c.x + cellSize * 0.2, y: c.y + cellSize * 0.1)
+        node.zPosition = 8
+        node.alpha = 0
+        boardNode.addChild(node)
+        let rise = SKAction.moveBy(x: 0, y: cellSize * 0.8, duration: 0.9)
+        rise.timingMode = .easeOut
+        node.run(.sequence([.fadeIn(withDuration: 0.12), .group([rise, .sequence([.wait(forDuration: 0.55), .fadeOut(withDuration: 0.35)])]), .removeFromParent()]))
     }
 
     private func dust(at index: Int) {

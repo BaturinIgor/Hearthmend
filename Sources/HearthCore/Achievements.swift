@@ -4,7 +4,7 @@ import Foundation
 /// Прогресс считается по тому, что уже хранится в сохранении, поэтому старые игроки сразу
 /// получают то, что заработали раньше.
 public enum AchievementKind: String, Codable, CaseIterable {
-    case merges, orders, buildings, level, album, postcards, friends, merchant, decor
+    case merges, orders, buildings, level, album, postcards, friends, merchant, decor, pets
 }
 
 public enum Achievements {
@@ -21,6 +21,7 @@ public enum Achievements {
         case .friends: return [1, 4, Friends.all.count]
         case .merchant: return [3, 15, 40]
         case .decor: return [3, 8, 15]
+        case .pets: return [1, 5, Pets.all.count]
         }
     }
 }
@@ -41,6 +42,7 @@ extension Game {
         case .friends: return bestFriends
         case .merchant: return state.merchantsServed
         case .decor: return state.placedDecor.count
+        case .pets: return state.petsOwned.count
         }
     }
 

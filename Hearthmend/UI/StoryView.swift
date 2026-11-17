@@ -18,6 +18,8 @@ enum Story {
         "mine.done": ["bruno"],
         "fair.intro": ["bruno", "chloe"],
         "fair.done": ["tim"],
+        "merchant.intro": ["merchant", "merchant"],
+        "friends.intro": ["mila"],
     ]
 }
 

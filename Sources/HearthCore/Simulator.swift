@@ -18,6 +18,8 @@ public struct SimConfig {
     public var claimQuests = true
     /// Включать ускорение генераторов x2, как только оно откроется.
     public var useBoost = false
+    /// Брать животных и забирать их подарки.
+    public var keepPets = true
     /// Выполнять заказы странствующего торговца.
     public var serveMerchant = true
     /// Останавливаться, когда вся деревня отстроена.
@@ -57,6 +59,13 @@ public struct SimReport: CustomStringConvertible {
     public var gemsFromMerchant = 0
     public var energyFromMerchant = 0
     public var bestFriends = 0
+    public var energyFromLucky = 0
+    public var petsAdopted = 0
+    public var coinsOnPets = 0
+    public var energyFromPets = 0
+    public var gemsFromPets = 0
+    public var coinsFromPets = 0
+    public var petsAllDay: Double?
     public var level = 1
     public var tasksDone = 0
     /// День, к которому отстроен каждый район.
@@ -75,7 +84,8 @@ public struct SimReport: CustomStringConvertible {
         монеты: заказы \(coinsFromOrders), продажа \(coinsFromSelling) (\(itemsSold) шт), \
         пузыри \(bubblesPopped) за \(gemsSpentOnBubbles) кр, энергия с уровней \(energyFromLevels), из кувшина \(energyFromJar), за монеты \(energyFromCoins) (\(coinsSpent) мон), с событий \(energyFromEvents) (\(eventMilestones) наград), с заданий \(energyFromQuests), застреваний \(stalledSessions)
         кристаллы: задания \(gemsFromQuests), альбом \(gemsFromCollection), дружба \(gemsFromFriends), достижения \(gemsFromAchievements), торговец \(gemsFromMerchant); монеты из альбома \(coinsFromCollection)
-        торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends)
+        торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends), счастливые слияния \(energyFromLucky)
+        животные: \(petsAdopted) за \(coinsOnPets) мон, все к дню \(petsAllDay.map { String(format: "%.1f", $0) } ?? "-"), подарки: энергия \(energyFromPets), кр \(gemsFromPets), мон \(coinsFromPets)
         районы: \(districts)
         """
     }
@@ -109,6 +119,10 @@ public enum Simulator {
             if stalled { report.stalledSessions += 1 }
             if config.claimQuests { claimRewards(game, report: &report) }
             let day = clock.date.timeIntervalSince(start) / 86400
+            if config.keepPets {
+                tendPets(game, report: &report)
+                if report.petsAllDay == nil, game.state.petsOwned.count == Pets.all.count { report.petsAllDay = day }
+            }
             for district in game.village.districts where report.districtDoneDay[district.id] == nil {
                 if district.tasks.allSatisfy({ game.state.completedTasks.contains($0.id) }) {
                     report.districtDoneDay[district.id] = day
@@ -154,6 +168,30 @@ public enum Simulator {
             return false
         }
         return false
+    }
+
+    /// Животные: забирает подарки и берет следующее животное, если после покупки энергии
+    /// за монеты остается запас.
+    private static func tendPets(_ game: Game, report: inout SimReport) {
+        for id in game.state.petsOwned {
+            if let r = game.collectPet(id) {
+                report.energyFromPets += r.energy
+                report.gemsFromPets += r.gems
+                report.coinsFromPets += r.coins
+            }
+        }
+        let reserve = (game.coinEnergyPrice ?? 0) * 2
+        for pet in Pets.all where !game.petOwned(pet.id) && game.state.coins >= pet.cost + reserve {
+            if game.adoptPet(pet.id) {
+                report.petsAdopted += 1
+                report.coinsOnPets += pet.cost
+                if let r = game.collectPet(pet.id) {
+                    report.energyFromPets += r.energy
+                    report.gemsFromPets += r.gems
+                    report.coinsFromPets += r.coins
+                }
+            }
+        }
     }
 
     /// Задания дня и альбом: забирает все, что можно.
@@ -256,6 +294,7 @@ public enum Simulator {
         for (_, idx) in candidates {
             if case .merged = game.move(from: idx[0], to: idx[1]) {
                 report.merges += 1
+                report.energyFromLucky += game.lastLuckyEnergy
                 return true
             }
         }

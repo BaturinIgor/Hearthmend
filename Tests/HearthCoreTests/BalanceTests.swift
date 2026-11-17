@@ -14,7 +14,7 @@ final class BalanceTests: XCTestCase {
         print("Бот, зерно \(seed):\n\(r)")
         // сводка в аннотации CI: сколько дней и уровень на выходе
         let districts = r.districtDoneDay.sorted { $0.value < $1.value }.map { "\($0.key) \(String(format: "%.1f", $0.value))" }.joined(separator: ", ")
-        print("::notice title=Бот \(seed)::дней \(String(format: "%.1f", r.days)), уровень \(r.level), заказов \(r.orders); \(districts); торговец \(r.merchantsServed), друзей \(r.bestFriends), кр. дружба \(r.gemsFromFriends) достижения \(r.gemsFromAchievements) торговец \(r.gemsFromMerchant)")
+        print("::notice title=Бот \(seed)::дней \(String(format: "%.1f", r.days)), уровень \(r.level), заказов \(r.orders); \(districts); торговец \(r.merchantsServed), друзей \(r.bestFriends), кр. дружба \(r.gemsFromFriends) достижения \(r.gemsFromAchievements) торговец \(r.gemsFromMerchant); животные \(r.petsAdopted) к дню \(r.petsAllDay.map { String(format: "%.0f", $0) } ?? "-"), удача \(r.energyFromLucky)")
         Self.cache[seed] = r
         return r
     }
@@ -184,6 +184,25 @@ final class BalanceTests: XCTestCase {
             let gems = r.gemsFromFriends + r.gemsFromAchievements + r.gemsFromMerchant
             let energy = r.energyFromFriends + r.energyFromMerchant + gems * SimConfig().balance.energyPerGem
             XCTAssertLessThanOrEqual(Double(energy), Double(r.energySpent) * 0.12, "зерно \(seed): параллельные линии не заменяют энергию")
+        }
+    }
+
+    func testLuckyMergesAreASmallTreat() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertGreaterThan(r.energyFromLucky, 0, "зерно \(seed): счастливые слияния случаются")
+            XCTAssertLessThanOrEqual(Double(r.energyFromLucky), Double(r.energySpent) * 0.05, "зерно \(seed)")
+        }
+    }
+
+    func testPetsAreAffordableButNotFree() {
+        for seed in seeds {
+            let r = report(seed: seed)
+            XCTAssertEqual(r.petsAdopted, Pets.all.count, "зерно \(seed): все животные успевают поселиться")
+            XCTAssertNotNil(r.petsAllDay)
+            XCTAssertGreaterThan(r.petsAllDay ?? 0, 20, "зерно \(seed): всех животных не собрать в первые недели")
+            let energy = r.energyFromPets + r.gemsFromPets * SimConfig().balance.energyPerGem
+            XCTAssertLessThanOrEqual(Double(energy), Double(r.energySpent) * 0.05, "зерно \(seed)")
         }
     }
 }

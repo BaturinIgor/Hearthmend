@@ -24,6 +24,8 @@ public final class Game {
     public internal(set) var lastDiscovery: Item?
     /// Житель, с которым последний заказ поднял дружбу на новый уровень.
     public internal(set) var lastFriendLevelUp: FriendLevelUp?
+    /// Счастливое слияние: сколько энергии выпало последним слиянием (0 - не выпало).
+    public internal(set) var lastLuckyEnergy = 0
 
     public init(state: GameState? = nil,
                 catalog: Catalog = .bundled,
@@ -239,6 +241,7 @@ public final class Game {
     }
 
     public func move(from: Int, to: Int) -> MoveResult {
+        lastLuckyEnergy = 0
         guard from != to,
               state.cells.indices.contains(from), state.cells.indices.contains(to),
               let a = state.cells[from], a.isMovable else { return .invalid }
@@ -258,6 +261,7 @@ public final class Game {
             progressQuest(.merge)
             if next.tier >= Balance.bigMergeTier { progressQuest(.bigMerge) }
             let cleared = clearDebris(around: to)
+            lastLuckyEnergy = luckyMerge(next)
             let bubble = maybeBubble(next, near: to)
             placePendingGenerators()
             return .merged(item: next, cleared: cleared, bubble: bubble)
@@ -291,6 +295,15 @@ public final class Game {
             }
         }
         return cleared
+    }
+
+    /// Изредка слияние дарит немного энергии: светлячок вылетает из нового предмета.
+    private func luckyMerge(_ item: Item) -> Int {
+        guard item.tier >= Balance.luckyMinTier,
+              Double.random(in: 0..<1, using: &rng) < Balance.luckyChance else { return 0 }
+        let bonus = min(Balance.luckyMaxEnergy, 1 + item.tier / 2)
+        state.energy += bonus
+        return bonus
     }
 
     private func maybeBubble(_ item: Item, near index: Int) -> Int? {
