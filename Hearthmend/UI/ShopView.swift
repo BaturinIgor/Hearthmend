@@ -102,7 +102,7 @@ struct ShopView: View {
         let ready = gems >= b.piggyMin
         return VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 10) {
-                Text("🐷").font(.system(size: 34))
+                PixelIcon(key: "ui_piggy", size: (34) * 1.1)
                     .scaleEffect(store.game.piggyFull ? 1.08 : 1)
                     .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: store.game.piggyFull)
                 VStack(alignment: .leading, spacing: 2) {
@@ -142,7 +142,7 @@ struct ShopView: View {
     private var vipCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("👑 VIP").font(Pixel.font(22))
+                PixelText("👑 VIP", size: 22)
                 Spacer()
                 Text(L10n.t("shop.vip_month")).font(Pixel.font(13)).opacity(0.8)
             }
@@ -165,7 +165,7 @@ struct ShopView: View {
 
     private var vipActive: some View {
         HStack {
-            Text("👑").font(.system(size: 28))
+            PixelIcon(key: "ui_crown", size: (28) * 1.1)
             VStack(alignment: .leading) {
                 Text(L10n.t("shop.vip_active")).font(Pixel.font(16))
                 if let until = store.state.vipUntil {
@@ -254,7 +254,7 @@ struct OfferCard: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 10) {
-                Text(icon).font(.system(size: 32))
+                EmojiIcon(icon, size: 34)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(Pixel.font(18))
                     Text(hint).font(Pixel.font(12)).opacity(0.75)
@@ -287,10 +287,9 @@ struct BuyButton: View {
     var body: some View {
         Button(action: action) {
             ZStack {
-                Text(title).opacity(busy ? 0 : 1)
+                PixelText(title, size: 16).opacity(busy ? 0 : 1)
                 if busy { ProgressView().tint(.white) }
             }
-            .font(Pixel.font(15))
             .foregroundColor(.white)
             .frame(maxWidth: .infinity, minHeight: 40)
             .background(PixelSlice(key: "ui_btn_green", inset: 5))
@@ -357,7 +356,7 @@ struct JarButton: View {
                     .fill(Color.yellow.opacity(0.25 + 0.5 * fill))
                     .frame(height: 34 * fill)
                     .padding(2)
-                Text("🫙").font(.system(size: 22)).frame(maxHeight: .infinity)
+                PixelIcon(key: "ui_jar", size: (22) * 1.1).frame(maxHeight: .infinity)
                 if fill > 0 {
                     ForEach(0..<3, id: \.self) { i in
                         Circle()
@@ -385,7 +384,7 @@ private struct JarSheet: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            Text("🫙").font(.system(size: 56))
+            PixelIcon(key: "ui_jar", size: (56) * 1.1)
             Text(L10n.t("jar.title")).font(Pixel.font(22))
             Text(L10n.t("jar.about"))
                 .font(Pixel.font(14))
@@ -401,8 +400,7 @@ private struct JarSheet: View {
                         store.openJar(paid: true)
                         dismiss()
                     } label: {
-                        Text(store.game.isVIP ? L10n.t("jar.open_vip") : String(format: L10n.t("jar.open_gems"), store.game.jarOpenGems))
-                            .font(Pixel.font(17))
+                        PixelText(store.game.isVIP ? L10n.t("jar.open_vip") : String(format: L10n.t("jar.open_gems"), store.game.jarOpenGems), size: 17)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, minHeight: 48)
                             .background(PixelSlice(key: "ui_btn_green", inset: 5))
@@ -442,9 +440,10 @@ struct DailyRewardView: View {
                         VStack(spacing: 2) {
                             Text(String(format: L10n.t("daily.day"), i + 1))
                                 .font(Pixel.font(11))
-                            PixelText(Self.short(reward), size: 13)
-                                .minimumScaleFactor(0.6)
-                                .lineLimit(2)
+                            // каждая часть награды своей строкой: «⚡100» и «💎20» не рвутся посередине
+                            ForEach(Self.short(reward).split(separator: " ").map(String.init), id: \.self) { part in
+                                PixelText(part, size: 13).lineLimit(1).fixedSize()
+                            }
                         }
                         .frame(maxWidth: .infinity, minHeight: 56)
                         .background(PixelSlice(key: i == today ? "ui_paper_green" : "ui_paper", inset: 4))
@@ -460,14 +459,13 @@ struct DailyRewardView: View {
                         close()
                     }
                 } label: {
-                    Text(claimed == nil ? L10n.t("daily.claim") : "✓")
-                        .font(Pixel.font(18))
+                    PixelText(claimed == nil ? L10n.t("daily.claim") : "✓", size: 18)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, minHeight: 50)
                         .background(PixelSlice(key: "ui_btn_green", inset: 5))
                 }
                 if store.game.isVIP {
-                    Text(L10n.t("daily.vip")).font(Pixel.font(12))
+                    PixelText(L10n.t("daily.vip"), size: 12)
                 }
             }
             .foregroundColor(Theme.text)
@@ -509,9 +507,9 @@ struct StampCard: View {
                             .strokeBorder(Theme.wood.opacity(i < have ? 0.9 : 0.35), style: StrokeStyle(lineWidth: 2, dash: i < have ? [] : [4, 3]))
                             .background(Circle().fill(i < have ? Color(red: 0.98, green: 0.84, blue: 0.55) : Color.white.opacity(0.5)))
                         if i < have {
-                            Text("🏵️").font(.system(size: 22)).transition(.scale(scale: 2.2).combined(with: .opacity))
+                            PixelIcon(key: "ui_rosette", size: (22) * 1.1).transition(.scale(scale: 2.2).combined(with: .opacity))
                         } else if last {
-                            Text("🎁").font(.system(size: 20)).opacity(0.8)
+                            PixelIcon(key: "ui_gift", size: (20) * 1.1).opacity(0.8)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -520,8 +518,7 @@ struct StampCard: View {
                 }
             }
             .animation(.spring(response: 0.4, dampingFraction: 0.55), value: have)
-            Text(String(format: L10n.t("shop.stamps_hint"), b.stampsPerCard, b.stampCardGems))
-                .font(Pixel.font(12)).opacity(0.75)
+            PixelText(String(format: L10n.t("shop.stamps_hint"), b.stampsPerCard, b.stampCardGems), size: 12).opacity(0.75)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundColor(Theme.text)

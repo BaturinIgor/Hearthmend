@@ -11,8 +11,7 @@ struct TutorialTip: View {
         let step = store.game.tutorial
         if step != .done {
             HStack(alignment: .top, spacing: 10) {
-                Text("👩‍🌾")
-                    .font(.system(size: 34))
+                ResidentIcon(id: "mila", size: 44)
                     .offset(y: bounce ? -3 : 2)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(L10n.t("tutorial.\(step)"))

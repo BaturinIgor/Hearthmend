@@ -107,7 +107,7 @@ struct SeasonChip: View {
 
     var body: some View {
         HStack(spacing: 3) {
-            Text(season.icon)
+            PixelIcon(key: "ui_\(season.rawValue)", size: 16)
             Text(L10n.t("season.\(season.rawValue)"))
         }
         .font(Pixel.font(13))

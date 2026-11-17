@@ -230,14 +230,16 @@ def bar_fill(base, light, dark):
 
 
 def close_icon():
-    """Кнопка закрытия: деревянный кружок с крестиком."""
+    """Кнопка закрытия: деревянный кружок с симметричным крестиком."""
     im = canvas()
     d = ImageDraw.Draw(im)
     d.ellipse((1, 1, 14, 14), fill=WOOD_L)
     d.ellipse((2, 2, 13, 13), fill=WOOD_M)
-    d.arc((2, 2, 13, 13), 200, 340, fill=WOOD_H)
-    for a, b in (((5, 5), (10, 10)), ((10, 5), (5, 10))):
-        d.line((*a, *b), fill=CREAM, width=2)
+    # две диагонали по 2 пикселя, зеркальные: крестик ровный при любом масштабе
+    cross = {(i, i) for i in range(5, 11)} | {(i + 1, i) for i in range(5, 10)}
+    cross |= {(15 - x, y) for x, y in cross}
+    for p in cross:
+        d.point(p, fill=CREAM)
     return outlined(im)
 
 
@@ -251,6 +253,272 @@ def paper_tile():
         x, y = rnd.randrange(16), rnd.randrange(16)
         px[x, y] = (236, 220, 186, 255) if rnd.random() < 0.7 else (250, 242, 222, 255)
     return im
+
+
+# --- иконки вместо эмодзи (16x16, форма в пределах 2..13, контур добавляет outlined)
+
+def _px(d, pts, color):
+    for p in pts:
+        d.point(p, fill=color)
+
+
+def crown():
+    im = canvas(); d = ImageDraw.Draw(im)
+    gold, light, dark = (250, 200, 50, 255), (255, 236, 140, 255), (200, 140, 30, 255)
+    d.polygon([(3, 5), (5, 8), (7.5, 4), (10, 8), (12, 5), (12, 11), (3, 11)], fill=gold)
+    d.rectangle((3, 10, 12, 11), fill=dark)
+    _px(d, [(3, 4), (7, 3), (8, 3), (12, 4)], light)
+    _px(d, [(5, 9), (10, 9)], (232, 72, 96, 255))
+    _px(d, [(7, 9), (8, 9)], (60, 190, 240, 255))
+    return outlined(im)
+
+
+def house():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(2, 7), (7.5, 2), (13, 7)], fill=(200, 80, 60, 255))
+    d.line((3, 7, 12, 7), fill=(150, 50, 40, 255))
+    d.rectangle((3, 8, 12, 13), fill=(236, 210, 160, 255))
+    d.rectangle((6, 10, 8, 13), fill=(140, 90, 50, 255))
+    d.rectangle((10, 9, 11, 10), fill=(120, 200, 240, 255))
+    return outlined(im)
+
+
+def ribbon():
+    im = canvas(); d = ImageDraw.Draw(im)
+    pink, dark, light = (236, 110, 150, 255), (190, 60, 100, 255), (255, 186, 206, 255)
+    # петли бантика с пустой серединкой
+    d.polygon([(7, 6), (2, 3), (2, 9)], fill=pink)
+    d.polygon([(8, 6), (13, 3), (13, 9)], fill=pink)
+    _px(d, [(3, 5), (3, 6), (4, 6), (12, 5), (12, 6), (11, 6)], dark)
+    _px(d, [(3, 4), (12, 4)], light)
+    # хвостики
+    d.line((6, 8, 4, 13), fill=dark, width=2)
+    d.line((9, 8, 11, 13), fill=dark, width=2)
+    d.rectangle((6, 5, 9, 8), fill=light)
+    d.rectangle((7, 6, 8, 7), fill=pink)
+    return outlined(im)
+
+
+def ticket():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((2, 4, 13, 11), fill=(160, 120, 220, 255))
+    d.rectangle((3, 5, 12, 10), fill=(200, 170, 240, 255))
+    d.line((9, 5, 9, 10), fill=(140, 100, 200, 255))
+    _px(d, [(2, 7), (2, 8), (13, 7), (13, 8)], CLEAR)
+    d.rectangle((4, 7, 7, 8), fill=(255, 240, 255, 255))
+    return outlined(im)
+
+
+def frame_pic():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((2, 3, 13, 12), fill=WOOD_L)
+    d.rectangle((4, 5, 11, 10), fill=(140, 210, 250, 255))
+    d.rectangle((4, 9, 11, 10), fill=(110, 180, 80, 255))
+    d.polygon([(4, 9), (7, 6), (10, 9)], fill=(90, 160, 70, 255))
+    d.point((10, 6), fill=(255, 230, 120, 255))
+    return outlined(im)
+
+
+def basket():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.arc((4, 2, 11, 10), 180, 360, fill=WOOD_M, width=1)
+    d.polygon([(2, 7), (13, 7), (12, 13), (3, 13)], fill=WOOD_L)
+    for x in (4, 7, 10):
+        d.line((x, 8, x, 12), fill=WOOD_M)
+    d.line((2, 7, 13, 7), fill=WOOD_H)
+    return outlined(im)
+
+
+def gift():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((2, 6, 13, 13), fill=(232, 80, 96, 255))
+    d.rectangle((2, 6, 13, 7), fill=(250, 120, 130, 255))
+    d.rectangle((7, 6, 8, 13), fill=(250, 210, 80, 255))
+    d.polygon([(7, 6), (4, 3), (3, 5)], fill=(250, 210, 80, 255))
+    d.polygon([(8, 6), (11, 3), (12, 5)], fill=(250, 210, 80, 255))
+    return outlined(im)
+
+
+def jar():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((5, 2, 10, 3), fill=WOOD_M)
+    d.rounded_rectangle((3, 4, 12, 13), radius=3, fill=(190, 230, 240, 255))
+    d.rounded_rectangle((4, 7, 11, 12), radius=2, fill=(250, 220, 90, 255))
+    _px(d, [(6, 9), (9, 8), (7, 11)], (255, 255, 210, 255))
+    d.line((4, 5, 4, 8), fill=(255, 255, 255, 255))
+    return outlined(im)
+
+
+def rosette():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(5, 9), (3, 14), (6, 12), (7, 14)], fill=(60, 120, 220, 255))
+    d.polygon([(10, 9), (12, 14), (9, 12), (8, 14)], fill=(60, 120, 220, 255))
+    d.ellipse((2, 1, 13, 11), fill=(250, 190, 60, 255))
+    d.ellipse((4, 3, 11, 9), fill=(255, 226, 120, 255))
+    d.point((6, 4), fill=(255, 250, 220, 255))
+    return outlined(im)
+
+
+def question():
+    im = canvas(); d = ImageDraw.Draw(im)
+    c = (255, 246, 220, 255)
+    d.ellipse((2, 2, 13, 13), fill=(160, 120, 220, 255))
+    for p in [(6, 4), (7, 4), (8, 4), (9, 4), (5, 5), (10, 5), (10, 6), (9, 7), (8, 7), (7, 8), (7, 9), (7, 11)]:
+        d.point(p, fill=c)
+    _px(d, [(8, 8), (8, 9), (8, 11), (6, 4)], c)
+    return outlined(im)
+
+
+def lock():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.arc((4, 2, 11, 10), 180, 360, fill=(150, 150, 160, 255), width=2)
+    d.rectangle((4, 6, 5, 7), fill=(150, 150, 160, 255))
+    d.rectangle((10, 6, 11, 7), fill=(150, 150, 160, 255))
+    d.rectangle((3, 7, 12, 13), fill=(240, 190, 60, 255))
+    d.line((3, 7, 12, 7), fill=(255, 226, 120, 255))
+    d.rectangle((7, 9, 8, 11), fill=(140, 90, 30, 255))
+    return outlined(im)
+
+
+def undo():
+    im = canvas(); d = ImageDraw.Draw(im)
+    c = (255, 246, 220, 255)
+    d.arc((4, 4, 13, 13), 270, 90, fill=c, width=2)
+    d.line((8, 4, 9, 4), fill=c, width=2)
+    d.line((8, 12, 4, 12), fill=c, width=2)
+    d.polygon([(2, 4), (6, 1), (6, 7)], fill=c)
+    return im
+
+
+def pouch():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.ellipse((3, 5, 12, 13), fill=(150, 100, 200, 255))
+    d.polygon([(5, 6), (10, 6), (11, 3), (4, 3)], fill=(170, 120, 220, 255))
+    d.line((5, 6, 10, 6), fill=(250, 210, 80, 255))
+    d.point((7, 9), fill=(140, 232, 255, 255)); d.point((8, 9), fill=(60, 190, 240, 255))
+    return outlined(im)
+
+
+def chest():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((2, 7, 13, 13), fill=WOOD_L)
+    d.rounded_rectangle((2, 3, 13, 7), radius=2, fill=WOOD_M)
+    d.line((2, 7, 13, 7), fill=(250, 200, 60, 255))
+    d.rectangle((2, 3, 3, 13), fill=(250, 200, 60, 255))
+    d.rectangle((12, 3, 13, 13), fill=(250, 200, 60, 255))
+    d.rectangle((7, 6, 8, 9), fill=(250, 230, 120, 255))
+    return outlined(im)
+
+
+def bag():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.ellipse((2, 5, 13, 14), fill=(220, 180, 100, 255))
+    d.polygon([(5, 6), (10, 6), (12, 2), (3, 2)], fill=(200, 160, 84, 255))
+    d.line((5, 6, 10, 6), fill=(140, 90, 40, 255))
+    d.polygon([(6, 8), (9, 8), (10, 10), (7.5, 12), (5, 10)], fill=(60, 190, 240, 255))
+    return outlined(im)
+
+
+def vault():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((2, 5, 13, 13), fill=(170, 170, 180, 255))
+    for x in (2, 6, 10):
+        d.rectangle((x, 2, x + 2, 5), fill=(170, 170, 180, 255))
+    d.rectangle((6, 9, 9, 13), fill=(110, 70, 40, 255))
+    d.line((2, 5, 13, 5), fill=(210, 210, 220, 255))
+    d.point((7, 7), fill=(60, 190, 240, 255)); d.point((8, 7), fill=(60, 190, 240, 255))
+    return outlined(im)
+
+
+def hammer():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.line((4, 13, 10, 7), fill=WOOD_L, width=2)
+    d.polygon([(7, 3), (11, 2), (14, 5), (12, 7), (9, 6)], fill=(170, 170, 180, 255))
+    d.line((8, 3, 11, 2), fill=(220, 220, 230, 255))
+    return outlined(im)
+
+
+def piggy():
+    im = canvas(); d = ImageDraw.Draw(im)
+    pink, dark = (250, 160, 180, 255), (220, 110, 140, 255)
+    d.ellipse((2, 4, 13, 12), fill=pink)
+    d.rectangle((4, 11, 5, 13), fill=dark); d.rectangle((10, 11, 11, 13), fill=dark)
+    d.polygon([(4, 5), (5, 2), (7, 4)], fill=dark)
+    d.rectangle((12, 7, 13, 9), fill=dark)
+    d.point((10, 6), fill=INK)
+    d.line((6, 4, 9, 4), fill=(140, 90, 30, 255))
+    return outlined(im)
+
+
+def check():
+    im = canvas(); d = ImageDraw.Draw(im)
+    g = (96, 170, 72, 255)
+    d.line((3, 8, 6, 11), fill=g, width=2)
+    d.line((6, 11, 12, 4), fill=g, width=2)
+    return outlined(im)
+
+
+def party():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(2, 13), (6, 4), (11, 9)], fill=(250, 200, 60, 255))
+    d.line((4, 9, 8, 11), fill=(232, 80, 96, 255))
+    d.line((5, 6, 9, 8), fill=(60, 160, 230, 255))
+    _px(d, [(10, 2), (13, 4), (12, 7), (9, 4)], (232, 80, 96, 255))
+    _px(d, [(11, 3), (13, 9), (8, 2)], (110, 200, 90, 255))
+    return outlined(im)
+
+
+def confetti():
+    im = canvas(); d = ImageDraw.Draw(im)
+    cols = [(232, 80, 96, 255), (250, 200, 60, 255), (60, 160, 230, 255), (110, 200, 90, 255), (190, 120, 230, 255)]
+    pts = [(3, 3), (7, 2), (11, 4), (4, 7), (9, 7), (13, 8), (2, 11), (6, 11), (11, 12), (8, 13)]
+    for i, (x, y) in enumerate(pts):
+        d.rectangle((x, y, x + 1, y), fill=cols[i % len(cols)])
+    return outlined(im)
+
+
+def season(kind):
+    im = canvas(); d = ImageDraw.Draw(im)
+    if kind == "spring":
+        for (x, y) in ((7, 3), (3, 7), (11, 7), (5, 11), (10, 11)):
+            d.ellipse((x - 2, y - 2, x + 2, y + 2), fill=(250, 170, 200, 255))
+        d.ellipse((6, 6, 9, 9), fill=(250, 210, 80, 255))
+    elif kind == "summer":
+        d.ellipse((4, 4, 11, 11), fill=(250, 200, 50, 255))
+        for a, b in (((7, 1), (8, 2)), ((7, 13), (8, 14)), ((1, 7), (2, 8)), ((13, 7), (14, 8)),
+                     ((3, 3), (3, 3)), ((12, 3), (12, 3)), ((3, 12), (3, 12)), ((12, 12), (12, 12))):
+            d.rectangle((*a, *b), fill=(250, 200, 50, 255))
+        d.point((6, 6), fill=(255, 240, 170, 255))
+    elif kind == "autumn":
+        d.polygon([(7.5, 1), (10, 5), (13, 5), (11, 9), (12, 12), (7.5, 10), (3, 12), (4, 9), (2, 5), (5, 5)], fill=(230, 120, 40, 255))
+        d.line((7, 6, 7, 14), fill=(150, 70, 30, 255))
+    else:
+        c = (150, 210, 250, 255)
+        d.line((7, 1, 7, 14), fill=c); d.line((8, 1, 8, 14), fill=c)
+        d.line((1, 7, 14, 7), fill=c); d.line((1, 8, 14, 8), fill=c)
+        d.line((3, 3, 12, 12), fill=c); d.line((12, 3, 3, 12), fill=c)
+    return outlined(im)
+
+
+def book():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.rectangle((3, 2, 12, 13), fill=(70, 130, 200, 255))
+    d.rectangle((3, 2, 4, 13), fill=(40, 90, 160, 255))
+    d.rectangle((11, 3, 12, 12), fill=PAPER)
+    d.rectangle((6, 5, 10, 8), fill=(250, 200, 60, 255))
+    d.point((8, 6), fill=(255, 240, 170, 255))
+    d.line((6, 10, 10, 10), fill=(150, 190, 240, 255))
+    return outlined(im)
+
+
+def plant():
+    im = canvas(); d = ImageDraw.Draw(im)
+    d.polygon([(4, 9), (11, 9), (10, 13), (5, 13)], fill=(200, 110, 70, 255))
+    d.line((4, 9, 11, 9), fill=(230, 150, 100, 255))
+    d.ellipse((3, 3, 8, 8), fill=(100, 180, 80, 255))
+    d.ellipse((7, 2, 12, 7), fill=(120, 200, 90, 255))
+    d.line((7, 6, 7, 9), fill=(70, 130, 60, 255))
+    return outlined(im)
 
 
 def main():
@@ -274,6 +542,14 @@ def main():
         "ui_bar_pink": bar_fill((236, 120, 150, 255), (255, 186, 204, 255), (176, 70, 104, 255)),
         "ui_close": close_icon(),
         "ui_bg": paper_tile(),
+        "ui_crown": crown(), "ui_house": house(), "ui_ribbon": ribbon(), "ui_ticket": ticket(),
+        "ui_frame": frame_pic(), "ui_basket": basket(), "ui_gift": gift(), "ui_jar": jar(),
+        "ui_rosette": rosette(), "ui_question": question(), "ui_lock": lock(), "ui_undo": undo(),
+        "ui_pouch": pouch(), "ui_chest": chest(), "ui_bag": bag(), "ui_vault": vault(),
+        "ui_hammer": hammer(), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
+        "ui_confetti": confetti(), "ui_plant": plant(), "ui_book": book(),
+        "ui_spring": season("spring"), "ui_summer": season("summer"),
+        "ui_autumn": season("autumn"), "ui_winter": season("winter"),
     }
     for key, im in items.items():
         im.save(os.path.join(out, key + ".png"))

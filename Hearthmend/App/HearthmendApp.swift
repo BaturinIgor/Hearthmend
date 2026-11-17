@@ -5,11 +5,18 @@ import UIKit
 struct HearthmendApp: App {
     @StateObject private var store = GameStore()
     @StateObject private var shop = StoreManager()
+    @Environment(\.scenePhase) private var phase
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if Shot.hasCaption, let name = Shot.name { ShotFrame(name: name) } else { ContentView() }
+                if Shot.isQA, let name = Shot.name {
+                    QAScreen(name: name)
+                } else if Shot.hasCaption, let name = Shot.name {
+                    ShotFrame(name: name)
+                } else {
+                    ContentView()
+                }
             }
                 .environmentObject(store)
                 .environmentObject(shop)
@@ -19,20 +26,29 @@ struct HearthmendApp: App {
                     Audio.shared.startMusic()
                 }
         }
+        .onChange(of: phase) { p in
+            if p != .active { store.flush() }
+        }
     }
 }
 
+@MainActor
 enum Haptics {
     private static var on: Bool { UserDefaults.standard.object(forKey: "hapticsOn") as? Bool ?? true }
 
+    private static let impact = UIImpactFeedbackGenerator(style: .light)
+    private static let notify = UINotificationFeedbackGenerator()
+
     static func light() {
         guard on else { return }
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        impact.impactOccurred()
+        impact.prepare()
     }
 
     static func success() {
         guard on else { return }
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        notify.notificationOccurred(.success)
+        notify.prepare()
     }
 }
 

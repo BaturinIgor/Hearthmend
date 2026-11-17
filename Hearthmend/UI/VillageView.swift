@@ -53,8 +53,7 @@ struct VillageView: View {
                             Button {
                                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { showDecor.toggle() }
                             } label: {
-                                Text("🪴")
-                                    .font(.system(size: 24))
+                                PixelIcon(key: "ui_plant", size: 28)
                                     .frame(width: 50, height: 50)
                                     .background(Circle().fill(showDecor ? Theme.accent : Theme.card))
                                     .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
@@ -357,10 +356,9 @@ struct BuildingView: View {
     }
 
     private var badge: some View {
-        HStack(spacing: 2) {
-            PixelText("⭐️", size: 12)
-            Text("\(task.cost)").font(Pixel.font(13))
-        }
+        PixelText("⭐️\(task.cost)", size: 15)
+        .lineLimit(1)
+        .fixedSize()
         .foregroundColor(.white)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
@@ -433,8 +431,7 @@ private struct TaskCard: View {
                             .foregroundColor(Theme.accent)
                     }
                     if let gems = task.gems {
-                        Text(String(format: L10n.t("task.gems"), gems))
-                            .font(Pixel.font(13))
+                        PixelText(String(format: L10n.t("task.gems"), gems), size: 13)
                     }
                 }
                 Spacer()
@@ -443,9 +440,8 @@ private struct TaskCard: View {
                 }
             }
             Button(action: build) {
-                Text(enough ? String(format: L10n.t("task.build"), task.cost)
-                            : String(format: L10n.t("task.need_stars"), task.cost - store.state.stars))
-                    .font(Pixel.font(17))
+                PixelText(enough ? String(format: L10n.t("task.build"), task.cost)
+                                 : String(format: L10n.t("task.need_stars"), task.cost - store.state.stars), size: 17)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 48)
                     .background(PixelSlice(key: "ui_btn_green", inset: 5, scale: 3).saturation(enough ? 1 : 0).opacity(enough ? 1 : 0.6))
@@ -508,7 +504,7 @@ private struct LockedFog: View {
             .offset(x: drift ? 16 : -16, y: 6)
             .opacity(0.9)
             if let next {
-                Label { Text(String(format: L10n.t("village.fog_next"), next)) } icon: { Text("🔒") }
+                Label { Text(String(format: L10n.t("village.fog_next"), next)) } icon: { PixelIcon(key: "ui_lock", size: 18) }
                     .font(Pixel.font(14))
                     .foregroundColor(Theme.text.opacity(0.75))
                     .padding(.horizontal, 12)

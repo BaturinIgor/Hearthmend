@@ -58,6 +58,17 @@ extension Game {
         game.state.nextOrderId = 9005
         game.state.postcardPieces = 6
         if game.activeEvent != nil { game.state.eventTokens = 64; _ = game.claimEventMilestones() }
+        // альбом: все на поле найдено, две свежие находки ждут награды
+        for case .item(let item)? in game.state.cells { game.discover(item) }
+        let fresh = ["garden#5", "quarry#4"]
+        game.state.collectionClaimed = game.state.discovered.filter { !fresh.contains($0) }
+        // задания: одно готово к награде, одно в процессе, одно забрано
+        let quests = game.ensureQuests()
+        game.progressQuest(quests[0].kind, by: quests[0].target)
+        game.progressQuest(quests[1].kind, by: quests[1].target / 2)
+        game.progressQuest(quests[2].kind, by: quests[2].target)
+        game.state.quests[2].claimed = true
+        game.lastDiscovery = nil
         return game
     }
 

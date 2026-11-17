@@ -20,7 +20,38 @@ enum Shot {
         default: return nil
         }
     }
-    static var hasCaption: Bool { name != nil && name != "shop" }
+    static var hasCaption: Bool { name != nil && name != "shop" && !isQA }
+    /// Кадры для проверки интерфейса (не для App Store): -shot qa_<экран>.
+    static var isQA: Bool { name?.hasPrefix("qa_") == true }
+}
+
+/// Экраны для проверки глазами: окна и состояния, которых нет на скриншотах App Store.
+struct QAScreen: View {
+    @EnvironmentObject private var store: GameStore
+    let name: String
+
+    var body: some View {
+        switch name {
+        case "qa_quests": QuestsSheet()
+        case "qa_album": AlbumSheet()
+        case "qa_settings": SettingsView()
+        case "qa_daily":
+            ZStack { ContentView(); DailyRewardView {} }
+        default:
+            ContentView()
+                .onAppear {
+                    switch name {
+                    case "qa_selected": store.selected = 26
+                    case "qa_celebrate":
+                        store.celebration = Celebration(icon: "npc:mila",
+                                                        title: String(format: L10n.t("resident.arrived"), L10n.t("resident.mila")),
+                                                        subtitle: String(format: L10n.t("resident.chain"), L10n.t("chain.orchard")))
+                    case "qa_toast": store.show(String(format: L10n.t("toast.order_done"), 24, 1))
+                    default: break
+                    }
+                }
+        }
+    }
 }
 
 struct ShotFrame: View {

@@ -15,10 +15,9 @@ struct SettingsView: View {
                     HStack {
                         Text(String(format: L10n.t("settings.level"), store.state.level))
                             .font(Pixel.font(17))
-                        if store.game.isVIP { Text("👑") }
+                        if store.game.isVIP { PixelIcon(key: "ui_crown", size: 20) }
                         Spacer()
-                        Text("🏡 \(store.state.completedTasks.count)/\(store.game.village.allTasks.count)")
-                            .font(Pixel.font(15))
+                        PixelText("🏡 \(store.state.completedTasks.count)/\(store.game.village.allTasks.count)", size: 15)
                     }
                     .woodPanel(padding: 16)
                     VStack(spacing: 10) {

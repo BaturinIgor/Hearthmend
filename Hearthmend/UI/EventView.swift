@@ -15,7 +15,7 @@ struct EventBanner: View {
                 open = true
             } label: {
                 HStack(spacing: 8) {
-                    Text("🎀").font(.system(size: 20))
+                    PixelIcon(key: "ui_ribbon", size: (20) * 1.1)
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {
                             Text(L10n.t("event.\(def.id).title"))
@@ -80,8 +80,7 @@ struct EventSheet: View {
                     Text(L10n.t("event.\(def.id).intro"))
                         .font(Pixel.font(15))
                         .multilineTextAlignment(.center)
-                    Text(L10n.t("event.how"))
-                        .font(Pixel.font(13))
+                    PixelText(L10n.t("event.how"), size: 13)
                         .opacity(0.75)
                         .multilineTextAlignment(.center)
                     choice
@@ -113,7 +112,7 @@ struct EventSheet: View {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { store.chooseEvent(c.id) }
                         } label: {
                             VStack(spacing: 6) {
-                                Text(c.id == "mila" ? "👩‍🌾" : "🧑‍🌾").font(.system(size: 34))
+                                ResidentIcon(id: c.id, size: 44)
                                 Text(L10n.t("resident.\(c.id)")).font(Pixel.font(15))
                                 Text(L10n.t("event.\(def.id).choice.\(c.id)"))
                                     .font(Pixel.font(12))
@@ -147,8 +146,7 @@ struct EventSheet: View {
             .padding(12)
             .background(PixelSlice(key: "ui_paper_lilac", inset: 4))
         } else {
-            Text("🎟️ " + L10n.t("shop.pass_active"))
-                .font(Pixel.font(14))
+            PixelText("🎟️ " + L10n.t("shop.pass_active"), size: 15)
                 .foregroundColor(.purple)
         }
     }
@@ -172,14 +170,13 @@ struct EventSheet: View {
             ForEach(Array(def.milestones.enumerated()), id: \.offset) { i, m in
                 let done = i < store.state.eventClaimed
                 HStack {
-                    Text("🎀 \(m.tokens)")
-                        .font(Pixel.font(14))
+                    PixelText("🎀 \(m.tokens)", size: 15)
                         .frame(width: 70, alignment: .leading)
                     if m.choiceDecor == true {
                         if let picked = store.state.eventChoice, let c = def.choices.first(where: { $0.id == picked }) {
                             DecorIcon(key: c.decor, size: 26)
                         } else {
-                            Text("❓").font(.system(size: 20))
+                            PixelIcon(key: "ui_question", size: (20) * 1.1)
                         }
                     }
                     if let decor = m.decor { DecorIcon(key: decor, size: 26) }
@@ -205,7 +202,7 @@ struct DecorIcon: View {
         if let image = Sprites.image(key) {
             Image(uiImage: image).resizable().interpolation(.none).scaledToFit().frame(width: size, height: size)
         } else {
-            Text("🪴").font(.system(size: size * 0.8))
+            PixelIcon(key: "ui_plant", size: (size * 0.8) * 1.1)
         }
     }
 }
