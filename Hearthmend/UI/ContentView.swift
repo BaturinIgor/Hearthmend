@@ -45,7 +45,7 @@ struct ContentView: View {
 
     private var board: some View {
         ZStack(alignment: .bottom) {
-            Theme.background.ignoresSafeArea()
+            PixelTile(key: "ui_bg").ignoresSafeArea()
             VStack(spacing: 8) {
                 TopBar(openVillage: { screen = .village }, openShop: { showShop = true }, openSettings: { showSettings = true })
                 OrdersStrip()
@@ -110,7 +110,6 @@ private struct CelebrationView: View {
             .padding(28)
             .frame(maxWidth: 320)
             .background(PixelSlice(key: "ui_panel", inset: 6))
-            .overlay(RoundedRectangle(cornerRadius: 22).stroke(Theme.accent, lineWidth: 3))
             .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
             .onTapGesture(perform: close)
         }
@@ -194,8 +193,7 @@ private struct VillageButton: View {
             }
             .foregroundColor(ready ? .white : Theme.text)
             .frame(maxWidth: .infinity, minHeight: 36)
-            .background(RoundedRectangle(cornerRadius: 10).fill(ready ? Theme.accent : Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+            .background(PixelSlice(key: ready ? "ui_btn_green" : "ui_paper", inset: ready ? 5 : 4, scale: 2))
             .rotationEffect(.degrees(ready && wiggle ? 3 : 0))
             .scaleEffect(ready && wiggle ? 1.05 : 1)
         }
@@ -227,7 +225,7 @@ private struct Counter: View {
         .overlay(alignment: .topTrailing) {
             if plus {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(Pixel.font(13))
                     .foregroundColor(Theme.accent)
                     .background(Circle().fill(.white))
                     .offset(x: 4, y: -4)
@@ -282,8 +280,7 @@ private struct OrderCard: View {
             .disabled(!ready)
         }
         .padding(8)
-        .background(PixelSlice(key: "ui_paper", inset: 4))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(ready ? Theme.accent : Theme.wood.opacity(0.4), lineWidth: ready ? 2.5 : 1.5))
+        .background(PixelSlice(key: ready ? "ui_paper_green" : "ui_paper", inset: 4))
         .contentShape(Rectangle())
         .onTapGesture {
             Haptics.light()
@@ -311,7 +308,7 @@ private struct SelectedBar: View {
                 if store.game.boostUnlocked { BoostToggle() }
                 if store.state.level < 3 {
                     Text(L10n.t("hint.start"))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .font(Pixel.font(12))
                         .foregroundColor(Theme.text.opacity(0.8))
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -342,8 +339,7 @@ private struct BoostToggle: View {
             .foregroundColor(on ? .white : Theme.text)
             .padding(.horizontal, 10)
             .frame(height: 34)
-            .background(Capsule().fill(on ? Color.orange : Theme.card))
-            .overlay(Capsule().stroke(Color.orange.opacity(0.8), lineWidth: 1.5))
+            .background(PixelSlice(key: on ? "ui_paper_gold" : "ui_paper", inset: 4, scale: 2))
             .shadow(color: on ? .orange.opacity(0.5) : .clear, radius: 6)
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: on)
@@ -368,8 +364,7 @@ private struct PostcardButton: View {
             .foregroundColor(Theme.text)
             .padding(.horizontal, 10)
             .frame(height: 34)
-            .background(Capsule().fill(Theme.card))
-            .overlay(Capsule().stroke(Theme.wood.opacity(0.5), lineWidth: 1.5))
+            .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
         }
         .sheet(isPresented: $open) { PostcardSheet() }
     }

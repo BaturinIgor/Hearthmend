@@ -15,17 +15,17 @@ struct PostcardSheet: View {
         let opened = store.state.postcardPieces
         let view = store.game.postcardView
         let decor = Postcards.decor[store.state.postcardIndex % Postcards.decor.count]
-        NavigationView {
+        PixelSheet(L10n.t("postcard.title")) {
             ScrollView {
                 VStack(spacing: 14) {
                     Text(L10n.t("district.\(view)"))
                         .font(Pixel.font(20))
                     picture(view: view, opened: opened, total: total)
-                    ProgressBar(value: Double(opened) / Double(total)).frame(height: 10)
+                    ProgressBar(value: Double(opened) / Double(total)).frame(height: 14)
                     Text(String(format: L10n.t("postcard.progress"), opened, total))
                         .font(Pixel.font(14))
                     Text(L10n.t("postcard.how"))
-                        .font(.system(size: 13, design: .rounded))
+                        .font(Pixel.font(13))
                         .multilineTextAlignment(.center)
                         .opacity(0.8)
                     HStack(spacing: 14) {
@@ -38,20 +38,13 @@ struct PostcardSheet: View {
                     .frame(maxWidth: .infinity)
                     .background(PixelSlice(key: "ui_paper", inset: 4))
                     Text(String(format: L10n.t("postcard.collected"), store.state.postcardIndex))
-                        .font(.system(size: 12, design: .rounded))
+                        .font(Pixel.font(12))
                         .opacity(0.6)
                 }
                 .foregroundColor(Theme.text)
                 .padding(16)
             }
-            .background(Theme.background.ignoresSafeArea())
-            .navigationTitle(L10n.t("postcard.title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button(L10n.t("common.close")) { dismiss() } }
-            }
         }
-        .navigationViewStyle(.stack)
     }
 
     private func picture(view: String, opened: Int, total: Int) -> some View {

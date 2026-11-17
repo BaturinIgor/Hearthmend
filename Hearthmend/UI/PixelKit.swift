@@ -152,3 +152,84 @@ struct PixelButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.08), value: configuration.isPressed)
     }
 }
+
+/// Пиксельная картинка плиткой (фон окон).
+@MainActor
+struct PixelTile: View {
+    let key: String
+    var scale: CGFloat = 3
+
+    var body: some View {
+        if let src = Sprites.image(key), let cg = src.cgImage,
+           let big = PixelSlice.upscale(cg, key: key, by: Int(scale * UIScreen.main.scale)) {
+            Image(uiImage: UIImage(cgImage: big, scale: UIScreen.main.scale, orientation: .up))
+                .resizable(resizingMode: .tile)
+        } else {
+            Theme.background
+        }
+    }
+}
+
+/// Полоска прогресса: деревянный желоб и зеленая (или розовая) заливка с бликом.
+struct PixelBar: View {
+    let value: Double
+    var fill = "ui_bar_fill"
+
+    var body: some View {
+        GeometryReader { geo in
+            let inner = max(0, geo.size.width - 6)
+            let v = min(1, max(0, value))
+            ZStack(alignment: .leading) {
+                PixelSlice(key: "ui_bar_track", inset: 3, scale: 2)
+                if v > 0 {
+                    PixelSlice(key: fill, inset: 2, scale: 2)
+                        .frame(width: max(8, inner * v))
+                        .padding(3)
+                        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: v)
+                }
+            }
+        }
+    }
+}
+
+/// Окно-лист в пиксельном стиле: деревянная табличка с заголовком, кнопка закрытия,
+/// пергамент фоном. Заменяет системную навигационную панель.
+struct PixelSheet<Content: View>: View {
+    let title: String
+    @ViewBuilder let content: () -> Content
+    @Environment(\.dismiss) private var dismiss
+
+    init(_ title: String, @ViewBuilder content: @escaping () -> Content) {
+        self.title = title
+        self.content = content
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                Text(title)
+                    .font(Pixel.font(19))
+                    .foregroundColor(Color(red: 1, green: 0.95, blue: 0.85))
+                    .shadow(color: .black.opacity(0.4), radius: 0, x: 0, y: 1.5)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .padding(.horizontal, 22)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
+                    .background(PixelSlice(key: "ui_btn_wood", inset: 5, scale: 3))
+                    .padding(.horizontal, 56)
+                HStack {
+                    Spacer()
+                    Button { dismiss() } label: { PixelIcon(key: "ui_close", size: 36) }
+                        .accessibilityLabel(L10n.t("common.close"))
+                }
+                .padding(.trailing, 12)
+            }
+            .padding(.top, 14)
+            .padding(.bottom, 6)
+            content()
+        }
+        .foregroundColor(Theme.text)
+        .background(PixelTile(key: "ui_bg").ignoresSafeArea())
+    }
+}

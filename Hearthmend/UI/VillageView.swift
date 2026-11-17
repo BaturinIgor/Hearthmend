@@ -165,7 +165,7 @@ struct VillageView: View {
                     .font(Pixel.font(17))
             }
             ProgressBar(value: district == nil ? 1 : Double(done) / Double(total))
-                .frame(height: 10)
+                .frame(height: 14)
         }
         .foregroundColor(Theme.text)
         .padding(12)
@@ -227,7 +227,7 @@ private struct DecorTray: View {
                 .foregroundColor(Theme.text.opacity(0.8))
             if store.state.decorOwned.isEmpty {
                 Text(L10n.t("decor.empty"))
-                    .font(.system(size: 13, design: .rounded))
+                    .font(Pixel.font(13))
                     .foregroundColor(Theme.text)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -364,8 +364,7 @@ struct BuildingView: View {
         .foregroundColor(.white)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Capsule().fill(affordable ? Theme.accent : Theme.wood))
-        .overlay(Capsule().stroke(.white, lineWidth: 1.5))
+        .background(PixelSlice(key: affordable ? "ui_btn_green" : "ui_btn_wood", inset: 5, scale: 2))
         .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
         .scaleEffect(affordable ? 1.1 : 0.95)
     }
@@ -440,7 +439,7 @@ private struct TaskCard: View {
                 }
                 Spacer()
                 Button(action: close) {
-                    Image(systemName: "xmark.circle.fill").font(.system(size: 24)).foregroundColor(Theme.wood.opacity(0.6))
+                    PixelIcon(key: "ui_close", size: 30)
                 }
             }
             Button(action: build) {
@@ -449,7 +448,7 @@ private struct TaskCard: View {
                     .font(Pixel.font(17))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 48)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(enough ? Theme.accent : Color.gray.opacity(0.55)))
+                    .background(PixelSlice(key: "ui_btn_green", inset: 5, scale: 3).saturation(enough ? 1 : 0).opacity(enough ? 1 : 0.6))
             }
             .disabled(!enough)
         }
@@ -470,7 +469,7 @@ private struct BackToBoardButton: View {
                 .foregroundColor(.white)
                 .padding(.horizontal, 24)
                 .frame(minHeight: 50)
-                .background(Capsule().fill(Theme.wood))
+                .background(PixelSlice(key: "ui_btn_wood", inset: 5, scale: 2))
                 .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
         }
     }
@@ -478,17 +477,9 @@ private struct BackToBoardButton: View {
 
 struct ProgressBar: View {
     let value: Double
+    var fill = "ui_bar_fill"
 
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.wood.opacity(0.2))
-                Capsule().fill(Theme.accent)
-                    .frame(width: max(8, geo.size.width * min(1, max(0, value))))
-                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: value)
-            }
-        }
-    }
+    var body: some View { PixelBar(value: value, fill: fill) }
 }
 
 /// Туман над закрытыми районами: облака и название района, который откроется следующим.
@@ -522,7 +513,7 @@ private struct LockedFog: View {
                     .foregroundColor(Theme.text.opacity(0.75))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(Capsule().fill(Color.white.opacity(0.85)))
+                    .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
                     .padding(.bottom, 40)
             }
         }

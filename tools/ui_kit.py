@@ -145,6 +145,20 @@ def paper_panel():
     return im
 
 
+def tinted_paper(edge, light, fill):
+    """Пергамент с цветной двойной рамкой 12x12, края 4 px: выделенные карточки
+    (готовый заказ, праздник, VIP)."""
+    n = 12
+    im = Image.new("RGBA", (n, n), CLEAR)
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, n - 1, n - 1), radius=2, fill=WOOD_D)
+    d.rounded_rectangle((1, 1, n - 2, n - 2), radius=1, fill=edge)
+    d.line((2, 1, n - 3, 1), fill=light)
+    d.rectangle((3, 3, n - 4, n - 4), fill=fill)
+    d.line((3, n - 4, n - 4, n - 4), fill=PAPER_S)
+    return im
+
+
 def button(base, light, dark):
     """Кнопка 16x14: светлый верх, темный низ-тень, края 5 px."""
     w, h = 16, 14
@@ -194,6 +208,51 @@ def crate():
     return im
 
 
+def bar_track():
+    """Желоб полоски прогресса 12x8, края 3 px."""
+    w, h = 12, 8
+    im = Image.new("RGBA", (w, h), CLEAR)
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=2, fill=INK)
+    d.rectangle((1, 1, w - 2, h - 2), fill=(120, 80, 48, 255))
+    d.line((1, 1, w - 2, 1), fill=(84, 52, 30, 255))
+    return im
+
+
+def bar_fill(base, light, dark):
+    """Заливка полоски 8x6, края 2 px: светлый блик сверху, тень снизу."""
+    w, h = 8, 6
+    im = Image.new("RGBA", (w, h), base)
+    d = ImageDraw.Draw(im)
+    d.line((0, 0, w - 1, 0), fill=light)
+    d.line((0, h - 1, w - 1, h - 1), fill=dark)
+    return im
+
+
+def close_icon():
+    """Кнопка закрытия: деревянный кружок с крестиком."""
+    im = canvas()
+    d = ImageDraw.Draw(im)
+    d.ellipse((1, 1, 14, 14), fill=WOOD_L)
+    d.ellipse((2, 2, 13, 13), fill=WOOD_M)
+    d.arc((2, 2, 13, 13), 200, 340, fill=WOOD_H)
+    for a, b in (((5, 5), (10, 10)), ((10, 5), (5, 10))):
+        d.line((*a, *b), fill=CREAM, width=2)
+    return outlined(im)
+
+
+def paper_tile():
+    """Фон окон: пергамент 16x16 с редкими волокнами, кладется плиткой."""
+    import random
+    rnd = random.Random(7)
+    im = Image.new("RGBA", (16, 16), (245, 232, 204, 255))
+    px = im.load()
+    for _ in range(14):
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        px[x, y] = (236, 220, 186, 255) if rnd.random() < 0.7 else (250, 242, 222, 255)
+    return im
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "Hearthmend/Resources/UI"
     os.makedirs(out, exist_ok=True)
@@ -206,6 +265,15 @@ def main():
         "ui_cell_a": cell((150, 196, 104, 255), (178, 216, 124, 255), (122, 168, 86, 255), 1),
         "ui_cell_b": cell((138, 184, 96, 255), (164, 204, 114, 255), (112, 156, 78, 255), 2),
         "ui_crate": crate(),
+        "ui_paper_green": tinted_paper((96, 170, 72, 255), (160, 216, 116, 255), (240, 246, 214, 255)),
+        "ui_paper_pink": tinted_paper((226, 112, 146, 255), (255, 182, 200, 255), (253, 234, 232, 255)),
+        "ui_paper_gold": tinted_paper((222, 160, 40, 255), (252, 214, 110, 255), (254, 240, 200, 255)),
+        "ui_paper_lilac": tinted_paper((150, 110, 200, 255), (200, 170, 236, 255), (242, 234, 248, 255)),
+        "ui_bar_track": bar_track(),
+        "ui_bar_fill": bar_fill((112, 190, 80, 255), (172, 228, 124, 255), (64, 130, 56, 255)),
+        "ui_bar_pink": bar_fill((236, 120, 150, 255), (255, 186, 204, 255), (176, 70, 104, 255)),
+        "ui_close": close_icon(),
+        "ui_bg": paper_tile(),
     }
     for key, im in items.items():
         im.save(os.path.join(out, key + ".png"))

@@ -25,8 +25,8 @@ struct EventBanner: View {
                                 Text(timeLeft(ends)).font(Pixel.font(11)).opacity(0.7)
                             }
                         }
-                        ProgressBar(value: Double(store.state.eventTokens) / Double(max(1, next)))
-                            .frame(height: 7)
+                        ProgressBar(value: Double(store.state.eventTokens) / Double(max(1, next)), fill: "ui_bar_pink")
+                            .frame(height: 12)
                     }
                     Text("\(store.state.eventTokens)/\(next)")
                         .font(Pixel.font(12))
@@ -34,8 +34,7 @@ struct EventBanner: View {
                 .foregroundColor(Theme.text)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(RoundedRectangle(cornerRadius: 12).fill(Color(red: 1, green: 0.9, blue: 0.93)))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.pink.opacity(store.game.eventNeedsChoice && pulse ? 1 : 0.4), lineWidth: store.game.eventNeedsChoice ? 2.5 : 1.5))
+                .background(PixelSlice(key: "ui_paper_pink", inset: 4))
                 .scaleEffect(store.game.eventNeedsChoice && pulse ? 1.03 : 1)
             }
             .padding(.horizontal, 8)
@@ -75,11 +74,11 @@ struct EventSheet: View {
     let def: EventDef
 
     var body: some View {
-        NavigationView {
+        PixelSheet(L10n.t("event.\(def.id).title")) {
             ScrollView {
                 VStack(spacing: 14) {
                     Text(L10n.t("event.\(def.id).intro"))
-                        .font(.system(size: 15, design: .rounded))
+                        .font(Pixel.font(15))
                         .multilineTextAlignment(.center)
                     Text(L10n.t("event.how"))
                         .font(Pixel.font(13))
@@ -92,14 +91,7 @@ struct EventSheet: View {
                 .foregroundColor(Theme.text)
                 .padding(16)
             }
-            .background(Theme.background.ignoresSafeArea())
-            .navigationTitle(L10n.t("event.\(def.id).title"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button(L10n.t("common.close")) { dismiss() } }
-            }
         }
-        .navigationViewStyle(.stack)
     }
 
     @ViewBuilder
@@ -124,7 +116,7 @@ struct EventSheet: View {
                                 Text(c.id == "mila" ? "👩‍🌾" : "🧑‍🌾").font(.system(size: 34))
                                 Text(L10n.t("resident.\(c.id)")).font(Pixel.font(15))
                                 Text(L10n.t("event.\(def.id).choice.\(c.id)"))
-                                    .font(.system(size: 12, design: .rounded))
+                                    .font(Pixel.font(12))
                                     .multilineTextAlignment(.center)
                                     .fixedSize(horizontal: false, vertical: true)
                                 DecorIcon(key: c.decor, size: 36)
@@ -132,8 +124,7 @@ struct EventSheet: View {
                             .foregroundColor(Theme.text)
                             .padding(10)
                             .frame(maxWidth: .infinity)
-                            .background(PixelSlice(key: "ui_paper", inset: 4))
-                            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.pink.opacity(0.5), lineWidth: 1.5))
+                            .background(PixelSlice(key: "ui_paper_pink", inset: 4))
                         }
                     }
                 }
@@ -154,7 +145,7 @@ struct EventSheet: View {
                 }
             }
             .padding(12)
-            .background(RoundedRectangle(cornerRadius: 14).fill(Color.purple.opacity(0.12)))
+            .background(PixelSlice(key: "ui_paper_lilac", inset: 4))
         } else {
             Text("🎟️ " + L10n.t("shop.pass_active"))
                 .font(Pixel.font(14))
@@ -172,7 +163,7 @@ struct EventSheet: View {
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 3)
-        .background(Capsule().fill(Color.purple.opacity(pass ? 0.18 : 0.08)))
+        .background(PixelSlice(key: pass ? "ui_paper_lilac" : "ui_paper", inset: 4, scale: 2))
         .opacity(pass ? 1 : 0.7)
     }
 
@@ -199,7 +190,7 @@ struct EventSheet: View {
                         .foregroundColor(done ? Theme.accent : Theme.wood.opacity(0.4))
                 }
                 .padding(10)
-                .background(RoundedRectangle(cornerRadius: 12).fill(done ? Theme.accent.opacity(0.12) : Theme.card))
+                .background(PixelSlice(key: done ? "ui_paper_green" : "ui_paper", inset: 4))
             }
         }
     }

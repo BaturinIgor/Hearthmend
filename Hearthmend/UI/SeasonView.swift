@@ -113,6 +113,6 @@ struct SeasonChip: View {
         .font(Pixel.font(13))
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(Capsule().fill(Color.white.opacity(0.6)))
+        .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
     }
 }

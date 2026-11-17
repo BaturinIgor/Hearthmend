@@ -36,8 +36,7 @@ struct TutorialTip: View {
             }
             .foregroundColor(Theme.text)
             .padding(12)
-            .background(PixelSlice(key: "ui_paper", inset: 4))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.accent, lineWidth: 2))
+            .background(PixelSlice(key: "ui_paper_green", inset: 4))
             .shadow(color: .black.opacity(0.2), radius: 6, y: 2)
             .padding(.horizontal, 10)
             .transition(.move(edge: .bottom).combined(with: .opacity))
