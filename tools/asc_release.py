@@ -152,7 +152,12 @@ def main():
         s, d = call("PATCH", f"/v1/appStoreReviewDetails/{detail['id']}", {"data": {
             "type": "appStoreReviewDetails", "id": detail["id"],
             "attributes": {"notes": REVIEW_NOTES, "demoAccountRequired": False}}})
-        ok(s, d, "заметка для проверки")
+        if 200 <= s < 300:
+            print("заметка для проверки: обновлена")
+        elif any(e.get("code", "").endswith("ATTRIBUTE.REQUIRED") for e in d.get("errors", [])):
+            todo.append("App Review Information: Notes: " + REVIEW_NOTES)
+        else:
+            ok(s, d, "заметка для проверки")
     else:
         a = {}
         s, d = call("POST", "/v1/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails",
