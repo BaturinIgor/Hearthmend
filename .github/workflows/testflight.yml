@@ -4,6 +4,11 @@ name: TestFlight
 # (секреты ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8). Запуск по кнопке, номер сборки = номер запуска.
 on:
   workflow_dispatch:
+    inputs:
+      revoke_ci_certs:
+        description: "Отозвать сертификаты разработки, оставшиеся от прошлых сборок в CI"
+        type: boolean
+        default: false
 
 concurrency:
   group: testflight
@@ -47,6 +52,15 @@ jobs:
         run: |
           brew install xcodegen
           xcodebuild -version
+
+      - name: CI certificates
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          pip3 install --quiet --break-system-packages "pyjwt[crypto]==2.9.0" || pip3 install --quiet "pyjwt[crypto]==2.9.0"
+          if [ "${{ inputs.revoke_ci_certs }}" = "true" ]; then python3 tools/asc_certs.py --revoke; else python3 tools/asc_certs.py; fi
 
       - name: Generate Xcode project
         run: xcodegen generate
