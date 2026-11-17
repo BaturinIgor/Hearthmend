@@ -23,13 +23,6 @@ jobs:
         run: |
           if [ -z "$ASC_KEY_P8" ]; then echo "::error::Нет секретов ASC_*"; exit 1; fi
           python tools/asc_iap.py
-      - name: App Store page texts
-        if: always()
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
-        run: python tools/asc_listing.py
       - name: Release settings (price, age rating, categories, build)
         if: always()
         env:
@@ -37,3 +30,10 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: python tools/asc_release.py
+      - name: App Store page texts
+        if: always()
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: python tools/asc_listing.py

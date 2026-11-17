@@ -57,10 +57,14 @@ def main():
         print("Версия", version["attributes"].get("versionString"))
         existing = {l["attributes"]["locale"]: l for l in
                     get_all(f"/v1/appStoreVersions/{version['id']}/appStoreVersionLocalizations")}
+        first = version["attributes"].get("versionString") == "1.0"
         for locale, t in LISTING.items():
-            upsert("appStoreVersionLocalizations", existing, locale,
-                   {"description": t["description"], "keywords": t["keywords"], "promotionalText": t["promo"],
-                    "supportUrl": SUPPORT},
+            attrs = {"description": t["description"], "keywords": t["keywords"], "promotionalText": t["promo"],
+                     "supportUrl": SUPPORT}
+            # "Что нового" Apple принимает только у обновлений, не у первой версии
+            if not first and t.get("whatsNew"):
+                attrs["whatsNew"] = t["whatsNew"]
+            upsert("appStoreVersionLocalizations", existing, locale, attrs,
                    "appStoreVersion", "appStoreVersions", version["id"])
 
     if errors:
