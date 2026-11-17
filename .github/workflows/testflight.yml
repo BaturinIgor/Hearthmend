@@ -101,7 +101,12 @@ jobs:
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8" \
             -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" 2>&1 | tee export.log
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" > export.log 2>&1 || {
+              grep -iE "error|fail|invalid|denied|already|version" export.log | grep -v "^\s*$" | sort -u | head -30 | while IFS= read -r line; do echo "::error::${line}"; done
+              tail -30 export.log
+              exit 1
+            }
+          tail -10 export.log
           echo "::notice::Сборка ${{ github.run_number }} загружена, через 10-30 минут появится в TestFlight"
 
       - name: Logs
