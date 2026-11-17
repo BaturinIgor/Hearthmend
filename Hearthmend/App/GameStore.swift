@@ -11,6 +11,7 @@ final class GameStore: ObservableObject {
     /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
     @Published var shortage: Shortage?
     /// Последний открытый ящик: сцена поля проигрывает по нему анимацию.
+    private var selectedAt = Date.distantPast
     var lastOpenedChest: (index: Int, chest: Chest, reward: ChestReward)?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
     @Published var celebration: Celebration?
@@ -131,12 +132,15 @@ final class GameStore: ObservableObject {
         case .debris?:
             show(L10n.t("toast.debris"))
         case .chest(let chest)?:
-            // как генератор: первый тап выбирает, второй открывает
+            // как генератор: первый тап выбирает, второй открывает. Слишком быстрый второй тап
+            // по ресурсу не считается: случайный двойной тап не заберет то, что копили для слияния
             guard selected == index else {
                 Haptics.light()
                 selected = index
+                selectedAt = Date()
                 return nil
             }
+            if chest.kind != .items, Date().timeIntervalSince(selectedAt) < 0.35 { return nil }
             switch game.openChest(at: index) {
             case .opened(let reward):
                 Haptics.success()
