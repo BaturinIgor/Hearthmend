@@ -125,6 +125,8 @@ private struct CelebrationView: View {
                 Group {
                     if celebration.icon.hasPrefix("npc:") {
                         ResidentIcon(id: String(celebration.icon.dropFirst(4)), size: 72)
+                    } else if celebration.icon.hasPrefix("decor:") {
+                        DecorIcon(key: String(celebration.icon.dropFirst(6)), size: 80)
                     } else {
                         EmojiIcon(celebration.icon, size: 64)
                     }

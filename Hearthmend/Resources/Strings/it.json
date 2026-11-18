@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "Il villaggio è illuminato! Scende una nuova notte",
   "adv.lanterns.fireflies": "Lucciole: +%d lanterne",
   "adv.lanterns.pick": "Tocca una lanterna uguale per unirle",
-  "adv.no_lanterns": "Lanterne finite: completa ordini sul tabellone principale"
+  "adv.no_lanterns": "Lanterne finite: completa ordini sul tabellone principale",
+  "barter.title": "Baratto",
+  "barter.intro": "Parti da un rametto e scambia sei volte con gli abitanti. Alla fine uno di loro ti regala la sua bancarella!",
+  "barter.have": "Hai:",
+  "barter.swap": "Scambia",
+  "barter.need": "Metti sul campo l'oggetto che chiede l'abitante",
+  "barter.tent": "Scambi generosi: riempi la barra e ricevi anche una tenda",
+  "barter.done": "La bancarella è tua!",
+  "barter.done_hint": "Mettila nel villaggio.",
+  "barter.ends": "Il baratto finisce tra: %@"
 }

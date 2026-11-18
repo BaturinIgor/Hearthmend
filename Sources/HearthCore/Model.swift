@@ -239,6 +239,8 @@ public struct GameState: Codable, Equatable {
     public var shopGiftDay: Int = Int.min
     /// Текущее большое событие (своя карта и валюта).
     public var adventure: AdventureState?
+    /// «Обмен» текущих выходных.
+    public var barter: BarterState?
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -271,7 +273,7 @@ public struct GameState: Codable, Equatable {
         case mapRev, buildingSpots, storySeen
         case friendHearts, friendClaimed, merchant, merchantNextAt, merchantsServed, achievementsClaimed
         case petsOwned, petGiftDay
-        case thicketRows, pendingChests, chestsOpened, shopGiftDay, adventure
+        case thicketRows, pendingChests, chestsOpened, shopGiftDay, adventure, barter
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -345,6 +347,7 @@ public struct GameState: Codable, Equatable {
         chestsOpened = try c.decodeIfPresent(Int.self, forKey: .chestsOpened) ?? 0
         shopGiftDay = try c.decodeIfPresent(Int.self, forKey: .shopGiftDay) ?? Int.min
         adventure = try c.decodeIfPresent(AdventureState.self, forKey: .adventure)
+        barter = try c.decodeIfPresent(BarterState.self, forKey: .barter)
     }
 }
 

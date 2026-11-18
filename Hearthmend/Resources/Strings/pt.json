@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "A vila está iluminada! Chega uma nova noite",
   "adv.lanterns.fireflies": "Vaga-lumes: +%d lanternas",
   "adv.lanterns.pick": "Toque numa lanterna igual para combinar",
-  "adv.no_lanterns": "Sem lanternas: complete pedidos no tabuleiro principal"
+  "adv.no_lanterns": "Sem lanternas: complete pedidos no tabuleiro principal",
+  "barter.title": "Troca",
+  "barter.intro": "Comece com um graveto e troque com os moradores seis vezes. No fim, um deles te dá sua barraca de feira!",
+  "barter.have": "Você tem:",
+  "barter.swap": "Trocar",
+  "barter.need": "Coloque no tabuleiro o item que o morador pede",
+  "barter.tent": "Trocas generosas: encha a barra e ganhe também uma tenda",
+  "barter.done": "A barraca é sua!",
+  "barter.done_hint": "Coloque-a na vila.",
+  "barter.ends": "A troca termina em: %@"
 }

@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "Wioska jasna! Zapada nowa noc",
   "adv.lanterns.fireflies": "Świetliki: +%d lampiony",
   "adv.lanterns.pick": "Stuknij taki sam lampion, żeby połączyć",
-  "adv.no_lanterns": "Brak lampionów: realizuj zamówienia na głównej planszy"
+  "adv.no_lanterns": "Brak lampionów: realizuj zamówienia na głównej planszy",
+  "barter.title": "Wymiana",
+  "barter.intro": "Zacznij od gałązki i wymień się z mieszkańcami sześć razy. Na koniec ktoś odda ci swój stragan!",
+  "barter.have": "Masz:",
+  "barter.swap": "Wymień",
+  "barter.need": "Połóż na planszy przedmiot, o który prosi mieszkaniec",
+  "barter.tent": "Hojne wymiany: wypełnij pasek, a dostaniesz też namiot",
+  "barter.done": "Stragan jest twój!",
+  "barter.done_hint": "Postaw go w wiosce.",
+  "barter.ends": "Wymiana kończy się za: %@"
 }

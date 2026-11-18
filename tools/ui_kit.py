@@ -690,6 +690,18 @@ def glass():
     return outlined(im)
 
 
+def trade():
+    """Обмен: две встречные стрелки, зеленая вправо и оранжевая влево."""
+    im = canvas(); d = ImageDraw.Draw(im)
+    g, gl = (96, 176, 72, 255), (168, 222, 120, 255)
+    o, ol = (240, 150, 50, 255), (252, 206, 120, 255)
+    d.rectangle((2, 4, 10, 6), fill=g); d.line((2, 4, 10, 4), fill=gl)
+    d.polygon([(10, 1), (14, 5), (10, 9)], fill=g); d.point((11, 3), fill=gl)
+    d.rectangle((5, 10, 13, 12), fill=o); d.line((5, 10, 13, 10), fill=ol)
+    d.polygon([(5, 7), (1, 11), (5, 15)], fill=o); d.point((4, 9), fill=ol)
+    return outlined(im)
+
+
 def soil_tile():
     import random
     rnd = random.Random(4)
@@ -736,7 +748,7 @@ def main():
         "ui_mine_2": mine_tile((150, 146, 140, 255), (186, 182, 176, 255), (112, 108, 104, 255), 2, 12),
         "ui_mine_3": mine_tile((104, 96, 112, 255), (150, 140, 160, 255), (70, 64, 80, 255), 3, 16),
         "ui_mine_open": mine_open(),
-        "ui_seeds": seeds(), "ui_can": can(), "ui_soil": soil_tile(), "ui_glass": glass(),
+        "ui_seeds": seeds(), "ui_can": can(), "ui_soil": soil_tile(), "ui_glass": glass(), "ui_trade": trade(),
         "ui_shell": shell(), "ui_wave": wave(), "ui_fog": fog_tile(), "ui_water": water_tile(),
         "ui_spring": season("spring"), "ui_summer": season("summer"),
         "ui_autumn": season("autumn"), "ui_winter": season("winter"),

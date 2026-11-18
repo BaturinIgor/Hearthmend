@@ -113,6 +113,12 @@ DECOR = {
     "decor_boat": (OD + "Boat.png", 2, 14, 40, 32),
     "decor_flowers_big": (OD + "Outdoor_Decor.png", 86, 345, 20, 22),
     "decor_lily": (OD + "Outdoor_Decor.png", 80, 304, 16, 16),
+    # «Обмен»: прилавки жителей и палатка за щедрые обмены
+    "decor_stall_red": ("Buildings/Buildings/Unique_Buildings/Stalls/Market_Stalls.png", 1, 10, 46, 38),
+    "decor_stall_green": ("Buildings/Buildings/Unique_Buildings/Stalls/Market_Stalls.png", 49, 10, 46, 38),
+    "decor_stall_blue": ("Buildings/Buildings/Unique_Buildings/Stalls/Market_Stalls.png", 97, 10, 46, 38),
+    "decor_stall_orange": ("Buildings/Buildings/Unique_Buildings/Stalls/Market_Stalls.png", 145, 10, 46, 38),
+    "decor_tent": ("Buildings/Buildings/Tent/Tent_Small.png", 3, 15, 42, 69),
 }
 BUILDINGS.update(DECOR)
 

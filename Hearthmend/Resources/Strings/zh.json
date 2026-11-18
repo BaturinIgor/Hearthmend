@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "村庄亮起来了！新的夜晚降临",
   "adv.lanterns.fireflies": "萤火虫：灯笼+%d",
   "adv.lanterns.pick": "点一个相同的灯笼来合成",
-  "adv.no_lanterns": "灯笼用完了：去主棋盘完成订单"
+  "adv.no_lanterns": "灯笼用完了：去主棋盘完成订单",
+  "barter.title": "以物易物",
+  "barter.intro": "从一根小树枝开始，和村民交换六次。最后村民会把自己的摊位送给你！",
+  "barter.have": "你有：",
+  "barter.swap": "交换",
+  "barter.need": "把村民想要的物品放到棋盘上",
+  "barter.tent": "慷慨交换：填满进度条，还会额外送你一顶帐篷",
+  "barter.done": "摊位归你了！",
+  "barter.done_hint": "把它摆进村子吧。",
+  "barter.ends": "交换结束还有：%@"
 }
