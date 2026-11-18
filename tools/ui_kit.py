@@ -173,21 +173,26 @@ def button(base, light, dark):
 
 
 def cell(base, light, dark, seed):
-    """Клетка поля 16x16: трава с крапинками, светлый верх-лево и темный низ-право (объем)."""
+    """Клетка поля 16x16: лунка со скругленными углами. Светлый край сверху, тень снизу,
+    между клетками видна деревянная подложка поля."""
     import random
     rnd = random.Random(seed)
-    im = Image.new("RGBA", (16, 16), base)
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    edge = tuple(max(0, c - 34) for c in dark[:3]) + (255,)
+    d.rounded_rectangle((0, 0, 15, 15), radius=3, fill=edge)
+    d.rounded_rectangle((1, 1, 14, 14), radius=2, fill=base)
     px = im.load()
-    for _ in range(9):
-        x, y = rnd.randrange(2, 14), rnd.randrange(2, 14)
+    for x in range(3, 13):
+        px[x, 1] = light
+    for y in range(3, 12):
+        px[1, y] = light
+    for x in range(2, 14):
+        px[x, 13] = dark
+        px[x, 14] = dark
+    for _ in range(4):
+        x, y = rnd.randrange(4, 12), rnd.randrange(4, 11)
         px[x, y] = light if rnd.random() < 0.5 else dark
-        if rnd.random() < 0.5 and y > 2:
-            px[x, y - 1] = light
-    for i in range(16):
-        px[i, 0] = light
-        px[0, i] = light
-        px[i, 15] = dark
-        px[15, i] = dark
     return im
 
 

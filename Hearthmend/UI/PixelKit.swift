@@ -210,6 +210,20 @@ struct PixelTile: View {
     }
 }
 
+/// Фон экранов: пиксельный луг из пака, сверху и снизу светлая дымка, чтобы шапка и кнопки читались.
+struct Backdrop: View {
+    var body: some View {
+        ZStack {
+            PixelTile(key: "bg_meadow", scale: 2)
+            LinearGradient(colors: [Theme.background.opacity(0.92), Theme.background.opacity(0.0)],
+                           startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.28))
+            LinearGradient(colors: [Theme.background.opacity(0.0), Theme.background.opacity(0.75)],
+                           startPoint: UnitPoint(x: 0.5, y: 0.82), endPoint: .bottom)
+        }
+        .ignoresSafeArea()
+    }
+}
+
 /// Полоска прогресса: деревянный желоб и зеленая (или розовая) заливка с бликом.
 struct PixelBar: View {
     let value: Double
@@ -267,10 +281,15 @@ struct PixelSheet<Content: View>: View {
             }
             .padding(.top, 14)
             .padding(.bottom, 6)
+            // содержимое лежит на листе бумаги поверх луга
             content()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(PixelSlice(key: "ui_paper", inset: 4, scale: 3).shadow(color: .black.opacity(0.22), radius: 0, x: 0, y: 3))
+                .padding(.horizontal, 8)
+                .padding(.bottom, 6)
         }
         .foregroundColor(Theme.text)
-        .background(PixelTile(key: "ui_bg").ignoresSafeArea())
+        .background(Backdrop())
         .overlay(alignment: .bottom) { SheetToast() }
         .overlay { ShortageLayer() }
     }

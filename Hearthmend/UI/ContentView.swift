@@ -69,7 +69,7 @@ struct ContentView: View {
 
     private var board: some View {
         ZStack(alignment: .bottom) {
-            PixelTile(key: "ui_bg").ignoresSafeArea()
+            Backdrop()
             VStack(spacing: 8) {
                 TopIcons(openDaily: { withAnimation(.spring(response: 0.35)) { showDaily = true } },
                          openShop: { showShop = true },
@@ -80,7 +80,8 @@ struct ContentView: View {
                 SpriteView(scene: scene, options: [.allowsTransparency])
                     .aspectRatio(CGFloat(store.balance.cols) / CGFloat(store.balance.rows), contentMode: .fit)
                     .padding(10)
-                    .background(PixelSlice(key: "ui_panel", inset: 6, scale: 2))
+                    .background(PixelSlice(key: "ui_panel", inset: 6, scale: 2)
+                        .shadow(color: .black.opacity(0.25), radius: 0, x: 0, y: 4))
                     .padding(.horizontal, 6)
                 SelectedBar()
                     .padding(.bottom, 6)

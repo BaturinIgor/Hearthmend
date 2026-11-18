@@ -298,6 +298,28 @@ def place(canvas, im, x, y):
     canvas.alpha_composite(im, (int(x * CELL - im.width / 2), int(y * CELL - im.height)))
 
 
+def meadow(pack):
+    """Бесшовный луг 128x128 для фона экранов: трава пака, пучки и редкие цветы внутри клеток."""
+    rnd = random.Random(21)
+    grass = load(pack, "Tiles/Grass/Grass_1_Middle.png")
+    tufts = [tile(load(pack, "Tiles/Grass/Grass_Tiles_1.png"), c, 9) for c in (5, 6, 7)]
+    sheet = load(pack, "Outdoor decoration/Flowers.png")
+    flowers = [tile(sheet, c, r) for c in range(5) for r in (0, 2, 4, 5)]
+    n = 8
+    im = Image.new("RGBA", (n * CELL, n * CELL))
+    for y in range(n):
+        for x in range(n):
+            im.alpha_composite(grass, (x * CELL, y * CELL))
+            roll = rnd.random()
+            if roll < 0.16:
+                im.alpha_composite(rnd.choice(tufts), (x * CELL, y * CELL))
+            elif roll < 0.22:
+                im.alpha_composite(rnd.choice(flowers), (x * CELL, y * CELL))
+    # светлее и теплее: на таком лугу лучше читаются бумажные панели
+    haze = Image.new("RGBA", im.size, (214, 236, 160, 255))
+    return Image.blend(im, haze, 0.32)
+
+
 def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
@@ -310,6 +332,7 @@ def main():
     if missing:
         sys.exit("нет спрайтов для: " + ", ".join(missing))
     print(f"кадров животных: {pet_frames(pack, out)}")
+    meadow(pack).save(os.path.join(out, "bg_meadow.png"))
     images = {k: building(pack, k) for k in BUILDINGS}
     for k, im in images.items():
         im.save(os.path.join(out, k + ".png"))
