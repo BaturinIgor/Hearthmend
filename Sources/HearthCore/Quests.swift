@@ -101,6 +101,6 @@ extension Game {
         state.coins += reward.coins
         state.stars += reward.stars
         if reward.energy > 0 { state.energy += reward.energy }
-        if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
+        if let decor = reward.decor { giveDecor(decor) }
     }
 }

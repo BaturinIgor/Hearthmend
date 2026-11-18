@@ -111,7 +111,7 @@ extension Game {
         state.energy += reward.energy
         state.coins += reward.coins
         state.stars += reward.stars
-        if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
+        if let decor = reward.decor { giveDecor(decor) }
         if reward.oneTime { state.purchasedOneTime.append(productId) }
         switch reward.kind {
         case .plain:
@@ -182,7 +182,7 @@ extension Game {
             state.gems += r.gems
             state.energy += r.energy
             state.coins += r.coins
-            if let decor = r.decor { state.decorOwned[decor, default: 0] += 1 }
+            if let decor = r.decor { giveDecor(decor) }
             state.eventPassClaimed += 1
             rewards.append(r)
         }

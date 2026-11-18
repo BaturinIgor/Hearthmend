@@ -36,6 +36,7 @@ struct EventBanner: View {
                 .padding(.vertical, 6)
                 .background(PixelSlice(key: "ui_paper_pink", inset: 4))
                 .scaleEffect(store.game.eventNeedsChoice && pulse ? 1.03 : 1)
+                .overlay(alignment: .topTrailing) { if store.game.eventNeedsChoice { RedDot().offset(x: 3, y: -3) } }
             }
             .padding(.horizontal, 8)
             .onAppear {

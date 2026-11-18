@@ -24,7 +24,7 @@ extension Game {
         guard state.stamps >= total else { return StampReward(stamps: state.stamps, of: total) }
         let reward = StampReward(stamps: 0, of: total, completed: true, gems: balance.stampCardGems, decor: stampDecor)
         state.gems += reward.gems
-        if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
+        if let decor = reward.decor { giveDecor(decor) }
         state.stampCards += 1
         state.stamps = 0
         return reward

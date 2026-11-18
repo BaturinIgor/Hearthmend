@@ -132,7 +132,7 @@ extension Game {
             state.gems += reward.gems
             state.energy += reward.energy
             state.coins += reward.coins
-            if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
+            if let decor = reward.decor { giveDecor(decor) }
             state.eventClaimed += 1
             rewards.append(reward)
         }
@@ -161,6 +161,15 @@ extension Game {
     public static let mapSize = (width: 32.0, height: 134.0)
 
     @discardableResult
+    /// Новое украшение в запас деревни.
+    func giveDecor(_ key: String) {
+        state.decorOwned[key, default: 0] += 1
+        state.newDecor = true
+    }
+
+    /// Игрок открыл запас украшений: точка гаснет.
+    public func seeNewDecor() { state.newDecor = false }
+
     public func placeDecor(_ key: String, x: Double, y: Double) -> PlacedDecor? {
         guard (state.decorOwned[key] ?? 0) > 0 else { return nil }
         let placed = PlacedDecor(id: state.nextDecorId, key: key, x: clampX(x), y: clampY(y))

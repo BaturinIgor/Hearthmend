@@ -71,11 +71,13 @@ struct VillageView: View {
                         if !store.state.decorOwned.isEmpty || !store.state.placedDecor.isEmpty {
                             Button {
                                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { showDecor.toggle() }
+                                if showDecor { store.seeNewDecor() }
                             } label: {
                                 PixelIcon(key: "ui_plant", size: 28)
                                     .frame(width: 50, height: 50)
                                     .background(Circle().fill(showDecor ? Theme.accent : Theme.card))
                                     .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
+                                    .overlay(alignment: .topTrailing) { if store.state.newDecor { RedDot() } }
                             }
                         }
                     }

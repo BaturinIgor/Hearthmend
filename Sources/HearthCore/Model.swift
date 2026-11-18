@@ -185,6 +185,8 @@ public struct GameState: Codable, Equatable {
     public var eventChoice: String?
     /// Украшения: в запасе и на карте.
     public var decorOwned: [String: Int] = [:]
+    /// Пришло украшение, которое игрок еще не видел в деревне: красная точка.
+    public var newDecor = false
     public var placedDecor: [PlacedDecor] = []
     public var nextDecorId: Int = 1
     /// Шаг обучения (TutorialStep). Старые сохранения с отданными заказами обучение пропускают.
@@ -263,7 +265,7 @@ public struct GameState: Codable, Equatable {
         case bestTier, unlockedChains, mergesTotal, ordersTotal, completedTasks, level, pendingGenerators
         case jarEnergy, jarOpenedAt
         case vipUntil, purchasedOneTime, grantedTransactions, coinEnergyDay, coinEnergyBought, dailyClaimedAt, dailyStreak
-        case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, placedDecor, nextDecorId
+        case eventKey, eventTokens, eventClaimed, eventChoice, decorOwned, newDecor, placedDecor, nextDecorId
         case piggyGems, eventPassKey, eventPassClaimed, weekendBundleKey, boostOn, postcardIndex, postcardPieces, stamps, stampCards
         case tutorialStep, questDay, quests, questChestClaimed, discovered, collectionClaimed, collectionChains
         case mapRev, buildingSpots, storySeen
@@ -307,6 +309,7 @@ public struct GameState: Codable, Equatable {
         eventClaimed = try c.decodeIfPresent(Int.self, forKey: .eventClaimed) ?? 0
         eventChoice = try c.decodeIfPresent(String.self, forKey: .eventChoice)
         decorOwned = try c.decodeIfPresent([String: Int].self, forKey: .decorOwned) ?? [:]
+        newDecor = try c.decodeIfPresent(Bool.self, forKey: .newDecor) ?? false
         placedDecor = try c.decodeIfPresent([PlacedDecor].self, forKey: .placedDecor) ?? []
         nextDecorId = try c.decodeIfPresent(Int.self, forKey: .nextDecorId) ?? 1
         tutorialStep = try c.decodeIfPresent(Int.self, forKey: .tutorialStep)
