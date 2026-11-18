@@ -390,7 +390,7 @@ struct OfferCard: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 10) {
-                EmojiIcon(icon, size: 34)
+                EmojiIcon(icon, size: 44)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(Pixel.font(18))
                     Text(hint).font(Pixel.font(12)).opacity(0.75)
@@ -398,20 +398,41 @@ struct OfferCard: View {
                 }
                 Spacer()
             }
-            HStack(spacing: 12) {
-                if reward.gems > 0 { PixelText("💎 \(reward.gems)", size: 14) }
-                if reward.energy > 0 { PixelText("⚡️ \(reward.energy)", size: 14) }
-                if reward.coins > 0 { PixelText("🪙 \(reward.coins)", size: 14) }
-                if reward.stars > 0 { PixelText("⭐️ \(reward.stars)", size: 14) }
-                if let decor = reward.decor { DecorIcon(key: decor, size: 26) }
-                Spacer()
+            // что внутри: крупные плитки, а не строчка мелких значков
+            HStack(spacing: 8) {
+                if reward.gems > 0 { RewardChip(icon: "ui_gem", value: "\(reward.gems)") }
+                if reward.energy > 0 { RewardChip(icon: "ui_energy", value: "\(reward.energy)") }
+                if reward.coins > 0 { RewardChip(icon: "ui_coin", value: Fmt.compact(reward.coins)) }
+                if reward.stars > 0 { RewardChip(icon: "ui_star", value: "\(reward.stars)") }
+                if let decor = reward.decor { RewardChip(decor: decor) }
+                Spacer(minLength: 0)
             }
-            .font(Pixel.font(16))
             BuyButton(title: price, busy: busy, action: action)
         }
         .foregroundColor(Theme.text)
         .padding(14)
         .background(PixelSlice(key: card, inset: 4))
+    }
+}
+
+/// Плитка награды в карточке покупки: большая иконка и число под ней.
+struct RewardChip: View {
+    var icon: String?
+    var value: String?
+    var decor: String?
+
+    var body: some View {
+        VStack(spacing: 2) {
+            if let decor {
+                DecorIcon(key: decor, size: 30)
+            } else if let icon {
+                PixelIcon(key: icon, size: 26)
+            }
+            if let value { PixelText(value, size: 14) }
+        }
+        .frame(minWidth: 54, minHeight: 50)
+        .padding(.horizontal, 4)
+        .background(PixelSlice(key: "ui_paper", inset: 4, scale: 2))
     }
 }
 
