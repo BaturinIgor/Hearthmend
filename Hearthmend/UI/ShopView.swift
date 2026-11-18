@@ -34,6 +34,7 @@ struct ShopView: View {
         PixelSheet(L10n.t("shop.title")) {
             VStack(spacing: 8) {
                 wallet
+                    .padding(.top, 10)
                 tabs.padding(.horizontal, 14)
                 ScrollView {
                     VStack(spacing: 14) {
