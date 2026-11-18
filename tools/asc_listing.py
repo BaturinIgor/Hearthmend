@@ -35,7 +35,14 @@ def upsert(kind, existing, locale, attrs, parent_rel, parent_type, parent_id):
         print(f"{kind} {locale}: добавлено")
 
 
+EULA = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+
+
 def main():
+    # в приложении есть подписка: Apple требует ссылку на условия (EULA) в описании на каждом языке
+    missing = [l for l, t in LISTING.items() if EULA not in t["description"]]
+    if missing:
+        sys.exit(f"Нет ссылки на EULA в описании: {', '.join(missing)}")
     app = app_id()
 
     infos = get_all(f"/v1/apps/{app}/appInfos")
