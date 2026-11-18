@@ -368,5 +368,14 @@
   "adv.mosaic.shatter": "Break",
   "adv.mosaic.done": "Window done! Here comes a new one",
   "adv.mosaic.wrong": "This piece is a different color",
-  "adv.no_glass": "Out of glass: complete orders on the main board"
+  "adv.no_glass": "Out of glass: complete orders on the main board",
+  "adv.lanterns.title": "Lantern Night",
+  "adv.lanterns.how": "Lanterns come from orders. Hang one on any empty spot in the dark village. Tap two alike to merge them: the new lantern lights up where the second one hung and shines farther. Lit spots stay lit. The dark hides wishes, fireflies that bring lanterns, and chests. When the whole village is lit, a new night begins.",
+  "adv.lanterns.night": "Every fully lit village also brings a chest to your main board. The brightest lantern flies into the sky for bonus points.",
+  "adv.lanterns.hang": "Hang",
+  "adv.lanterns.new_night": "The village is lit! A new night falls",
+  "adv.lanterns.sky": "A lantern flew into the sky! +%d",
+  "adv.lanterns.fireflies": "Fireflies: +%d lanterns",
+  "adv.lanterns.pick": "Tap a lantern just like it to merge",
+  "adv.no_lanterns": "Out of lanterns: complete orders on the main board"
 }
