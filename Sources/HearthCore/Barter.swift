@@ -54,8 +54,8 @@ public enum Barter {
         "jack": "decor_stall_orange", "chloe": "decor_stall_orange",
     ]
     public static let tent = "decor_tent"
-    /// С какой суммы щедрости дарят палатку: из шести обменов хотя бы четыре щедрых.
-    public static let tentValue = 16
+    /// С какой суммы щедрости дарят палатку: пять щедрых обменов из шести и один средний.
+    public static let tentValue = 17
     /// Кристаллы в конце: по одному за каждое очко щедрости.
     public static func gems(value: Int) -> Int { value }
 }
@@ -156,7 +156,7 @@ extension Game {
             let last = step == Barter.steps - 1
             let gives = last ? (Barter.stallOf[friend] ?? "decor_stall_green") : Barter.goods[min(step, Barter.goods.count - 1)][level]
             return BarterOffer(friend: friend, needs: needs, level: level, gives: gives,
-                               coins: needs.value * 2, energy: level == 2 ? 10 : 0)
+                               coins: needs.value, energy: level == 2 ? 10 : 0)
         }
     }
 }
