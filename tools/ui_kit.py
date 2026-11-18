@@ -640,15 +640,15 @@ def wave():
 
 
 def fog_tile():
-    import random
-    rnd = random.Random(9)
-    im = Image.new("RGBA", (16, 16), (214, 222, 230, 255))
-    px = im.load()
-    for _ in range(14):
-        x, y = rnd.randrange(16), rnd.randrange(16)
-        px[x, y] = (236, 240, 246, 255) if rnd.random() < 0.6 else (196, 204, 216, 255)
-    for i in range(16):
-        px[i, 15] = (190, 198, 212, 255)
+    """Туман над клеткой острова: пухлое облачко с голубой тенью снизу."""
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    shade, body, light = (168, 186, 214, 255), (226, 234, 244, 255), (250, 252, 255, 255)
+    d.rounded_rectangle((0, 1, 15, 15), radius=4, fill=shade)
+    d.rounded_rectangle((0, 0, 15, 13), radius=4, fill=body)
+    for cx, cy, r in ((4, 5, 3), (9, 4, 4), (12, 8, 2)):
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=light)
+    d.line((3, 11, 12, 11), fill=(206, 216, 232, 255))
     return im
 
 

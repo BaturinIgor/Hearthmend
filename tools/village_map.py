@@ -320,6 +320,25 @@ def meadow(pack):
     return Image.blend(im, haze, 0.32)
 
 
+def sea(pack):
+    """Бесшовная вода 64x64 для острова: вода пака с редкими бликами и рябью."""
+    rnd = random.Random(5)
+    base = load(pack, "Tiles/Water/Water_Middle.png")
+    ripples = [load(pack, "Tiles/Water/Water_Middle_Anim_1.png").crop((16 * k, 0, 16 * k + 16, 16)) for k in (2, 3, 4)]
+    deco = [load(pack, "Tiles/Water/Water_Decoration.png").crop((16 * k, 0, 16 * k + 16, 16)) for k in range(3)]
+    n = 4
+    im = Image.new("RGBA", (n * CELL, n * CELL))
+    for y in range(n):
+        for x in range(n):
+            im.alpha_composite(base, (x * CELL, y * CELL))
+            roll = rnd.random()
+            if roll < 0.25:
+                im.alpha_composite(rnd.choice(ripples), (x * CELL, y * CELL))
+            elif roll < 0.45:
+                im.alpha_composite(rnd.choice(deco), (x * CELL, y * CELL))
+    return im
+
+
 def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
@@ -333,6 +352,7 @@ def main():
         sys.exit("нет спрайтов для: " + ", ".join(missing))
     print(f"кадров животных: {pet_frames(pack, out)}")
     meadow(pack).save(os.path.join(out, "bg_meadow.png"))
+    sea(pack).save(os.path.join(out, "bg_sea.png"))
     # бабочки над лугом: 8 расцветок, по два кадра (крылья раскрыты и сложены)
     flies = load(pack, "Animals/Butterfly/Butterfly.png")
     for row in range(8):

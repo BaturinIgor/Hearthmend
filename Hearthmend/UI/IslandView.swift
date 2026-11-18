@@ -51,7 +51,7 @@ struct IslandView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(8)
-        .background(PixelTile(key: "ui_water", scale: 3).clipShape(RoundedRectangle(cornerRadius: 8)))
+        .background(PixelTile(key: Sprites.image("bg_sea") != nil ? "bg_sea" : "ui_water", scale: 2).clipShape(RoundedRectangle(cornerRadius: 8)))
         .frame(maxHeight: .infinity)
     }
 
