@@ -368,5 +368,13 @@
   "adv.mosaic.shatter": "割る",
   "adv.mosaic.done": "窓が完成！次の窓だよ",
   "adv.mosaic.wrong": "このピースは色がちがうよ",
-  "adv.no_glass": "ガラスがない：メインボードで注文をこなそう"
+  "adv.no_glass": "ガラスがない：メインボードで注文をこなそう",
+  "adv.lanterns.title": "ランタンの夜",
+  "adv.lanterns.how": "ランタンは注文でもらえるよ。暗い村の空いているマスにつるそう。同じランタン2つをタップで合成、2つ目の場所で灯って、もっと遠くまで照らすよ。明るいのはランタンの光が届くところだけ。暗闇には願い事、ランタンをくれるホタル、宝箱がかくれているよ。村ぜんぶを一度に照らすと、新しい夜が来るよ。",
+  "adv.lanterns.night": "村をぜんぶ照らすたびに、メインボードに宝箱も届くよ。",
+  "adv.lanterns.hang": "つるす",
+  "adv.lanterns.new_night": "村が明るくなった！新しい夜が来たよ",
+  "adv.lanterns.fireflies": "ホタル：ランタン+%d",
+  "adv.lanterns.pick": "同じランタンをタップして合成しよう",
+  "adv.no_lanterns": "ランタンがない：メインボードで注文をこなそう"
 }

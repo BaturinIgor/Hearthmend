@@ -368,5 +368,13 @@
   "adv.mosaic.shatter": "Quebrar",
   "adv.mosaic.done": "Janela pronta! Aqui vem uma nova",
   "adv.mosaic.wrong": "Esta peça é de outra cor",
-  "adv.no_glass": "Sem vidro: complete pedidos no tabuleiro principal"
+  "adv.no_glass": "Sem vidro: complete pedidos no tabuleiro principal",
+  "adv.lanterns.title": "A Noite das Lanternas",
+  "adv.lanterns.how": "As lanternas vêm dos pedidos. Pendure-as em qualquer casa vazia da vila escura. Toque em duas iguais para combinar: a nova acende onde estava a segunda e ilumina mais longe. Só fica claro até onde a luz alcança. No escuro há desejos, vaga-lumes que dão lanternas e baús. Ilumine a vila inteira de uma vez e começa uma nova noite.",
+  "adv.lanterns.night": "Cada vila iluminada também traz um baú para o tabuleiro principal.",
+  "adv.lanterns.hang": "Pendurar",
+  "adv.lanterns.new_night": "A vila está iluminada! Chega uma nova noite",
+  "adv.lanterns.fireflies": "Vaga-lumes: +%d lanternas",
+  "adv.lanterns.pick": "Toque numa lanterna igual para combinar",
+  "adv.no_lanterns": "Sem lanternas: complete pedidos no tabuleiro principal"
 }

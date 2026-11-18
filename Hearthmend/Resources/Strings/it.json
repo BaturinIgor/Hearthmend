@@ -368,5 +368,13 @@
   "adv.mosaic.shatter": "Rompi",
   "adv.mosaic.done": "Finestra completata! Eccone una nuova",
   "adv.mosaic.wrong": "Questo pezzo è di un altro colore",
-  "adv.no_glass": "Vetro finito: completa ordini sul tabellone principale"
+  "adv.no_glass": "Vetro finito: completa ordini sul tabellone principale",
+  "adv.lanterns.title": "La Notte delle Lanterne",
+  "adv.lanterns.how": "Le lanterne arrivano dagli ordini. Appendile su qualsiasi casella vuota del villaggio al buio. Tocca due lanterne uguali per unirle: la nuova si accende dove stava la seconda e illumina più lontano. C'è luce solo fin dove arrivano le lanterne. Nel buio ci sono desideri, lucciole che danno lanterne e forzieri. Illumina tutto il villaggio insieme e arriva una nuova notte.",
+  "adv.lanterns.night": "Ogni villaggio illuminato porta anche un forziere sul tabellone principale.",
+  "adv.lanterns.hang": "Appendi",
+  "adv.lanterns.new_night": "Il villaggio è illuminato! Scende una nuova notte",
+  "adv.lanterns.fireflies": "Lucciole: +%d lanterne",
+  "adv.lanterns.pick": "Tocca una lanterna uguale per unirle",
+  "adv.no_lanterns": "Lanterne finite: completa ordini sul tabellone principale"
 }

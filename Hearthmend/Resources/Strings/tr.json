@@ -368,5 +368,13 @@
   "adv.mosaic.shatter": "Kır",
   "adv.mosaic.done": "Pencere bitti! İşte yenisi",
   "adv.mosaic.wrong": "Bu parça başka renkte",
-  "adv.no_glass": "Cam kalmadı: ana tahtada sipariş tamamla"
+  "adv.no_glass": "Cam kalmadı: ana tahtada sipariş tamamla",
+  "adv.lanterns.title": "Fener Gecesi",
+  "adv.lanterns.how": "Fenerler siparişlerden gelir. Karanlık köyde boş bir kareye as. İki aynı feneri birleştirmek için dokun: yeni fener ikincinin yerinde yanar ve daha uzağı aydınlatır. Sadece fenerlerin ışığının ulaştığı yer aydınlıktır. Karanlıkta dilekler, fener getiren ateşböcekleri ve sandıklar saklı. Tüm köyü aynı anda aydınlat, yeni bir gece başlasın.",
+  "adv.lanterns.night": "Tamamen aydınlanan her köy ana tahtana bir sandık da getirir.",
+  "adv.lanterns.hang": "As",
+  "adv.lanterns.new_night": "Köy aydınlandı! Yeni bir gece başlıyor",
+  "adv.lanterns.fireflies": "Ateşböcekleri: +%d fener",
+  "adv.lanterns.pick": "Birleştirmek için aynı fenere dokun",
+  "adv.no_lanterns": "Fener kalmadı: ana tahtada sipariş tamamla"
 }

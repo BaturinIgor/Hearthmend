@@ -26,11 +26,11 @@ struct AdventureIcon: View {
 enum AdventureArt {
     static func icon(_ kind: AdventureKind) -> String {
         switch kind {
-        case .depths: return "ui_pickaxe"
         case .island: return "ui_shell"
         case .greenhouse: return "ui_seeds"
         case .mosaic: return "ui_glass"
-        default: return "ui_gift"
+        case .lanterns: return "ui_lantern"
+        case .depths: return "ui_pickaxe"
         }
     }
 
@@ -40,6 +40,7 @@ enum AdventureArt {
         case .island: return "🐚"
         case .greenhouse: return "🌱"
         case .mosaic: return "🔷"
+        case .lanterns: return "🏮"
         default: return "⛏️"
         }
     }
@@ -61,6 +62,7 @@ struct AdventureSheet: View {
         case .island?: IslandView()
         case .greenhouse?: GreenhouseView()
         case .mosaic?: MosaicView()
+        case .lanterns?: LanternsView()
         default: PixelSheet(L10n.t("adv.title")) { Spacer() }
         }
     }

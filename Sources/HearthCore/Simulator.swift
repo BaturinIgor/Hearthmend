@@ -85,6 +85,8 @@ public struct SimReport: CustomStringConvertible {
     public var mosaicWindows = 0
     public var mosaicWasted = 0
     public var mosaicShattered = 0
+    public var lanternNights = 0
+    public var lanternFireflies = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -456,6 +458,11 @@ public enum Simulator {
             lastState = game.adventure
             return
         }
+        if a.kind == .lanterns {
+            playLanterns(game, report: &report)
+            lastState = game.adventure
+            return
+        }
         guard a.kind == .depths else { return }
         for _ in 0..<3000 {
             if mergeFinds(game) { continue }
@@ -521,6 +528,47 @@ public enum Simulator {
             }
             if case .planted = game.plantSeed() { continue }
             return
+        }
+    }
+
+    /// Ночь фонарей: сливает пару, после которой светлых клеток станет больше всего; иначе вешает
+    /// фонарик там, где вокруг темнее всего, чтобы потом слить его с соседом.
+    private static func playLanterns(_ game: Game, report: inout SimReport) {
+        func record(_ r: Game.LanternLight?) {
+            guard let r else { return }
+            if r.nightDone {
+                report.lanternNights += 1
+                report.adventureValue += prizeValue(Lanterns.nightPrize)
+            }
+            report.lanternFireflies += r.fireflies.count
+            // ящики из темноты идут в r.prizes первыми
+            for prize in r.prizes.prefix(r.chests.count) { report.adventureValue += prizeValue(prize) }
+        }
+        for _ in 0..<3000 {
+            guard let s = game.adventure?.lanterns else { return }
+            let now = s.shining.count
+            var best: (from: Int, to: Int, score: Int)?
+            var byTier: [Int: [Int]] = [:]
+            for i in s.cells.indices { if let t = s.cells[i].lantern { byTier[t, default: []].append(i) } }
+            for t in byTier.keys.sorted() where t < Lanterns.maxTier {
+                let list = byTier[t] ?? []
+                guard list.count >= 2 else { continue }
+                for a in list {
+                    for b in list where b != a {
+                        var next = s
+                        next.cells[a].lantern = nil
+                        next.cells[b].lantern = t + 1
+                        let score = next.shining.count - now
+                        if best == nil || score > best!.score { best = (a, b, score) }
+                    }
+                }
+            }
+            if let best, best.score >= -1 {
+                record(game.moveLantern(from: best.from, to: best.to))
+                continue
+            }
+            guard (game.adventure?.moves ?? 0) > 0, let spot = game.bestLanternSpot, let r = game.hangLantern(spot) else { return }
+            record(r)
         }
     }
 

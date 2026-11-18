@@ -774,6 +774,48 @@ final class GameStore: ObservableObject {
         commit()
     }
 
+    // MARK: - Ночь фонарей
+
+    @discardableResult
+    func hangLantern(_ index: Int) -> Game.LanternLight? {
+        guard game.canHangLantern(index) else { return nil }
+        guard let r = game.hangLantern(index) else {
+            Audio.shared.play(.nope)
+            show(L10n.t("adv.no_lanterns"))
+            return nil
+        }
+        Haptics.light()
+        Audio.shared.play(.spawn)
+        lanternToast(r)
+        commit()
+        return r
+    }
+
+    @discardableResult
+    func moveLantern(from: Int, to: Int) -> Game.LanternLight? {
+        guard let r = game.moveLantern(from: from, to: to) else {
+            Audio.shared.play(.nope)
+            return nil
+        }
+        Haptics.success()
+        Audio.shared.play(r.nightDone || !r.wishes.isEmpty ? .sparkle : .merge)
+        lanternToast(r)
+        commit()
+        return r
+    }
+
+    private func lanternToast(_ r: Game.LanternLight) {
+        var parts: [String] = []
+        if r.nightDone { parts.append(L10n.t("adv.lanterns.new_night")) }
+        if r.moves > 0 { parts.append(String(format: L10n.t("adv.lanterns.fireflies"), r.moves)) }
+        if !r.prizes.isEmpty {
+            parts.append(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))
+            onBoardChange?()
+        }
+        if parts.isEmpty, r.points > 0 { parts.append(String(format: L10n.t("adv.points"), r.points)) }
+        if !parts.isEmpty { show(parts.joined(separator: " · ")) }
+    }
+
     /// Награда события одной строкой: ящики и ресурсы значками, генератор, украшение.
     static func describe(_ prize: AdventurePrize) -> String {
         switch prize {
