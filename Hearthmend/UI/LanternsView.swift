@@ -82,6 +82,8 @@ struct LanternsView: View {
         let c = s.cells[i]
         let mergeable = selectedTier != nil && selected != i && c.lantern == selectedTier && (selectedTier ?? 9) < Lanterns.maxTier
         return ZStack {
+            // темная земля под скругленными клетками: в углах не просвечивает бумага
+            Color(red: 0.2, green: 0.32, blue: 0.16)
             PixelTile(key: (i / cols + i % cols) % 2 == 0 ? "ui_cell_a" : "ui_cell_b", scale: side / 16)
             // ночь: где свет фонарей, там светло; где уже бывал свет - сумерки
             Color(red: 0.06, green: 0.07, blue: 0.2).opacity(shining.contains(i) ? 0 : c.lit ? 0.55 : 0.85)

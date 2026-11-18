@@ -173,21 +173,26 @@ def button(base, light, dark):
 
 
 def cell(base, light, dark, seed):
-    """Клетка поля 16x16: трава с крапинками, светлый верх-лево и темный низ-право (объем)."""
+    """Клетка поля 16x16: лунка со скругленными углами. Светлый край сверху, тень снизу,
+    между клетками видна деревянная подложка поля."""
     import random
     rnd = random.Random(seed)
-    im = Image.new("RGBA", (16, 16), base)
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    edge = tuple(max(0, c - 34) for c in dark[:3]) + (255,)
+    d.rounded_rectangle((0, 0, 15, 15), radius=3, fill=edge)
+    d.rounded_rectangle((1, 1, 14, 14), radius=2, fill=base)
     px = im.load()
-    for _ in range(9):
-        x, y = rnd.randrange(2, 14), rnd.randrange(2, 14)
+    for x in range(3, 13):
+        px[x, 1] = light
+    for y in range(3, 12):
+        px[1, y] = light
+    for x in range(2, 14):
+        px[x, 13] = dark
+        px[x, 14] = dark
+    for _ in range(4):
+        x, y = rnd.randrange(4, 12), rnd.randrange(4, 11)
         px[x, y] = light if rnd.random() < 0.5 else dark
-        if rnd.random() < 0.5 and y > 2:
-            px[x, y - 1] = light
-    for i in range(16):
-        px[i, 0] = light
-        px[0, i] = light
-        px[i, 15] = dark
-        px[15, i] = dark
     return im
 
 
@@ -635,15 +640,15 @@ def wave():
 
 
 def fog_tile():
-    import random
-    rnd = random.Random(9)
-    im = Image.new("RGBA", (16, 16), (214, 222, 230, 255))
-    px = im.load()
-    for _ in range(14):
-        x, y = rnd.randrange(16), rnd.randrange(16)
-        px[x, y] = (236, 240, 246, 255) if rnd.random() < 0.6 else (196, 204, 216, 255)
-    for i in range(16):
-        px[i, 15] = (190, 198, 212, 255)
+    """Туман над клеткой острова: пухлое облачко с голубой тенью снизу."""
+    im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    shade, body, light = (168, 186, 214, 255), (226, 234, 244, 255), (250, 252, 255, 255)
+    d.rounded_rectangle((0, 1, 15, 15), radius=4, fill=shade)
+    d.rounded_rectangle((0, 0, 15, 13), radius=4, fill=body)
+    for cx, cy, r in ((4, 5, 3), (9, 4, 4), (12, 8, 2)):
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=light)
+    d.line((3, 11, 12, 11), fill=(206, 216, 232, 255))
     return im
 
 

@@ -87,7 +87,7 @@ final class BoardScene: SKScene {
                 let tile: SKNode
                 if let texture = Sprites.texture((r + c) % 2 == 0 ? "ui_cell_a" : "ui_cell_b") {
                     // пиксельные клетки травы из tools/ui_kit.py
-                    tile = SKSpriteNode(texture: texture, size: CGSize(width: cellSize - 1, height: cellSize - 1))
+                    tile = SKSpriteNode(texture: texture, size: CGSize(width: cellSize, height: cellSize))
                 } else {
                     let shape = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
                     shape.fillColor = (r + c) % 2 == 0 ? Palette.tileA : Palette.tileB
@@ -192,21 +192,19 @@ final class BoardScene: SKScene {
                 glow.strokeColor = .clear
                 node.addChild(glow)
             }
-            node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.62))
+            node.addChild(shadow(width: 0.5))
+            node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.7))
             node.addChild(badge("\(item.tier + 1)"))
         case .generator(let gen):
-            if let crate = Sprites.texture("ui_crate") {
-                let side = Pixel.crisp(cellSize * 0.9, source: 16)
-                node.addChild(SKSpriteNode(texture: crate, size: CGSize(width: side, height: side)))
-            } else {
-                let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
-                base.fillColor = Palette.generator
-                base.strokeColor = Palette.generatorStroke
-                base.lineWidth = 2
-                node.addChild(base)
-            }
+            // источник стоит на теплом пятне света, а не в ящике
+            let glow = SKShapeNode(circleOfRadius: cellSize * 0.44)
+            glow.fillColor = UIColor(red: 1, green: 0.93, blue: 0.62, alpha: 0.55)
+            glow.strokeColor = UIColor(red: 1, green: 0.98, blue: 0.85, alpha: 0.8)
+            glow.lineWidth = 1.5
+            node.addChild(glow)
+            node.addChild(shadow(width: 0.6))
             let def = catalog.chain(gen.chain)
-            node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.6))
+            node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.68))
             node.addChild(stars(gen.tier + 1))
         case .debris(let layers):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
@@ -315,6 +313,16 @@ final class BoardScene: SKScene {
         let k = side / longest
         sprite.size = CGSize(width: texture.size().width * k, height: texture.size().height * k)
         return sprite
+    }
+
+    /// Мягкая тень под предметом: он стоит на клетке, а не нарисован на ней.
+    private func shadow(width: CGFloat) -> SKNode {
+        let e = SKShapeNode(ellipseOf: CGSize(width: cellSize * width, height: cellSize * 0.16))
+        e.fillColor = UIColor(red: 0.12, green: 0.2, blue: 0.08, alpha: 0.28)
+        e.strokeColor = .clear
+        e.position = CGPoint(x: 0, y: -cellSize * 0.3)
+        e.zPosition = -0.5
+        return e
     }
 
     private func emoji(_ text: String, scale: CGFloat) -> SKLabelNode {
