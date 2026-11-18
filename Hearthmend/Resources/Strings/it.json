@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Raccogli",
   "adv.greenhouse.water": "Annaffia",
   "adv.greenhouse.plant": "Pianta",
-  "adv.no_seeds": "Semi finiti: completa ordini sul tabellone principale"
+  "adv.no_seeds": "Semi finiti: completa ordini sul tabellone principale",
+  "adv.mosaic.title": "La Vetrata",
+  "adv.mosaic.how": "Il vetro arriva dagli ordini. Taglia pezzi sul banco: due uguali diventano uno più grande che copre molte più caselle. Metti un pezzo su un frammento del suo colore per riempire le caselle vuote più vicine; il vetro in più va perso. Un frammento completo dà un bonus, una finestra completa un grande bonus e una finestra nuova.",
+  "adv.mosaic.window": "Ogni finestra completata porta anche un forziere sul tabellone principale.",
+  "adv.mosaic.full": "Il banco è pieno: unisci i pezzi o mettili nella finestra",
+  "adv.mosaic.cut": "Taglia",
+  "adv.mosaic.shatter": "Rompi",
+  "adv.mosaic.done": "Finestra completata! Eccone una nuova",
+  "adv.mosaic.wrong": "Questo pezzo è di un altro colore",
+  "adv.no_glass": "Vetro finito: completa ordini sul tabellone principale"
 }

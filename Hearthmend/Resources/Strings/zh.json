@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "收获",
   "adv.greenhouse.water": "浇水",
   "adv.greenhouse.plant": "种植",
-  "adv.no_seeds": "种子用完了：去主棋盘完成订单"
+  "adv.no_seeds": "种子用完了：去主棋盘完成订单",
+  "adv.mosaic.title": "彩色玻璃窗",
+  "adv.mosaic.how": "玻璃来自订单。在工作台上切出玻璃片：两片相同的合成一片更大的，能填满多得多的格子。把玻璃片放到同色的碎块上，会填满最近的空格，多余的玻璃会浪费。完成一个碎块有奖励，完成整扇窗有大奖励和一扇新窗。",
+  "adv.mosaic.window": "每完成一扇窗，还会给主棋盘送一个宝箱。",
+  "adv.mosaic.full": "工作台满了：合成玻璃片或放进窗里",
+  "adv.mosaic.cut": "切割",
+  "adv.mosaic.shatter": "打碎",
+  "adv.mosaic.done": "窗户完成！新的一扇来了",
+  "adv.mosaic.wrong": "这片玻璃颜色不对",
+  "adv.no_glass": "玻璃用完了：去主棋盘完成订单"
 }

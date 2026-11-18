@@ -8,7 +8,7 @@ public enum AdventureKind: String, Codable, CaseIterable {
     case depths, greenhouse, island, mosaic, lanterns
 
     /// Какие события уже готовы и входят в круг.
-    public static let rotation: [AdventureKind] = [.depths, .island, .greenhouse]
+    public static let rotation: [AdventureKind] = [.depths, .island, .greenhouse, .mosaic]
 }
 
 /// Награда ступени события.
@@ -34,6 +34,7 @@ public struct AdventureState: Codable, Equatable {
     public var depths: DepthsState?
     public var island: IslandState?
     public var greenhouse: GreenhouseState?
+    public var mosaic: MosaicState?
 
     public init(key: String, kind: AdventureKind, moves: Int) {
         self.key = key
@@ -76,6 +77,7 @@ extension Game {
             case .depths: a.depths = DepthsState.generate(seed: Self.seed(of: s.key))
             case .island: a.island = IslandState.generate(seed: Self.seed(of: s.key))
             case .greenhouse: a.greenhouse = GreenhouseState.make(now: now())
+            case .mosaic: a.mosaic = MosaicState.generate(seed: Self.seed(of: s.key))
             default: break
             }
             state.adventure = a
@@ -128,6 +130,7 @@ extension Game {
         case .depths: return Depths.track
         case .island: return Island.track
         case .greenhouse: return Greenhouse.track
+        case .mosaic: return Mosaic.track
         default: return []
         }
     }

@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Récolter",
   "adv.greenhouse.water": "Arroser",
   "adv.greenhouse.plant": "Planter",
-  "adv.no_seeds": "Plus de graines : remplis des commandes sur le plateau principal"
+  "adv.no_seeds": "Plus de graines : remplis des commandes sur le plateau principal",
+  "adv.mosaic.title": "Le Vitrail",
+  "adv.mosaic.how": "Le verre vient des commandes. Taille des morceaux sur l'établi : deux identiques fusionnent en un plus grand qui couvre bien plus de cases. Pose un morceau sur un éclat de sa couleur pour remplir les cases vides les plus proches ; le verre en trop est perdu. Un éclat terminé donne un bonus, une fenêtre terminée un gros bonus et une nouvelle fenêtre.",
+  "adv.mosaic.window": "Chaque fenêtre terminée apporte aussi un coffre sur ton plateau principal.",
+  "adv.mosaic.full": "L'établi est plein : fusionne des morceaux ou pose-les dans la fenêtre",
+  "adv.mosaic.cut": "Tailler",
+  "adv.mosaic.shatter": "Casser",
+  "adv.mosaic.done": "Fenêtre terminée ! En voici une nouvelle",
+  "adv.mosaic.wrong": "Ce morceau est d'une autre couleur",
+  "adv.no_glass": "Plus de verre : remplis des commandes sur le plateau principal"
 }

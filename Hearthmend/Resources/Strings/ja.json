@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "収穫",
   "adv.greenhouse.water": "水やり",
   "adv.greenhouse.plant": "植える",
-  "adv.no_seeds": "タネがない：メインボードで注文をこなそう"
+  "adv.no_seeds": "タネがない：メインボードで注文をこなそう",
+  "adv.mosaic.title": "ステンドグラス",
+  "adv.mosaic.how": "ガラスは注文でもらえるよ。作業台にカットしよう。同じ物2つで大きな1つに合成、ずっと多くのマスを埋めるよ。同じ色のかけらに置くと、近くの空きマスを埋めるよ。余ったガラスはなくなるよ。かけらが完成するとボーナス、窓が完成すると大きなボーナスと新しい窓！",
+  "adv.mosaic.window": "窓が完成するたびに、メインボードに宝箱も届くよ。",
+  "adv.mosaic.full": "作業台がいっぱい：合成するか窓に置こう",
+  "adv.mosaic.cut": "カット",
+  "adv.mosaic.shatter": "割る",
+  "adv.mosaic.done": "窓が完成！次の窓だよ",
+  "adv.mosaic.wrong": "このピースは色がちがうよ",
+  "adv.no_glass": "ガラスがない：メインボードで注文をこなそう"
 }

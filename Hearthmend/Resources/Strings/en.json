@@ -359,5 +359,14 @@
   "adv.greenhouse.harvest": "Harvest",
   "adv.greenhouse.water": "Water",
   "adv.greenhouse.plant": "Plant",
-  "adv.no_seeds": "Out of seeds: complete orders on the main board"
+  "adv.no_seeds": "Out of seeds: complete orders on the main board",
+  "adv.mosaic.title": "Stained Glass",
+  "adv.mosaic.how": "Glass comes from orders. Cut a piece onto the workbench: two alike merge into a bigger one that covers far more cells. Drop a piece on a shard of its color to fill the nearest empty cells; extra glass is lost. A finished shard gives a bonus, a finished window gives a big one and a new window.",
+  "adv.mosaic.window": "Every finished window also brings a chest to your main board.",
+  "adv.mosaic.full": "The workbench is full: merge pieces or set them in the window",
+  "adv.mosaic.cut": "Cut",
+  "adv.mosaic.shatter": "Break",
+  "adv.mosaic.done": "Window done! Here comes a new one",
+  "adv.mosaic.wrong": "This piece is a different color",
+  "adv.no_glass": "Out of glass: complete orders on the main board"
 }

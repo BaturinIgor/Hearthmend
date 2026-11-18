@@ -29,6 +29,7 @@ enum AdventureArt {
         case .depths: return "ui_pickaxe"
         case .island: return "ui_shell"
         case .greenhouse: return "ui_seeds"
+        case .mosaic: return "ui_glass"
         default: return "ui_gift"
         }
     }
@@ -38,6 +39,7 @@ enum AdventureArt {
         switch kind {
         case .island: return "🐚"
         case .greenhouse: return "🌱"
+        case .mosaic: return "🔷"
         default: return "⛏️"
         }
     }
@@ -58,6 +60,7 @@ struct AdventureSheet: View {
         case .depths?: DepthsView()
         case .island?: IslandView()
         case .greenhouse?: GreenhouseView()
+        case .mosaic?: MosaicView()
         default: PixelSheet(L10n.t("adv.title")) { Spacer() }
         }
     }
