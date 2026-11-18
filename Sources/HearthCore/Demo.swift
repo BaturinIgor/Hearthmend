@@ -91,6 +91,17 @@ extension Game {
         return game
     }
 
+    /// Часы демо для кадров события: первый понедельник после 16.01.2027, когда идет это событие.
+    public static func demoClock(adventure kind: AdventureKind, start: Date = Date()) -> () -> Date {
+        var date = Date(timeIntervalSince1970: 1_800_100_800 + 2 * 86_400) // понедельник 18.01.2027, 12:00 UTC
+        let probe = Game(seed: 1, now: { date })
+        for _ in 0..<AdventureKind.rotation.count where probe.adventureSchedule(at: date)?.kind != kind {
+            date = date.addingTimeInterval(7 * 86_400)
+        }
+        let shift = date.timeIntervalSince(start)
+        return { Date().addingTimeInterval(shift) }
+    }
+
     /// Часы демо: идут как обычно, но сдвинуты на субботу 16.01.2027, 12:00 UTC,
     /// чтобы на скриншотах всегда шел праздник выходных.
     public static func demoClock(start: Date = Date()) -> () -> Date {

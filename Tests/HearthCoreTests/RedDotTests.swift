@@ -34,3 +34,19 @@ final class RedDotTests: XCTestCase {
         XCTAssertFalse(try JSONDecoder().decode(GameState.self, from: data).newDecor)
     }
 }
+
+/// Кадры событий для проверки интерфейса: демо-часы попадают в нужное событие, бот делает ходы.
+final class AdventureDemoTests: XCTestCase {
+    func testDemoClockLandsOnEveryEvent() {
+        for kind in AdventureKind.rotation {
+            let game = Game.demo(now: Game.demoClock(adventure: kind))
+            Simulator.demoAdventure(game)
+            XCTAssertEqual(game.adventure?.kind, kind)
+            XCTAssertEqual(game.adventure?.moves, 12, "\(kind)")
+            let a = game.adventure!
+            let dug = a.depths.map { $0 != DepthsState.generate(seed: Game.seed(of: a.key)) } ?? false
+            let touched = a.points > 0 || dug || a.greenhouse?.beds.contains { $0 != nil } == true
+            XCTAssertTrue(touched, "\(kind): на экране есть ходы бота")
+        }
+    }
+}

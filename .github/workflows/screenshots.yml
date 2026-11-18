@@ -14,6 +14,10 @@ on:
         description: "Только кадры для проверки интерфейса (ru и en), без App Store"
         type: boolean
         default: false
+      only:
+        description: "Вместе с qa: снять только эти кадры (через пробел), на ru и en"
+        type: string
+        default: ""
   pull_request:
     types: [labeled, synchronize]
 
@@ -91,6 +95,15 @@ jobs:
           # прогрев: первый запуск дольше
           shoot en /tmp/warmup.png -shot board
           sleep 20
+          if [ "${{ inputs.qa }}" = "true" ] && [ -n "${{ inputs.only }}" ]; then
+            mkdir -p shots/qa
+            for lang in ru en; do
+              for s in ${{ inputs.only }}; do
+                shoot $lang shots/qa/${lang}_$s.png -shot $s
+              done
+            done
+            exit 0
+          fi
           if [ "${{ inputs.qa }}" = "true" ]; then
             mkdir -p shots/qa
             for lang in ru en ja; do
@@ -100,6 +113,9 @@ jobs:
               shoot $lang shots/qa/${lang}_qa_village.png -village -shot qa_village
               shoot $lang shots/qa/${lang}_qa_far.png -village -shot qa_far
               shoot $lang shots/qa/${lang}_qa_shop.png -shop -shot shop
+              for k in depths island greenhouse mosaic lanterns; do
+                shoot $lang shots/qa/${lang}_qa_adv_$k.png -shot qa_adv_$k
+              done
             done
             exit 0
           fi
