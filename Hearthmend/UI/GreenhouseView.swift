@@ -17,8 +17,8 @@ struct GreenhouseView: View {
             VStack(spacing: 8) {
                 AdventureHeader(movesIcon: "ui_seeds", help: "adv.greenhouse.how", showHelp: $showHelp)
                 AdventureTrackBar(icon: "ui_seeds") { showTrack = true }
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    beds(now: context.date)
+                TimelineView(.periodic(from: .now, by: 1)) { _ in
+                    beds(now: store.game.now())
                 }
                 controls
             }
@@ -160,16 +160,16 @@ struct GreenhouseView: View {
     }
 
     private var waterButton: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
+        TimelineView(.periodic(from: .now, by: 1)) { _ in
             let g = store.state.adventure?.greenhouse
-            let ready = (g.map { context.date >= $0.waterAt } ?? false)
+            let ready = (g.map { store.game.now() >= $0.waterAt } ?? false)
             Button { withAnimation { store.water() } } label: {
                 HStack(spacing: 4) {
                     PixelIcon(key: "ui_can", size: 20)
                     if ready {
                         PixelText(L10n.t("adv.greenhouse.water"), size: 14)
                     } else if let g = g {
-                        Text(Self.left(g.waterAt.timeIntervalSince(context.date))).font(Pixel.digits(13))
+                        Text(Self.left(g.waterAt.timeIntervalSince(store.game.now()))).font(Pixel.digits(13))
                     }
                 }
             }
