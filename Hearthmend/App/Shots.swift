@@ -24,6 +24,11 @@ enum Shot {
         }
     }
     static var hasCaption: Bool { name != nil && name != "shop" && !isQA }
+    /// Кадр большого события: -shot qa_adv_<depths|island|greenhouse|mosaic|lanterns>.
+    static var adventure: AdventureKind? {
+        guard let n = name, n.hasPrefix("qa_adv_") else { return nil }
+        return AdventureKind(rawValue: String(n.dropFirst("qa_adv_".count)))
+    }
     /// Кадры для проверки интерфейса (не для App Store): -shot qa_<экран>.
     static var isQA: Bool { name?.hasPrefix("qa_") == true }
 }
@@ -47,6 +52,8 @@ struct QAScreen: View {
         case "qa_jar": JarSheet()
         case "qa_story":
             ZStack { ContentView(); StoryView(scene: "mine.intro") {} }
+        case _ where Shot.adventure != nil:
+            AdventureSheet()
         default:
             ContentView()
                 .onAppear {

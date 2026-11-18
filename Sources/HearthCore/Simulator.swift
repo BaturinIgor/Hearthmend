@@ -464,13 +464,7 @@ public enum Simulator {
             return
         }
         guard a.kind == .depths else { return }
-        for _ in 0..<3000 {
-            if mergeFinds(game) { continue }
-            if deliverFinds(game, all: false) { continue }
-            if collectWaiting(game) { continue }
-            guard (game.adventure?.moves ?? 0) > 0, let target = digTarget(game) else { break }
-            _ = game.dig(target)
-        }
+        playDepths(game)
         // в последний день сдает все, что осталось
         if let ends = game.adventureEndsAt, ends.timeIntervalSince(game.now()) < 9 * 3600 {
             while deliverFinds(game, all: true) {}
@@ -529,6 +523,32 @@ public enum Simulator {
             if case .planted = game.plantSeed() { continue }
             return
         }
+    }
+
+    private static func playDepths(_ game: Game) {
+        for _ in 0..<3000 {
+            if mergeFinds(game) { continue }
+            if deliverFinds(game, all: false) { continue }
+            if collectWaiting(game) { continue }
+            guard (game.adventure?.moves ?? 0) > 0, let target = digTarget(game) else { break }
+            _ = game.dig(target)
+        }
+    }
+
+    /// Кадры для проверки интерфейса: бот делает несколько ходов в текущем событии,
+    /// чтобы на экране было что посмотреть, и оставляет запас ходов.
+    public static func demoAdventure(_ game: Game, moves: Int = 24, left: Int = 12) {
+        guard let a = game.adventure else { return }
+        game.state.adventure?.moves = moves
+        var report = SimReport()
+        switch a.kind {
+        case .depths: playDepths(game)
+        case .island: playIsland(game, report: &report)
+        case .greenhouse: playGreenhouse(game, report: &report)
+        case .mosaic: playMosaic(game, report: &report)
+        case .lanterns: playLanterns(game, report: &report)
+        }
+        game.state.adventure?.moves = left
     }
 
     /// Ночь фонарей: сливает пару, после которой светлых клеток станет больше всего; иначе вешает

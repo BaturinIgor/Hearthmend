@@ -100,6 +100,9 @@ jobs:
               shoot $lang shots/qa/${lang}_qa_village.png -village -shot qa_village
               shoot $lang shots/qa/${lang}_qa_far.png -village -shot qa_far
               shoot $lang shots/qa/${lang}_qa_shop.png -shop -shot shop
+              for k in depths island greenhouse mosaic lanterns; do
+                shoot $lang shots/qa/${lang}_qa_adv_$k.png -shot qa_adv_$k
+              done
             done
             exit 0
           fi
