@@ -82,6 +82,14 @@ final class BoardScene: SKScene {
             contentNodes.removeAll()
             drawn.removeAll()
             tiles = []
+            // земля под клетками: в скругленных углах видна темная почва, а не бумага панели
+            let soil = SKShapeNode(rectOf: CGSize(width: cellSize * CGFloat(cols), height: cellSize * CGFloat(rows)),
+                                   cornerRadius: cellSize * 0.12)
+            soil.fillColor = UIColor(red: 0.34, green: 0.24, blue: 0.15, alpha: 1)
+            soil.strokeColor = .clear
+            soil.position = CGPoint(x: origin.x + cellSize * CGFloat(cols) / 2, y: origin.y + cellSize * CGFloat(rows) / 2)
+            soil.zPosition = -1
+            boardNode.addChild(soil)
             for i in 0..<(cols * rows) {
                 let r = i / cols, c = i % cols
                 let tile: SKNode
