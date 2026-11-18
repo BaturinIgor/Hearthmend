@@ -17,7 +17,8 @@ LISTING = json.load(open(os.path.join(HERE, "..", "docs", "listing", "listing.js
 NAME = "Hearthmend: Merge Village"
 PRIVACY = "https://baturinigor.github.io/hearthmend-legal/privacy.html"
 SUPPORT = "https://baturinigor.github.io/hearthmend-legal/support.html"
-EDITABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}
+EDITABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY",
+            "UNRESOLVED_ISSUES"}
 
 
 def upsert(kind, existing, locale, attrs, parent_rel, parent_type, parent_id):
@@ -57,19 +58,21 @@ def main():
                    "appInfo", "appInfos", info["id"])
 
     versions = get_all(f"/v1/apps/{app}/appStoreVersions?filter[platform]=IOS")
-    version = next((v for v in versions if v["attributes"].get("appStoreState") in EDITABLE), None)
-    if not version:
+    for v in versions:
+        print("Версия", v["attributes"].get("versionString"), v["attributes"].get("appStoreState"))
+    # "Что нового" Apple принимает только когда в магазине уже есть вышедшая версия
+    released = any(v["attributes"].get("appStoreState") in live for v in versions)
+    editable = [v for v in versions if v["attributes"].get("appStoreState") in EDITABLE]
+    if not editable:
         print("::warning::Нет версии в подготовке, описание не меняю")
-    else:
-        print("Версия", version["attributes"].get("versionString"))
+    for version in editable:
+        print("Обновляю версию", version["attributes"].get("versionString"))
         existing = {l["attributes"]["locale"]: l for l in
                     get_all(f"/v1/appStoreVersions/{version['id']}/appStoreVersionLocalizations")}
-        first = version["attributes"].get("versionString") == "1.0"
         for locale, t in LISTING.items():
             attrs = {"description": t["description"], "keywords": t["keywords"], "promotionalText": t["promo"],
                      "supportUrl": SUPPORT}
-            # "Что нового" Apple принимает только у обновлений, не у первой версии
-            if not first and t.get("whatsNew"):
+            if released and t.get("whatsNew"):
                 attrs["whatsNew"] = t["whatsNew"]
             upsert("appStoreVersionLocalizations", existing, locale, attrs,
                    "appStoreVersion", "appStoreVersions", version["id"])
