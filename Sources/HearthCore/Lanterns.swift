@@ -87,18 +87,18 @@ public enum Lanterns {
     public static func radius(_ tier: Int) -> Int { min(max(0, tier), maxTier) }
 
     public static let track: [AdventureMilestone] = [
-        AdventureMilestone(points: 30, prize: .chest(Chest(kind: .energy, level: 1))),
-        AdventureMilestone(points: 80, prize: .chest(Chest(kind: .coins, level: 2))),
-        AdventureMilestone(points: 150, prize: .chest(Chest(kind: .items, level: 0))),
-        AdventureMilestone(points: 240, prize: .chest(Chest(kind: .energy, level: 2))),
-        AdventureMilestone(points: 350, prize: .chest(Chest(kind: .gems, level: 1))),
-        AdventureMilestone(points: 480, prize: .chest(Chest(kind: .items, level: 1))),
-        AdventureMilestone(points: 640, prize: .chest(Chest(kind: .energy, level: 3))),
-        AdventureMilestone(points: 820, prize: .chest(Chest(kind: .coins, level: 4))),
-        AdventureMilestone(points: 1020, prize: .generator("apiary")),
-        AdventureMilestone(points: 1260, prize: .chest(Chest(kind: .gems, level: 2))),
-        AdventureMilestone(points: 1540, prize: .chest(Chest(kind: .energy, level: 4))),
-        AdventureMilestone(points: 1860, prize: .decor("decor_lamp_hanging")),
+        AdventureMilestone(points: 36, prize: .chest(Chest(kind: .energy, level: 1))),
+        AdventureMilestone(points: 96, prize: .chest(Chest(kind: .coins, level: 2))),
+        AdventureMilestone(points: 180, prize: .chest(Chest(kind: .items, level: 0))),
+        AdventureMilestone(points: 290, prize: .chest(Chest(kind: .energy, level: 2))),
+        AdventureMilestone(points: 420, prize: .chest(Chest(kind: .gems, level: 1))),
+        AdventureMilestone(points: 580, prize: .chest(Chest(kind: .items, level: 1))),
+        AdventureMilestone(points: 770, prize: .chest(Chest(kind: .energy, level: 3))),
+        AdventureMilestone(points: 980, prize: .chest(Chest(kind: .coins, level: 4))),
+        AdventureMilestone(points: 1220, prize: .generator("apiary")),
+        AdventureMilestone(points: 1510, prize: .chest(Chest(kind: .gems, level: 2))),
+        AdventureMilestone(points: 1850, prize: .chest(Chest(kind: .energy, level: 4))),
+        AdventureMilestone(points: 2230, prize: .decor("decor_lamp_hanging")),
     ]
 }
 

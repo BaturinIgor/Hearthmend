@@ -108,8 +108,9 @@ final class LanternsTests: XCTestCase {
         let s = game.adventure!.lanterns!
         XCTAssertFalse(s.shining.contains(center), "фонарь ушел - клетка снова темная")
         XCTAssertTrue(s.cells[center].lit, "но очки за нее уже получены")
-        XCTAssertEqual(s.shining.count, 5)
-        XCTAssertEqual(s.darkLeft, LanternsState.size - 5)
+        // center + 3 стоит у правого края: крест из 4 клеток
+        XCTAssertEqual(s.shining.count, 4)
+        XCTAssertEqual(s.darkLeft, LanternsState.size - 4)
         XCTAssertNil(game.moveLantern(from: center + 3, to: center + 3))
     }
 
