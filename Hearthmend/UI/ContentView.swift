@@ -86,7 +86,8 @@ struct ContentView: View {
                 SelectedBar()
                     .padding(.bottom, 6)
             }
-            .padding(.top, 4)
+            // отступ от часов и выреза, чтобы подписи значков не липли к краю
+            .padding(.top, 14)
             TutorialTip(openVillage: { screen = .village })
                 .padding(.bottom, 54)
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.state.tutorialStep)
