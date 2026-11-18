@@ -137,10 +137,15 @@ struct PixelSlice: View {
             Image(uiImage: big)
                 .resizable(capInsets: EdgeInsets(top: edge, leading: edge, bottom: edge, trailing: edge), resizingMode: .stretch)
                 .interpolation(.none)
+                // панели и кнопки чуть приподняты над фоном: жесткая пиксельная тень снизу
+                .shadow(color: .black.opacity(Self.flat(key) ? 0 : 0.16), radius: 0, x: 0, y: scale * 0.7)
         } else {
             RoundedRectangle(cornerRadius: 12).fill(Theme.card)
         }
     }
+
+    /// Желоба полосок и клетки лежат в панели, им тень не нужна.
+    private static func flat(_ key: String) -> Bool { key.hasPrefix("ui_bar") || key.hasPrefix("ui_cell") }
 
     private static var cache: [String: CGImage] = [:]
 
@@ -216,8 +221,8 @@ struct Backdrop: View {
         ZStack {
             PixelTile(key: "bg_meadow", scale: 2)
             Butterflies()
-            LinearGradient(colors: [Theme.background.opacity(0.92), Theme.background.opacity(0.0)],
-                           startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.28))
+            LinearGradient(colors: [Theme.background.opacity(0.8), Theme.background.opacity(0.0)],
+                           startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.2))
             LinearGradient(colors: [Theme.background.opacity(0.0), Theme.background.opacity(0.75)],
                            startPoint: UnitPoint(x: 0.5, y: 0.82), endPoint: .bottom)
         }

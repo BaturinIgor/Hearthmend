@@ -193,22 +193,18 @@ final class BoardScene: SKScene {
                 node.addChild(glow)
             }
             node.addChild(shadow(width: 0.5))
-            node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.66))
+            node.addChild(icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.7))
             node.addChild(badge("\(item.tier + 1)"))
         case .generator(let gen):
-            node.addChild(shadow(width: 0.72))
-            if let crate = Sprites.texture("ui_crate") {
-                let side = Pixel.crisp(cellSize * 0.9, source: 16)
-                node.addChild(SKSpriteNode(texture: crate, size: CGSize(width: side, height: side)))
-            } else {
-                let base = SKShapeNode(rectOf: CGSize(width: cellSize * 0.86, height: cellSize * 0.86), cornerRadius: cellSize * 0.2)
-                base.fillColor = Palette.generator
-                base.strokeColor = Palette.generatorStroke
-                base.lineWidth = 2
-                node.addChild(base)
-            }
+            // источник стоит на теплом пятне света, а не в ящике
+            let glow = SKShapeNode(circleOfRadius: cellSize * 0.44)
+            glow.fillColor = UIColor(red: 1, green: 0.93, blue: 0.62, alpha: 0.55)
+            glow.strokeColor = UIColor(red: 1, green: 0.98, blue: 0.85, alpha: 0.8)
+            glow.lineWidth = 1.5
+            node.addChild(glow)
+            node.addChild(shadow(width: 0.6))
             let def = catalog.chain(gen.chain)
-            node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.6))
+            node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.68))
             node.addChild(stars(gen.tier + 1))
         case .debris(let layers):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
