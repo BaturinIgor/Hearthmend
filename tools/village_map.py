@@ -333,6 +333,11 @@ def main():
         sys.exit("нет спрайтов для: " + ", ".join(missing))
     print(f"кадров животных: {pet_frames(pack, out)}")
     meadow(pack).save(os.path.join(out, "bg_meadow.png"))
+    # бабочки над лугом: 8 расцветок, по два кадра (крылья раскрыты и сложены)
+    flies = load(pack, "Animals/Butterfly/Butterfly.png")
+    for row in range(8):
+        for f in range(2):
+            flies.crop((f * 8, row * 8, f * 8 + 8, row * 8 + 8)).save(os.path.join(out, f"fx_bfly_{row}_{f}.png"))
     images = {k: building(pack, k) for k in BUILDINGS}
     for k, im in images.items():
         im.save(os.path.join(out, k + ".png"))

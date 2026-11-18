@@ -215,12 +215,49 @@ struct Backdrop: View {
     var body: some View {
         ZStack {
             PixelTile(key: "bg_meadow", scale: 2)
+            Butterflies()
             LinearGradient(colors: [Theme.background.opacity(0.92), Theme.background.opacity(0.0)],
                            startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.28))
             LinearGradient(colors: [Theme.background.opacity(0.0), Theme.background.opacity(0.75)],
                            startPoint: UnitPoint(x: 0.5, y: 0.82), endPoint: .bottom)
         }
         .ignoresSafeArea()
+    }
+}
+
+/// Несколько бабочек медленно кружат над лугом. Без анимации, если в системе уменьшено движение.
+struct Butterflies: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    private let flies: [(color: Int, x: Double, y: Double, rx: Double, ry: Double, speed: Double, phase: Double)] = [
+        (2, 0.18, 0.22, 0.14, 0.06, 0.11, 0.0),
+        (4, 0.78, 0.48, 0.12, 0.09, 0.09, 2.1),
+        (0, 0.42, 0.86, 0.2, 0.05, 0.07, 4.2),
+    ]
+
+    var body: some View {
+        if reduceMotion {
+            EmptyView()
+        } else {
+            GeometryReader { geo in
+                TimelineView(.animation(minimumInterval: 1.0 / 20)) { tl in
+                    // на скриншотах бабочки замирают в одном и том же месте
+                    let t = Shot.isActive ? 7.5 : tl.date.timeIntervalSinceReferenceDate
+                    ZStack {
+                        ForEach(flies.indices, id: \.self) { i in
+                            let f = flies[i]
+                            let a = t * f.speed * 2 * .pi / 6 + f.phase
+                            let x = (f.x + f.rx * sin(a) + 0.03 * sin(a * 3.1)) * geo.size.width
+                            let y = (f.y + f.ry * sin(a * 2) + 0.02 * cos(a * 4.3)) * geo.size.height
+                            let frame = Int(t * 6 + f.phase * 3) % 2
+                            PixelIcon(key: "fx_bfly_\(f.color)_\(frame)", size: 18)
+                                .scaleEffect(x: cos(a) >= 0 ? 1 : -1, y: 1)
+                                .position(x: x, y: y)
+                        }
+                    }
+                }
+            }
+            .allowsHitTesting(false)
+        }
     }
 }
 
