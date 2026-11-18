@@ -99,7 +99,11 @@ jobs:
             mkdir -p shots/qa
             for lang in ru en; do
               for s in ${{ inputs.only }}; do
-                shoot $lang shots/qa/${lang}_$s.png -shot $s
+                case $s in
+                  qa_village|qa_far) shoot $lang shots/qa/${lang}_$s.png -village -shot $s ;;
+                  qa_shop) shoot $lang shots/qa/${lang}_$s.png -shop -shot shop ;;
+                  *) shoot $lang shots/qa/${lang}_$s.png -shot $s ;;
+                esac
               done
             done
             exit 0
@@ -139,7 +143,7 @@ jobs:
           mkdir preview
           for f in shots/qa/*.png; do
             [ -f "$f" ] || continue
-            sips -Z 640 -s format jpeg -s formatOptions 70 "$f" --out "preview/$(basename $f .png).jpg" >/dev/null
+            sips -Z 1300 -s format jpeg -s formatOptions 80 "$f" --out "preview/$(basename $f .png).jpg" >/dev/null
           done
           for f in shots/store/*/*.png; do
             [ -f "$f" ] || continue
