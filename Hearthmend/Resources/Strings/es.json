@@ -370,11 +370,10 @@
   "adv.mosaic.wrong": "Esta pieza es de otro color",
   "adv.no_glass": "Sin vidrio: completa pedidos en el tablero principal",
   "adv.lanterns.title": "La Noche de los Farolillos",
-  "adv.lanterns.how": "Los farolillos vienen de los pedidos. Cuélgalos en cualquier casilla vacía del pueblo a oscuras. Toca dos iguales para combinarlos: el nuevo se enciende donde estaba el segundo y alumbra más lejos. Lo iluminado sigue iluminado. En la oscuridad hay deseos, luciérnagas que dan farolillos y cofres. Cuando todo el pueblo está iluminado, llega una nueva noche.",
-  "adv.lanterns.night": "Cada pueblo iluminado trae además un cofre a tu tablero principal. El farolillo más brillante vuela al cielo por puntos extra.",
+  "adv.lanterns.how": "Los farolillos vienen de los pedidos. Cuélgalos en cualquier casilla vacía del pueblo a oscuras. Toca dos iguales para combinarlos: el nuevo se enciende donde estaba el segundo y alumbra más lejos. Solo hay luz hasta donde llegan los farolillos. En la oscuridad hay deseos, luciérnagas que dan farolillos y cofres. Ilumina todo el pueblo a la vez y llegará una nueva noche.",
+  "adv.lanterns.night": "Cada pueblo iluminado trae además un cofre a tu tablero principal.",
   "adv.lanterns.hang": "Colgar",
   "adv.lanterns.new_night": "¡El pueblo brilla! Llega una nueva noche",
-  "adv.lanterns.sky": "¡Un farolillo voló al cielo! +%d",
   "adv.lanterns.fireflies": "Luciérnagas: +%d farolillos",
   "adv.lanterns.pick": "Toca un farolillo igual para combinarlo",
   "adv.no_lanterns": "Sin farolillos: completa pedidos en el tablero principal"

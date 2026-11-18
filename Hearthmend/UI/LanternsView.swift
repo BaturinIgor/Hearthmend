@@ -43,11 +43,12 @@ struct LanternsView: View {
             let side = floor(min(geo.size.width / CGFloat(cols), geo.size.height / CGFloat(rows)))
             ZStack {
                 if let s = night {
+                    let shining = s.shining
                     VStack(spacing: 0) {
                         ForEach(0..<rows, id: \.self) { r in
                             HStack(spacing: 0) {
                                 ForEach(0..<cols, id: \.self) { c in
-                                    cell(r * cols + c, s: s, side: side)
+                                    cell(r * cols + c, s: s, shining: shining, side: side)
                                 }
                             }
                         }
@@ -77,13 +78,13 @@ struct LanternsView: View {
         }
     }
 
-    private func cell(_ i: Int, s: LanternsState, side: CGFloat) -> some View {
+    private func cell(_ i: Int, s: LanternsState, shining: Set<Int>, side: CGFloat) -> some View {
         let c = s.cells[i]
         let mergeable = selectedTier != nil && selected != i && c.lantern == selectedTier && (selectedTier ?? 9) < Lanterns.maxTier
         return ZStack {
             PixelTile(key: (i / cols + i % cols) % 2 == 0 ? "ui_cell_a" : "ui_cell_b", scale: side / 16)
-            // ночь: темнота уходит, когда клетку осветили
-            Color(red: 0.06, green: 0.07, blue: 0.2).opacity(c.lit ? 0 : 0.82)
+            // ночь: где свет фонарей, там светло; где уже бывал свет - сумерки
+            Color(red: 0.06, green: 0.07, blue: 0.2).opacity(shining.contains(i) ? 0 : c.lit ? 0.55 : 0.85)
             if !c.lit {
                 switch c.secret {
                 case .wish?:

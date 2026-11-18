@@ -798,7 +798,7 @@ final class GameStore: ObservableObject {
             return nil
         }
         Haptics.success()
-        Audio.shared.play(r.sky || r.nightDone || !r.wishes.isEmpty ? .sparkle : .merge)
+        Audio.shared.play(r.nightDone || !r.wishes.isEmpty ? .sparkle : .merge)
         lanternToast(r)
         commit()
         return r
@@ -807,7 +807,6 @@ final class GameStore: ObservableObject {
     private func lanternToast(_ r: Game.LanternLight) {
         var parts: [String] = []
         if r.nightDone { parts.append(L10n.t("adv.lanterns.new_night")) }
-        if r.sky { parts.append(String(format: L10n.t("adv.lanterns.sky"), Lanterns.skyPoints)) }
         if r.moves > 0 { parts.append(String(format: L10n.t("adv.lanterns.fireflies"), r.moves)) }
         if !r.prizes.isEmpty {
             parts.append(String(format: L10n.t("adv.prize"), r.prizes.map(Self.describe).joined(separator: " ")))

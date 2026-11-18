@@ -370,11 +370,10 @@
   "adv.mosaic.wrong": "Ce morceau est d'une autre couleur",
   "adv.no_glass": "Plus de verre : remplis des commandes sur le plateau principal",
   "adv.lanterns.title": "La Nuit des lanternes",
-  "adv.lanterns.how": "Les lanternes viennent des commandes. Accroche-les sur n'importe quelle case vide du village plongé dans le noir. Touche deux lanternes identiques pour les fusionner : la nouvelle s'allume à la place de la seconde et éclaire plus loin. Ce qui est éclairé le reste. L'obscurité cache des vœux, des lucioles qui donnent des lanternes et des coffres. Quand tout le village est éclairé, une nouvelle nuit commence.",
-  "adv.lanterns.night": "Chaque village entièrement éclairé apporte aussi un coffre sur ton plateau principal. La lanterne la plus brillante s'envole dans le ciel pour des points bonus.",
+  "adv.lanterns.how": "Les lanternes viennent des commandes. Accroche-les sur n'importe quelle case vide du village plongé dans le noir. Touche deux lanternes identiques pour les fusionner : la nouvelle s'allume à la place de la seconde et éclaire plus loin. Il ne fait clair que là où porte la lumière. L'obscurité cache des vœux, des lucioles qui donnent des lanternes et des coffres. Éclaire tout le village en même temps et une nouvelle nuit commence.",
+  "adv.lanterns.night": "Chaque village entièrement éclairé apporte aussi un coffre sur ton plateau principal.",
   "adv.lanterns.hang": "Accrocher",
   "adv.lanterns.new_night": "Le village est éclairé ! Une nouvelle nuit tombe",
-  "adv.lanterns.sky": "Une lanterne s'est envolée ! +%d",
   "adv.lanterns.fireflies": "Lucioles : +%d lanternes",
   "adv.lanterns.pick": "Touche une lanterne identique pour fusionner",
   "adv.no_lanterns": "Plus de lanternes : remplis des commandes sur le plateau principal"

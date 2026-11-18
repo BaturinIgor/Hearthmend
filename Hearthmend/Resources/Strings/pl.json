@@ -370,11 +370,10 @@
   "adv.mosaic.wrong": "Ten kawałek ma inny kolor",
   "adv.no_glass": "Brak szkła: realizuj zamówienia na głównej planszy",
   "adv.lanterns.title": "Noc Lampionów",
-  "adv.lanterns.how": "Lampiony dają zamówienia. Wieszaj je na dowolnym pustym polu w ciemnej wiosce. Stuknij dwa takie same, żeby je połączyć: nowy zapali się w miejscu drugiego i oświetli dalej. Oświetlone zostaje jasne. W ciemności kryją się życzenia, świetliki z lampionami i skrzynie. Gdy cała wioska jest jasna, zapada nowa noc.",
-  "adv.lanterns.night": "Każda oświetlona wioska przynosi też skrzynię na główną planszę. Najjaśniejszy lampion odlatuje w niebo za punkty bonusowe.",
+  "adv.lanterns.how": "Lampiony dają zamówienia. Wieszaj je na dowolnym pustym polu w ciemnej wiosce. Stuknij dwa takie same, żeby je połączyć: nowy zapali się w miejscu drugiego i oświetli dalej. Jasno jest tylko tam, gdzie sięga światło lampionów. W ciemności kryją się życzenia, świetliki z lampionami i skrzynie. Oświetl całą wioskę naraz, a zapadnie nowa noc.",
+  "adv.lanterns.night": "Każda oświetlona wioska przynosi też skrzynię na główną planszę.",
   "adv.lanterns.hang": "Powieś",
   "adv.lanterns.new_night": "Wioska jasna! Zapada nowa noc",
-  "adv.lanterns.sky": "Lampion odleciał w niebo! +%d",
   "adv.lanterns.fireflies": "Świetliki: +%d lampiony",
   "adv.lanterns.pick": "Stuknij taki sam lampion, żeby połączyć",
   "adv.no_lanterns": "Brak lampionów: realizuj zamówienia na głównej planszy"

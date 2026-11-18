@@ -2,8 +2,9 @@ import Foundation
 
 /// Событие «Ночь фонарей»: темная деревня 7x9. Фонарики (ходы события) вешают на любую пустую
 /// клетку. Два одинаковых фонаря сливаются в один ярче (на месте второго), и он светит дальше.
-/// Клетка, которую хоть раз осветили, остается светлой. В темноте спрятаны желания, светлячки
-/// (дают фонарики) и ящики. Когда светла вся деревня, наступает следующая ночь с новой картой.
+/// Светло только там, куда сейчас достает свет фонарей. Клетка, которую осветили впервые, отдает
+/// то, что пряталось в темноте: желание, светлячков (дают фонарики) или ящик. Когда светла вся
+/// деревня сразу, наступает следующая ночь с новой картой.
 public enum LanternSecret: Codable, Equatable {
     case wish
     case fireflies
@@ -11,6 +12,7 @@ public enum LanternSecret: Codable, Equatable {
 }
 
 public struct LanternCell: Codable, Equatable {
+    /// Клетку уже освещали этой ночью (секрет забран, очки за нее получены).
     public var lit: Bool = false
     /// Ступень фонаря на клетке.
     public var lantern: Int?
@@ -54,17 +56,25 @@ public struct LanternsState: Codable, Equatable {
         return out
     }
 
-    public var darkLeft: Int { cells.filter { !$0.lit }.count }
+    /// Клетки, куда сейчас достает свет фонарей.
+    public var shining: Set<Int> {
+        var out: Set<Int> = []
+        for i in cells.indices { if let t = cells[i].lantern { out.formUnion(Self.area(i, radius: Lanterns.radius(t))) } }
+        return out
+    }
+
+    public var darkLeft: Int { Self.size - shining.count }
     public var emptyCells: [Int] { cells.indices.filter { cells[$0].lantern == nil } }
 
-    /// Сколько темных клеток осветит фонарь этой ступени здесь.
-    public func darkAround(_ index: Int, tier: Int) -> Int {
-        Self.area(index, radius: Lanterns.radius(tier)).filter { !cells[$0].lit }.count
+    /// Сколько темных сейчас клеток осветит фонарь этой ступени здесь.
+    public func darkAround(_ index: Int, tier: Int, shining: Set<Int>? = nil) -> Int {
+        let lit = shining ?? self.shining
+        return Self.area(index, radius: Lanterns.radius(tier)).filter { !lit.contains($0) }.count
     }
 }
 
 public enum Lanterns {
-    public static let maxTier = 4
+    public static let maxTier = 3
     public static let wishesPerNight = 8
     public static let firefliesPerNight = 3
     public static let chestsPerNight = 2
@@ -72,11 +82,9 @@ public enum Lanterns {
     public static let wishPoints = 6
     public static let nightPoints = 25
     public static let fireflyMoves = 2
-    /// Самый яркий фонарь улетает в небо: освещает все вокруг и освобождает клетку.
-    public static let skyPoints = 15
     public static let nightPrize: AdventurePrize = .chest(Chest(kind: .items, level: 0))
 
-    public static func radius(_ tier: Int) -> Int { tier >= maxTier ? 5 : max(0, tier) }
+    public static func radius(_ tier: Int) -> Int { min(max(0, tier), maxTier) }
 
     public static let track: [AdventureMilestone] = [
         AdventureMilestone(points: 30, prize: .chest(Chest(kind: .energy, level: 1))),
@@ -101,8 +109,6 @@ extension Game {
         public var wishes: [Int] = []
         public var fireflies: [Int] = []
         public var chests: [Int] = []
-        /// Фонарь последней ступени улетел в небо.
-        public var sky = false
         public var nightDone = false
         public var moves = 0
         public var points = 0
@@ -126,7 +132,8 @@ extension Game {
     /// Куда повесить фонарик: на темную клетку, вокруг которой темнее всего.
     public var bestLanternSpot: Int? {
         guard let s = lanterns else { return nil }
-        func score(_ i: Int) -> Int { (s.cells[i].lit ? 0 : 3) + s.darkAround(i, tier: 2) }
+        let lit = s.shining
+        func score(_ i: Int) -> Int { (lit.contains(i) ? 0 : 3) + s.darkAround(i, tier: 2, shining: lit) }
         return s.emptyCells.max { (score($0), -$0) < (score($1), -$1) }
     }
 
@@ -169,11 +176,6 @@ extension Game {
             }
         }
         state.adventure?.moves += r.moves
-        if tier >= Lanterns.maxTier {
-            r.sky = true
-            r.points += Lanterns.skyPoints
-            state.adventure?.lanterns?.cells[index].lantern = nil
-        }
         if let s = state.adventure?.lanterns, s.darkLeft == 0 {
             r.nightDone = true
             r.points += Lanterns.nightPoints

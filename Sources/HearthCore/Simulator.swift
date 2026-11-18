@@ -86,7 +86,6 @@ public struct SimReport: CustomStringConvertible {
     public var mosaicWasted = 0
     public var mosaicShattered = 0
     public var lanternNights = 0
-    public var lanternSky = 0
     public var lanternFireflies = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
@@ -532,8 +531,8 @@ public enum Simulator {
         }
     }
 
-    /// Ночь фонарей: сливает пару, которая осветит больше всего темноты; иначе вешает фонарик
-    /// там, где вокруг темнее всего, чтобы потом слить его с соседом.
+    /// Ночь фонарей: сливает пару, после которой светлых клеток станет больше всего; иначе вешает
+    /// фонарик там, где вокруг темнее всего, чтобы потом слить его с соседом.
     private static func playLanterns(_ game: Game, report: inout SimReport) {
         func record(_ r: Game.LanternLight?) {
             guard let r else { return }
@@ -541,13 +540,13 @@ public enum Simulator {
                 report.lanternNights += 1
                 report.adventureValue += prizeValue(Lanterns.nightPrize)
             }
-            if r.sky { report.lanternSky += 1 }
             report.lanternFireflies += r.fireflies.count
             // ящики из темноты идут в r.prizes первыми
             for prize in r.prizes.prefix(r.chests.count) { report.adventureValue += prizeValue(prize) }
         }
         for _ in 0..<3000 {
             guard let s = game.adventure?.lanterns else { return }
+            let now = s.shining.count
             var best: (from: Int, to: Int, score: Int)?
             var byTier: [Int: [Int]] = [:]
             for i in s.cells.indices { if let t = s.cells[i].lantern { byTier[t, default: []].append(i) } }
@@ -556,18 +555,19 @@ public enum Simulator {
                 guard list.count >= 2 else { continue }
                 for a in list {
                     for b in list where b != a {
-                        let score = s.darkAround(b, tier: t + 1) * 10 - t
+                        var next = s
+                        next.cells[a].lantern = nil
+                        next.cells[b].lantern = t + 1
+                        let score = next.shining.count - now
                         if best == nil || score > best!.score { best = (a, b, score) }
                     }
                 }
             }
-            if let best {
+            if let best, best.score >= -1 {
                 record(game.moveLantern(from: best.from, to: best.to))
                 continue
             }
-            guard (game.adventure?.moves ?? 0) > 0 else { return }
-            let spot = game.bestLanternSpot
-            guard let spot, let r = game.hangLantern(spot) else { return }
+            guard (game.adventure?.moves ?? 0) > 0, let spot = game.bestLanternSpot, let r = game.hangLantern(spot) else { return }
             record(r)
         }
     }

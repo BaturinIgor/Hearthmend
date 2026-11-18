@@ -97,24 +97,42 @@ final class LanternsTests: XCTestCase {
         XCTAssertNil(game.adventure!.lanterns!.cells[center].secret)
     }
 
-    func testBrightestLanternFliesAway() {
+    func testLightLastsOnlyWhileLanternHangs() {
         let (game, _) = makeGame()
         plain(game)
-        let top = Lanterns.maxTier - 1
+        game.state.adventure?.moves = 10
+        _ = game.hangLantern(center)
+        _ = game.hangLantern(center + 3)
+        XCTAssertEqual(game.adventure!.lanterns!.shining, [center, center + 3])
+        _ = game.moveLantern(from: center, to: center + 3)
+        let s = game.adventure!.lanterns!
+        XCTAssertFalse(s.shining.contains(center), "фонарь ушел - клетка снова темная")
+        XCTAssertTrue(s.cells[center].lit, "но очки за нее уже получены")
+        XCTAssertEqual(s.shining.count, 5)
+        XCTAssertEqual(s.darkLeft, LanternsState.size - 5)
+        XCTAssertNil(game.moveLantern(from: center + 3, to: center + 3))
+    }
+
+    func testTopTierDoesNotMergeFurther() {
+        let (game, _) = makeGame()
+        let top = Lanterns.maxTier
         game.state.adventure?.lanterns?.cells[0].lantern = top
         game.state.adventure?.lanterns?.cells[center].lantern = top
-        let r = game.moveLantern(from: 0, to: center)!
-        XCTAssertTrue(r.sky)
-        XCTAssertNil(game.adventure!.lanterns!.cells[center].lantern, "улетел в небо")
-        XCTAssertGreaterThanOrEqual(r.points, Lanterns.skyPoints)
+        XCTAssertFalse(game.canMergeLanterns(0, center))
     }
 
     func testLastDarkCellStartsNewNight() {
         let (game, _) = makeGame()
         plain(game)
-        for i in game.state.adventure!.lanterns!.cells.indices where i != center { game.state.adventure?.lanterns?.cells[i].lit = true }
+        // фонари уже освещают все, кроме одной клетки в углу
+        let corner = LanternsState.size - 1
+        for i in game.state.adventure!.lanterns!.cells.indices where i != corner {
+            game.state.adventure?.lanterns?.cells[i].lit = true
+            game.state.adventure?.lanterns?.cells[i].lantern = 0
+        }
         let chests = game.state.pendingChests.count + game.state.cells.filter { if case .chest? = $0 { return true } else { return false } }.count
-        let r = game.hangLantern(center)!
+        XCTAssertEqual(game.adventure!.lanterns!.darkLeft, 1)
+        let r = game.hangLantern(corner)!
         XCTAssertTrue(r.nightDone)
         XCTAssertTrue(r.prizes.contains(Lanterns.nightPrize))
         let after = game.state.pendingChests.count + game.state.cells.filter { if case .chest? = $0 { return true } else { return false } }.count
@@ -143,7 +161,7 @@ final class LanternsTests: XCTestCase {
             let ls = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .lanterns }.map(\.1)
             let avg = ls.reduce(0, +) / Double(max(1, ls.count))
             let pts = zip(r.adventureKinds, r.adventurePoints).filter { $0.0 == .lanterns }.map(\.1)
-            print("Фонари \(seed): событий \(ls.count), дорожка \(Int(avg * 100))%, очки \(pts), ночей \(r.lanternNights), в небо \(r.lanternSky), светлячков \(r.lanternFireflies), ценность \(Int(r.adventureValue)) из энергии \(r.energySpent), дней \(String(format: "%.1f", r.days))")
+            print("Фонари \(seed): событий \(ls.count), дорожка \(Int(avg * 100))%, очки \(pts), ночей \(r.lanternNights), светлячков \(r.lanternFireflies), ценность \(Int(r.adventureValue)) из энергии \(r.energySpent), дней \(String(format: "%.1f", r.days))")
             XCTAssertGreaterThanOrEqual(ls.count, 1)
             XCTAssertGreaterThan(avg, 0.4)
             XCTAssertLessThan(avg, 1.0)
