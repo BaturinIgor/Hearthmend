@@ -538,6 +538,7 @@ public enum Simulator {
     /// Кадры для проверки интерфейса: бот делает несколько ходов в текущем событии,
     /// чтобы на экране было что посмотреть, и оставляет запас ходов.
     public static func demoAdventure(_ game: Game, moves: Int = 24, left: Int = 12) {
+        game.state.level = max(game.state.level, Balance.adventureLevel)
         guard let a = game.adventure else { return }
         game.state.adventure?.moves = moves
         var report = SimReport()

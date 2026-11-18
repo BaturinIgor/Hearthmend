@@ -40,9 +40,8 @@ final class AdventureDemoTests: XCTestCase {
     func testDemoClockLandsOnEveryEvent() {
         for kind in AdventureKind.rotation {
             let game = Game.demo(now: Game.demoClock(adventure: kind))
-            game.state.level = max(game.state.level, Balance.adventureLevel)
-            XCTAssertEqual(game.adventure?.kind, kind)
             Simulator.demoAdventure(game)
+            XCTAssertEqual(game.adventure?.kind, kind)
             XCTAssertEqual(game.adventure?.moves, 12, "\(kind)")
             let a = game.adventure!
             let touched = a.points > 0 || a.greenhouse?.beds.contains { $0 != nil } == true
