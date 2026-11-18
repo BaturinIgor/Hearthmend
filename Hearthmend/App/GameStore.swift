@@ -472,6 +472,35 @@ final class GameStore: ObservableObject {
 
     var canDeliverMerchant: Bool { game.canDeliverMerchant() }
 
+    // MARK: - Обмен
+
+    /// Меняется с жителем. В конце - праздник с прилавком.
+    @discardableResult
+    func barter(_ index: Int) -> Game.BarterTrade? {
+        guard let t = game.barter(index) else {
+            if let offers = game.barter?.offers, offers.indices.contains(index) {
+                let need = offers[index].needs
+                Audio.shared.play(.nope)
+                highlight(Order(id: -1, needs: [need], coins: 0, stars: 0, xp: 0))
+                show(L10n.t("barter.need"))
+            }
+            return nil
+        }
+        Haptics.success()
+        Audio.shared.play(.coins)
+        selected = nil
+        if t.finished, let stall = t.stall {
+            var parts = "💎 \(t.gems)"
+            if t.tent { parts += "   ⛺️" }
+            celebrate(Celebration(icon: "decor:\(stall)", title: L10n.t("barter.done"), subtitle: parts))
+        } else {
+            show(ShopRewardText.short(ProductReward(energy: t.offer.energy, coins: t.offer.coins)))
+        }
+        commit()
+        onBoardChange?()
+        return t
+    }
+
     func claimShopGift() {
         guard let gift = game.claimShopGift() else { return }
         Haptics.success()

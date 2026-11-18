@@ -24,6 +24,8 @@ public struct SimConfig {
     public var serveMerchant = true
     /// Играть в большие события (Глубины и др.) на ходы с заказов.
     public var playAdventures = true
+    /// Меняться с жителями в «Обмене» по выходным.
+    public var playBarter = true
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
@@ -87,6 +89,14 @@ public struct SimReport: CustomStringConvertible {
     public var mosaicShattered = 0
     public var lanternNights = 0
     public var lanternFireflies = 0
+    /// «Обмен»: сколько выходных он шел, сколько обменов и сколько дошли до прилавка.
+    public var barterWeekends = 0
+    public var barterTrades = 0
+    public var barterFinished = 0
+    public var barterTents = 0
+    public var gemsFromBarter = 0
+    public var coinsFromBarter = 0
+    public var energyFromBarter = 0
     public var generatorsDropped = 0
     public var energyFromChests = 0
     public var coinsFromChests = 0
@@ -115,6 +125,7 @@ public struct SimReport: CustomStringConvertible {
         торговец: \(merchantsServed) раз, энергия \(energyFromMerchant); дружба: энергия \(energyFromFriends), лучших друзей \(bestFriends), счастливые слияния \(energyFromLucky)
         животные: \(petsAdopted) за \(coinsOnPets) мон, все к дню \(petsAllDay.map { String(format: "%.1f", $0) } ?? "-"), подарки: энергия \(energyFromPets), кр \(gemsFromPets), мон \(coinsFromPets)
         заросли: \(thicketsCleared), все к дню \(thicketsDoneDay.map { String(format: "%.1f", $0) } ?? "-"); ящики: \(chestsOpened), энергия \(energyFromChests), мон \(coinsFromChests), кр \(gemsFromChests)
+        обмен: выходных \(barterWeekends), обменов \(barterTrades), прилавков \(barterFinished), палаток \(barterTents), кр \(gemsFromBarter), мон \(coinsFromBarter), энергия \(energyFromBarter)
         районы: \(districts)
         """
     }
@@ -130,6 +141,7 @@ public enum Simulator {
         let start = clock.date
         var adventureKey: String?
         var adventureLast: AdventureState?
+        var barterKeys: Set<String> = []
 
         for session in 0..<(config.maxDays * config.sessionsPerDay) {
             if session > 0 {
@@ -149,6 +161,10 @@ public enum Simulator {
                 report.coinsSpent += price
             }
             report.sessions += 1
+            if config.playBarter, let b = game.barter, !barterKeys.contains(b.key) {
+                barterKeys.insert(b.key)
+                report.barterWeekends += 1
+            }
             let stalled = playSession(game, config: config, report: &report)
             if stalled { report.stalledSessions += 1 }
             if config.playAdventures { playAdventure(game, report: &report, lastKey: &adventureKey, lastState: &adventureLast) }
@@ -187,6 +203,17 @@ public enum Simulator {
             if config.serveMerchant, let visit = game.deliverMerchant() {
                 report.gemsFromMerchant += visit.gems
                 report.energyFromMerchant += visit.energy
+                continue
+            }
+            if config.playBarter, let i = barterTarget(game), let t = game.barter(i) {
+                report.barterTrades += 1
+                report.coinsFromBarter += t.offer.coins
+                report.energyFromBarter += t.offer.energy
+                if t.finished {
+                    report.barterFinished += 1
+                    report.gemsFromBarter += t.gems
+                    if t.tent { report.barterTents += 1 }
+                }
                 continue
             }
             if deliverOrder(game, report: &report) { continue }
@@ -299,7 +326,18 @@ public enum Simulator {
             for need in order.needs { result[need, default: 0] += 1 }
         }
         for need in game.state.merchant?.needs ?? [] { result[need, default: 0] += 1 }
+        if let i = barterTarget(game, any: true), let need = game.barter?.offers[i].needs { result[need, default: 0] += 1 }
         return result
+    }
+
+    /// Какой обмен выбирает бот: самый щедрый из тех, где предмет уже доводилось собирать.
+    /// any: false - только если предмет уже лежит на поле.
+    static func barterTarget(_ game: Game, any: Bool = false) -> Int? {
+        guard let b = game.barter, !b.finished, !b.offers.isEmpty else { return nil }
+        let reachable = b.offers.indices.filter { b.offers[$0].needs.tier <= (game.state.bestTier[b.offers[$0].needs.chain] ?? 0) }
+        let pick = reachable.max { b.offers[$0].level < b.offers[$1].level } ?? 0
+        if any { return pick }
+        return game.canBarter(pick) ? pick : nil
     }
 
     /// Что нужно: заказы, торговец и видимые заросли (на них кладут такой же предмет).

@@ -10,6 +10,7 @@ struct TopIcons: View {
     let openVillage: () -> Void
     @State private var showPets = false
     @State private var showJournal = false
+    @State private var showBarter = false
 
     var body: some View {
         let g = store.game
@@ -17,6 +18,7 @@ struct TopIcons: View {
             HStack(spacing: 10) {
                 TopIcon(icon: "ui_bag", label: L10n.t("top.shop"), dot: g.shopGiftReady, action: openShop)
                 AdventureIcon()
+                barter
                 if g.dailyRewardReady {
                     TopIcon(icon: "ui_gift", label: L10n.t("top.daily"), dot: true, action: openDaily)
                 }
@@ -38,6 +40,18 @@ struct TopIcons: View {
         .frame(height: 50)
         .sheet(isPresented: $showPets) { PetsSheet() }
         .background(EmptyView().sheet(isPresented: $showJournal) { JournalSheet(tab: store.journalStartTab) })
+        .background(EmptyView().sheet(isPresented: $showBarter) { BarterSheet() })
+    }
+
+    /// «Обмен» на выходных: точка, когда есть что отдать жителю.
+    @ViewBuilder
+    private var barter: some View {
+        let g = store.game
+        if let b = g.barter {
+            TopIcon(icon: "ui_trade", label: "\(b.step)/\(Barter.steps)", dot: g.barterReady) {
+                showBarter = true
+            }
+        }
     }
 
     @ViewBuilder

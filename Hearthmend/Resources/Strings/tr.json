@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "Köy aydınlandı! Yeni bir gece başlıyor",
   "adv.lanterns.fireflies": "Ateşböcekleri: +%d fener",
   "adv.lanterns.pick": "Birleştirmek için aynı fenere dokun",
-  "adv.no_lanterns": "Fener kalmadı: ana tahtada sipariş tamamla"
+  "adv.no_lanterns": "Fener kalmadı: ana tahtada sipariş tamamla",
+  "barter.title": "Takas",
+  "barter.intro": "Bir dalla başla ve köylülerle altı kez takas yap. Sonunda biri sana pazar tezgâhını verecek!",
+  "barter.have": "Elinde:",
+  "barter.swap": "Takas et",
+  "barter.need": "Köylünün istediği eşyayı tahtaya koy",
+  "barter.tent": "Cömert takaslar: çubuğu doldur, bir de çadır kazan",
+  "barter.done": "Tezgâh senin!",
+  "barter.done_hint": "Onu köyüne yerleştir.",
+  "barter.ends": "Takasın bitmesine: %@"
 }

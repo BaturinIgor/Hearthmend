@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "Le village est éclairé ! Une nouvelle nuit tombe",
   "adv.lanterns.fireflies": "Lucioles : +%d lanternes",
   "adv.lanterns.pick": "Touche une lanterne identique pour fusionner",
-  "adv.no_lanterns": "Plus de lanternes : remplis des commandes sur le plateau principal"
+  "adv.no_lanterns": "Plus de lanternes : remplis des commandes sur le plateau principal",
+  "barter.title": "Troc",
+  "barter.intro": "Commence avec une brindille et troque six fois avec les villageois. À la fin, l'un d'eux t'offre son étal !",
+  "barter.have": "Tu as :",
+  "barter.swap": "Troquer",
+  "barter.need": "Pose sur le plateau l'objet demandé par le villageois",
+  "barter.tent": "Trocs généreux : remplis la barre et reçois une tente en plus",
+  "barter.done": "L'étal est à toi !",
+  "barter.done_hint": "Place-le dans ton village.",
+  "barter.ends": "Fin du troc dans : %@"
 }

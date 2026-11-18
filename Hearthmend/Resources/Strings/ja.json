@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "村が明るくなった！新しい夜が来たよ",
   "adv.lanterns.fireflies": "ホタル：ランタン+%d",
   "adv.lanterns.pick": "同じランタンをタップして合成しよう",
-  "adv.no_lanterns": "ランタンがない：メインボードで注文をこなそう"
+  "adv.no_lanterns": "ランタンがない：メインボードで注文をこなそう",
+  "barter.title": "物々交換",
+  "barter.intro": "小枝からはじめて、村人と6回交換しよう。最後には村人が屋台をくれるよ！",
+  "barter.have": "持ち物：",
+  "barter.swap": "交換",
+  "barter.need": "村人がほしがっているアイテムを盤面に置こう",
+  "barter.tent": "気前のいい交換：ゲージをためるとテントももらえる",
+  "barter.done": "屋台を手に入れた！",
+  "barter.done_hint": "村に飾ろう。",
+  "barter.ends": "交換の終了まで：%@"
 }

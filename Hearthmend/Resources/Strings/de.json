@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "Das Dorf leuchtet! Eine neue Nacht beginnt",
   "adv.lanterns.fireflies": "Glühwürmchen: +%d Laternen",
   "adv.lanterns.pick": "Tippe eine gleiche Laterne zum Kombinieren an",
-  "adv.no_lanterns": "Keine Laternen mehr: erfülle Aufträge auf dem Hauptfeld"
+  "adv.no_lanterns": "Keine Laternen mehr: erfülle Aufträge auf dem Hauptfeld",
+  "barter.title": "Tauschhandel",
+  "barter.intro": "Beginne mit einem Zweig und tausche sechsmal mit den Dorfbewohnern. Am Ende schenkt dir jemand seinen Marktstand!",
+  "barter.have": "Du hast:",
+  "barter.swap": "Tauschen",
+  "barter.need": "Lege den gewünschten Gegenstand aufs Feld",
+  "barter.tent": "Großzügige Tausche: Fülle die Leiste und bekomme ein Zelt dazu",
+  "barter.done": "Der Stand gehört dir!",
+  "barter.done_hint": "Stell ihn ins Dorf.",
+  "barter.ends": "Tausch endet in: %@"
 }

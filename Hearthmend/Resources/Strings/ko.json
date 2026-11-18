@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "마을이 밝아졌어요! 새로운 밤이 와요",
   "adv.lanterns.fireflies": "반딧불이: 등불 +%d",
   "adv.lanterns.pick": "같은 등불을 탭해서 합치세요",
-  "adv.no_lanterns": "등불이 없어요: 메인 보드에서 주문을 완료하세요"
+  "adv.no_lanterns": "등불이 없어요: 메인 보드에서 주문을 완료하세요",
+  "barter.title": "물물교환",
+  "barter.intro": "나뭇가지로 시작해 주민들과 여섯 번 교환해 보세요. 마지막엔 주민이 자기 노점을 줘요!",
+  "barter.have": "가진 것:",
+  "barter.swap": "교환",
+  "barter.need": "주민이 원하는 아이템을 판에 놓아 주세요",
+  "barter.tent": "후한 교환: 게이지를 채우면 텐트도 받아요",
+  "barter.done": "노점이 생겼어요!",
+  "barter.done_hint": "마을에 놓아 보세요.",
+  "barter.ends": "교환 종료까지: %@"
 }

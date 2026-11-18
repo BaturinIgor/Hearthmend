@@ -376,5 +376,14 @@
   "adv.lanterns.new_night": "The village is lit! A new night falls",
   "adv.lanterns.fireflies": "Fireflies: +%d lanterns",
   "adv.lanterns.pick": "Tap a lantern just like it to merge",
-  "adv.no_lanterns": "Out of lanterns: complete orders on the main board"
+  "adv.no_lanterns": "Out of lanterns: complete orders on the main board",
+  "barter.title": "Barter",
+  "barter.intro": "Start with a twig and trade with the villagers six times. At the end, a villager gives you their market stall!",
+  "barter.have": "You have:",
+  "barter.swap": "Trade",
+  "barter.need": "Put the item the villager asks for on the board",
+  "barter.tent": "Generous trades: fill the bar and you also get a tent",
+  "barter.done": "The stall is yours!",
+  "barter.done_hint": "Place it in your village.",
+  "barter.ends": "Barter ends in: %@"
 }
