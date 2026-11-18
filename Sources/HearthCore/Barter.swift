@@ -2,7 +2,7 @@ import Foundation
 
 /// Маленькое событие выходных «Обмен»: игрок начинает с веточки и шесть раз меняется с жителями.
 /// Каждый раз трое жителей предлагают обмен: «дам тебе вот это за твою вещь и предмет с поля».
-/// Простой обмен просит то, что уже есть, щедрый - предмет на ступень-две выше, зато дает больше.
+/// Простой обмен просит то, что игрок уже собирал, щедрый - ступень выше его лучшей, зато дает больше.
 /// Последний обмен приносит рыночный прилавок того цвета, какой у жителя, с которым поменялись.
 /// Если почти все обмены были щедрыми, в придачу дарят палатку.
 public struct BarterOffer: Codable, Equatable {
@@ -145,8 +145,14 @@ extension Game {
             let chain = Friends.chain(of: friend) ?? "garden"
             let best = max(1, state.bestTier[chain] ?? 1)
             let top = max(1, catalog.orderTop(of: chain))
-            let tier = max(1, min(top, base + level, best + level))
-            let needs = Item(chain: chain, tier: tier)
+            // простой - то, что игрок уже собирал; щедрый - на ступень выше его лучшего
+            let tier: Int
+            switch level {
+            case 0: tier = min(top, base, best)
+            case 1: tier = min(top, max(base + 1, best))
+            default: tier = min(top, max(base + 2, best + 1))
+            }
+            let needs = Item(chain: chain, tier: max(1, tier))
             let last = step == Barter.steps - 1
             let gives = last ? (Barter.stallOf[friend] ?? "decor_stall_green") : Barter.goods[min(step, Barter.goods.count - 1)][level]
             return BarterOffer(friend: friend, needs: needs, level: level, gives: gives,
