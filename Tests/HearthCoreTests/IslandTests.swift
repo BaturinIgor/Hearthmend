@@ -154,9 +154,7 @@ final class IslandTests: XCTestCase {
     /// Бот играет острова за всю игру: туман заметно расчищается, дорожка проходится не целиком.
     func testIslandBalance() {
         for seed in UInt64(1)...2 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             let island = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .island }.map(\.1)
             let depths = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .depths }.map(\.1)
             let avg = island.reduce(0, +) / Double(max(1, island.count))

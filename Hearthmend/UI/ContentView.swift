@@ -173,7 +173,7 @@ private struct TopBar: View {
             Button(action: openShop) { Counter(icon: "ui_energy", value: "\(store.state.energy)", sub: energyTimer, plus: true) }
             Button { store.show("🪙 \(store.state.coins)") } label: { Counter(icon: "ui_coin", value: Fmt.compact(store.state.coins)) }
             Button(action: openShop) { Counter(icon: "ui_gem", value: Fmt.compact(store.state.gems), plus: true) }
-            VillageButton(stars: store.state.stars, ready: store.canBuildSomething, action: openVillage)
+            VillageButton(stars: store.state.stars, ready: store.canBuildSomething, dot: store.state.newDecor, action: openVillage)
         }
         .padding(.horizontal, 8)
     }
@@ -210,6 +210,8 @@ private struct LevelBadge: View {
 private struct VillageButton: View {
     let stars: Int
     let ready: Bool
+    /// Есть новое украшение, которое еще не видели.
+    var dot = false
     let action: () -> Void
     @State private var wiggle = false
 
@@ -227,6 +229,7 @@ private struct VillageButton: View {
             .background(PixelSlice(key: ready ? "ui_btn_green" : "ui_paper", inset: ready ? 5 : 4, scale: 2))
             .rotationEffect(.degrees(ready && wiggle ? 3 : 0))
             .scaleEffect(ready && wiggle ? 1.05 : 1)
+            .overlay(alignment: .topTrailing) { if dot || ready { RedDot().offset(x: 3, y: -3) } }
         }
         .onAppear {
             withAnimation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) { wiggle = true }

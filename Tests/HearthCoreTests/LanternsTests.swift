@@ -156,9 +156,7 @@ final class LanternsTests: XCTestCase {
     /// Бот играет ночи фонарей за всю игру: дорожка заметно, но не целиком, без перекоса в экономике.
     func testLanternsBalance() {
         for seed in UInt64(1)...2 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             let ls = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .lanterns }.map(\.1)
             let avg = ls.reduce(0, +) / Double(max(1, ls.count))
             let pts = zip(r.adventureKinds, r.adventurePoints).filter { $0.0 == .lanterns }.map(\.1)

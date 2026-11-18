@@ -8,9 +8,7 @@ final class BalanceTests: XCTestCase {
 
     private func report(seed: UInt64) -> SimReport {
         if let r = Self.cache[seed] { return r }
-        var config = SimConfig()
-        config.seed = seed
-        let r = Simulator.run(config)
+        let r = SimRuns.standard(seed)
         print("Бот, зерно \(seed):\n\(r)")
         // сводка в аннотации CI: сколько дней и уровень на выходе
         let districts = r.districtDoneDay.sorted { $0.value < $1.value }.map { "\($0.key) \(String(format: "%.1f", $0.value))" }.joined(separator: ", ")

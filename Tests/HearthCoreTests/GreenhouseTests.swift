@@ -109,9 +109,7 @@ final class GreenhouseTests: XCTestCase {
     /// Бот заходит несколько раз в день: дорожка проходится заметно, но не целиком, без перекоса в экономике.
     func testGreenhouseBalance() {
         for seed in UInt64(1)...2 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             let gh = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .greenhouse }.map(\.1)
             let avg = gh.reduce(0, +) / Double(max(1, gh.count))
             let pts = zip(r.adventureKinds, r.adventurePoints).filter { $0.0 == .greenhouse }.map(\.1)

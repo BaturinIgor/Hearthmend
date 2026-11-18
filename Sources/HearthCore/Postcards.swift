@@ -36,7 +36,7 @@ extension Game {
             reward.decor = Postcards.decor[state.postcardIndex % Postcards.decor.count]
             state.gems += reward.gems
             state.coins += reward.coins
-            if let decor = reward.decor { state.decorOwned[decor, default: 0] += 1 }
+            if let decor = reward.decor { giveDecor(decor) }
             state.postcardIndex += 1
             state.postcardPieces = 0
         }

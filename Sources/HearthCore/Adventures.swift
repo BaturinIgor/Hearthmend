@@ -156,7 +156,7 @@ extension Game {
         switch prize {
         case .chest(let chest): state.pendingChests.append(chest)
         case .generator(let chain): state.pendingGenerators.append(state.unlockedChains.contains(chain) ? chain : Game.startChains[0])
-        case .decor(let key): state.decorOwned[key, default: 0] += 1
+        case .decor(let key): giveDecor(key)
         }
         placePendingGenerators()
     }

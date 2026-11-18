@@ -251,9 +251,7 @@ final class ThicketChestTests: XCTestCase {
 
     func testBotClearsThicketsAndChestsStayATreat() {
         for seed in UInt64(1)...3 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             print("Бот \(seed): дней \(String(format: "%.1f", r.days)), заросли \(r.thicketsCleared) к дню \(r.thicketsDoneDay.map { String(format: "%.1f", $0) } ?? "-"), ящики \(r.chestsOpened): энергия \(r.energyFromChests), мон \(r.coinsFromChests), кр \(r.gemsFromChests), застреваний \(r.stalledSessions)")
             XCTAssertTrue(r.villageDone, "деревня отстроена")
             XCTAssertNotNil(r.thicketsDoneDay, "бот расчистил все заросли")

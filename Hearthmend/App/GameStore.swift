@@ -871,6 +871,12 @@ final class GameStore: ObservableObject {
     }
 
     /// Можно ли сейчас что-то построить: на кнопке деревни горит отметка.
+    func seeNewDecor() {
+        guard state.newDecor else { return }
+        game.seeNewDecor()
+        commit()
+    }
+
     var canBuildSomething: Bool {
         game.availableTasks.contains { $0.cost <= state.stars }
     }
