@@ -44,7 +44,8 @@ final class AdventureDemoTests: XCTestCase {
             XCTAssertEqual(game.adventure?.kind, kind)
             XCTAssertEqual(game.adventure?.moves, 12, "\(kind)")
             let a = game.adventure!
-            let touched = a.points > 0 || a.greenhouse?.beds.contains { $0 != nil } == true
+            let dug = a.depths.map { $0 != DepthsState.generate(seed: Game.seed(of: a.key)) } ?? false
+            let touched = a.points > 0 || dug || a.greenhouse?.beds.contains { $0 != nil } == true
             XCTAssertTrue(touched, "\(kind): на экране есть ходы бота")
         }
     }
