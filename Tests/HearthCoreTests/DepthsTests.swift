@@ -153,9 +153,7 @@ final class DepthsTests: XCTestCase {
     /// а награды - приятная добавка, а не вторая экономика.
     func testDepthsBalance() {
         for seed in UInt64(1)...3 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             let events = r.adventureProgress.count
             let avg = r.adventureProgress.reduce(0, +) / Double(max(1, events))
             let depth = Double(r.adventureDepth.reduce(0, +)) / Double(max(1, r.adventureDepth.count))

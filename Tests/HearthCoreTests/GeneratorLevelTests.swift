@@ -74,9 +74,7 @@ final class GeneratorLevelTests: XCTestCase {
 
     func testBotReachesHigherGeneratorsWithoutBreakingPace() {
         for seed in UInt64(1)...3 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             print("Бот \(seed): дней \(String(format: "%.1f", r.days)), генератор до ур. \(r.bestGeneratorLevel + 1), генераторов из слияний \(r.generatorsDropped)")
             XCTAssertTrue(r.villageDone)
             XCTAssertGreaterThanOrEqual(r.bestGeneratorLevel, 2, "генераторы растут")

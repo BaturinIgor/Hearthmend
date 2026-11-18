@@ -158,9 +158,7 @@ final class MosaicTests: XCTestCase {
     /// Бот играет витражи за всю игру: дорожка проходится заметно, но не целиком, без перекоса в экономике.
     func testMosaicBalance() {
         for seed in UInt64(1)...2 {
-            var config = SimConfig()
-            config.seed = seed
-            let r = Simulator.run(config)
+            let r = SimRuns.standard(seed)
             let ms = zip(r.adventureKinds, r.adventureProgress).filter { $0.0 == .mosaic }.map(\.1)
             let avg = ms.reduce(0, +) / Double(max(1, ms.count))
             let pts = zip(r.adventureKinds, r.adventurePoints).filter { $0.0 == .mosaic }.map(\.1)
