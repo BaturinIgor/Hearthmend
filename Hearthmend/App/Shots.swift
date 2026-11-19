@@ -37,6 +37,9 @@ struct QAScreen: View {
         case "qa_settings": SettingsView()
         case "qa_daily":
             ZStack { ContentView(); DailyRewardView {} }
+        case "qa_event":
+            if let def = store.game.activeEvent { EventSheet(def: def) } else { ContentView() }
+        case "qa_postcard": PostcardSheet()
         default:
             ContentView()
                 .onAppear {

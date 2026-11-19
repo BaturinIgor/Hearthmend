@@ -1,0 +1,19 @@
+# Макеты всех экранов версии 1.0 (design/1.0/screens): имя кадра и аргументы запуска после -demo.
+# Снимает .github/workflows/design.yml на русском. Кадры qa_* описаны в Hearthmend/App/Shots.swift.
+01-board -shot qa_board
+02-board-selected -shot qa_selected
+03-village -village -shot qa_village
+05-shop -shop -shot shop
+06-quests -shot qa_quests
+07-album -shot qa_album
+11-settings -shot qa_settings
+12-daily-reward -shot qa_daily
+13-new-resident -shot qa_celebrate
+14-toast -shot qa_toast
+18-event -shot qa_event
+19-postcard -shot qa_postcard
+27-store-board -shot board
+28-store-village -village -shot village
+29-store-event -shot event
+30-store-north -village -shot north
+31-store-postcard -shot postcard
