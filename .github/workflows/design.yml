@@ -1,0 +1,122 @@
+name: Design screens
+
+# Макеты всех экранов, окон и состояний (design/<версия>/screens) на iPhone 6.9" в демо-состоянии
+# (-demo). Список кадров: tools/design_shots.txt. Игра всегда в светлой теме, поэтому одна тема.
+# PNG лежат в артефакте design-screens и коммитятся в ветку в design/<версия>/screens.
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        description: "Язык (ru или en)"
+        default: "ru"
+  push:
+    branches:
+      - "design/**"
+  pull_request:
+    paths:
+      - Hearthmend/App/Shots.swift
+      - tools/design_shots.txt
+      - .github/workflows/design.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: design-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shots:
+    runs-on: macos-26
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Unpack sprites
+        env:
+          ASSETS_KEY: ${{ secrets.ASSETS_KEY }}
+        run: |
+          if [ -z "$ASSETS_KEY" ]; then echo "::warning::нет ASSETS_KEY, макеты с эмодзи"; exit 0; fi
+          if openssl enc -d -aes-256-cbc -md sha256 -in Art/sprites.enc -pass env:ASSETS_KEY | tar -xz -C Hearthmend/Resources; then
+            if [ -f Hearthmend/Resources/Sprites/appicon.png ]; then
+              mv Hearthmend/Resources/Sprites/appicon.png Hearthmend/Resources/Assets.xcassets/AppIcon.appiconset/icon.png
+            fi
+          else
+            rm -rf Hearthmend/Resources/Sprites
+            echo "::warning::Не удалось расшифровать спрайты, макеты с эмодзи"
+          fi
+
+      - name: Build for simulator
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -project Hearthmend.xcodeproj -scheme Hearthmend -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build > build.log 2>&1 || { grep -E "error:" build.log | sort -u | head -50; exit 1; }
+
+      - name: Take design screenshots
+        env:
+          LANG_CODE: ${{ inputs.language || 'ru' }}
+        run: |
+          set -e
+          APP=build/Build/Products/Debug-iphonesimulator/Hearthmend.app
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c "
+          import json,sys
+          d=json.load(sys.stdin)['devices']
+          names=[x for r in d.values() for x in r if 'iPhone' in x['name']]
+          best=[x for x in names if 'Pro Max' in x['name']] or names
+          print(best[-1]['udid'])")
+          xcrun simctl boot "$DEVICE"
+          xcrun simctl bootstatus "$DEVICE" -b
+          xcrun simctl install "$DEVICE" "$APP"
+          # после загрузки система показывает приветственные уведомления: ждем, пока уйдут
+          sleep 90
+          mkdir -p design-screens
+          shoot() { # файл, аргументы
+            xcrun simctl terminate "$DEVICE" com.personal.hearthmend 2>/dev/null || true
+            xcrun simctl launch "$DEVICE" com.personal.hearthmend -demo -AppleLanguages "($LANG_CODE)" "${@:2}" >/dev/null
+            sleep 8
+            for try in 1 2 3 4 5; do
+              xcrun simctl io "$DEVICE" screenshot "$1" >/dev/null
+              sips -s format bmp -c 140 700 --cropOffset 120 310 "$1" --out /tmp/top.bmp >/dev/null
+              python3 -c "
+          import sys
+          b=open('/tmp/top.bmp','rb').read(); off=int.from_bytes(b[10:14],'little'); px=b[off:]
+          v=sum(px[i] for i in range(0,len(px),7))/max(1,len(range(0,len(px),7)))
+          sys.exit(1 if v>185 else 0)" && break
+              echo "уведомление на $1, снимаю снова"; sleep 10
+            done
+          }
+          shoot /tmp/warmup.png -shot qa_board
+          sleep 15
+          grep -v '^#' tools/design_shots.txt | while read -r name args; do
+            [ -n "$name" ] || continue
+            # shellcheck disable=SC2086
+            shoot "design-screens/$name.png" $args
+          done
+          ls design-screens | wc -l
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-screens
+          path: design-screens
+          if-no-files-found: ignore
+
+      - name: Commit screenshots to design/<version>/screens
+        run: |
+          set -euo pipefail
+          VERSION=$(grep -m1 'MARKETING_VERSION' project.yml | sed 's/.*: *//; s/"//g')
+          DEST="design/$VERSION/screens"
+          rm -rf "$DEST" && mkdir -p "$DEST"
+          cp design-screens/*.png "$DEST"/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Design screens $VERSION: $(ls "$DEST"/*.png | wc -l | tr -d ' ') screenshots"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
