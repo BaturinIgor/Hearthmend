@@ -24,10 +24,13 @@ enum Shot {
         }
     }
     static var hasCaption: Bool { name != nil && name != "shop" && !isQA }
-    /// Кадр большого события: -shot qa_adv_<depths|island|greenhouse|mosaic|lanterns>.
+    /// Кадр большого события: -shot qa_adv_<depths|island|greenhouse|mosaic|lanterns>[_track].
     static var adventure: AdventureKind? {
         guard let n = name, n.hasPrefix("qa_adv_") else { return nil }
-        return AdventureKind(rawValue: String(n.dropFirst("qa_adv_".count)))
+        // qa_adv_<вид>_track: то же событие с открытой дорожкой наград.
+        var kind = String(n.dropFirst("qa_adv_".count))
+        if kind.hasSuffix("_track") { kind = String(kind.dropLast("_track".count)) }
+        return AdventureKind(rawValue: kind)
     }
     /// Кадры для проверки интерфейса (не для App Store): -shot qa_<экран>.
     static var isQA: Bool { name?.hasPrefix("qa_") == true }
@@ -52,6 +55,11 @@ struct QAScreen: View {
         case "qa_jar": JarSheet()
         case "qa_story":
             ZStack { ContentView(); StoryView(scene: "mine.intro") {} }
+        case "qa_event":
+            if let def = store.game.activeEvent { EventSheet(def: def) } else { ContentView() }
+        case "qa_postcard": PostcardSheet()
+        case "qa_barter": BarterSheet()
+        case "qa_adv_depths_track": AdventureTrackSheet(icon: "🚃", note: "adv.depths.treasures")
         case _ where Shot.adventure != nil:
             AdventureSheet()
         default:
