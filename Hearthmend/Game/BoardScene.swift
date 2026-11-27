@@ -110,18 +110,24 @@ final class BoardScene: SKScene {
         }
         let state = store.game.state
         let needed = store.game.neededItems
+        let warm = Set(store.game.warmCells)
         for i in state.cells.indices {
             let piece = state.cells[i]
             let highlighted = piece?.item.map { needed.contains($0) } ?? false
             let revealed = store.game.isRevealed(i)
             let rowChest = i % cols == cols - 1 && state.thicketRows.contains(i / cols)
-            let sig = piece.map { "\($0)|\(highlighted)|\(revealed)|\(rowChest)" } ?? ""
+            // у очага: насколько предмет дозрел (полоска), у самого очага - сколько огня осталось
+            let ripeness = warm.contains(i) ? store.game.ripeness(at: i) : nil
+            var stage = ripeness.map { Int($0 * 10) } ?? -1
+            if case .hearth(let h)? = piece { stage = Int(h.fuel / 600) }
+            let sig = piece.map { "\($0)|\(highlighted)|\(revealed)|\(rowChest)|\(stage)" } ?? ""
             if drawn[i] == sig, contentNodes[i] != nil || piece == nil { continue }
             contentNodes[i]?.removeFromParent()
             contentNodes[i] = nil
             drawn[i] = sig
             guard let piece else { continue }
-            let node = makeNode(for: piece, highlighted: highlighted, revealed: revealed, rowChest: rowChest, index: i)
+            let node = makeNode(for: piece, highlighted: highlighted, revealed: revealed, rowChest: rowChest, index: i,
+                                ripeness: ripeness)
             node.position = center(of: i)
             node.zPosition = 1
             boardNode.addChild(node)
@@ -130,6 +136,44 @@ final class BoardScene: SKScene {
         boardNode.children.filter { $0.name == "tutorial" }.forEach { $0.removeFromParent() }
         updateSelection()
         tutorialHints(state)
+        playBoardEvents()
+    }
+
+    /// Живое поле и очаг сработали сами: предмет вылетает из пары, дозревший у очага вспыхивает.
+    private func playBoardEvents() {
+        guard let store, !store.boardEvents.isEmpty else { return }
+        let events = store.boardEvents
+        store.boardEvents = []
+        for e in events {
+            switch e {
+            case .grew(let from, let to, _):
+                fly(to, from: center(of: from))
+            case .ripened(let index, _):
+                pop(at: index)
+                sparkle(at: index)
+            case .hearthOut(let index):
+                dust(at: index)
+            }
+        }
+    }
+
+    /// Полоска внизу клетки: дозревание у очага (оранжевая) или огонь очага (красная).
+    private func meter(_ fraction: Double, color: UIColor) -> SKNode {
+        let node = SKNode()
+        let w = cellSize * 0.62, h = max(3, cellSize * 0.07)
+        let track = SKShapeNode(rectOf: CGSize(width: w, height: h), cornerRadius: h / 2)
+        track.fillColor = UIColor(white: 0, alpha: 0.35)
+        track.strokeColor = .clear
+        node.addChild(track)
+        let f = CGFloat(max(0.04, min(1, fraction)))
+        let fill = SKShapeNode(rectOf: CGSize(width: w * f, height: h), cornerRadius: h / 2)
+        fill.fillColor = color
+        fill.strokeColor = .clear
+        fill.position = CGPoint(x: -w * (1 - f) / 2, y: 0)
+        node.addChild(fill)
+        node.position = CGPoint(x: 0, y: -cellSize * 0.4)
+        node.zPosition = 3
+        return node
     }
 
     /// Узел клетки больше не соответствует состоянию (его тащили): нарисовать заново.
@@ -189,11 +233,20 @@ final class BoardScene: SKScene {
         boardNode.addChild(ring)
     }
 
-    private func makeNode(for piece: Piece, highlighted: Bool, revealed: Bool = true, rowChest: Bool = false, index: Int = 0) -> SKNode {
+    private func makeNode(for piece: Piece, highlighted: Bool, revealed: Bool = true, rowChest: Bool = false, index: Int = 0,
+                          ripeness: Double? = nil) -> SKNode {
         guard let catalog = store?.catalog else { return SKNode() }
         let node = SKNode()
         switch piece {
         case .item(let item):
+            if let ripeness {
+                // тепло очага: теплое пятно под предметом и полоска, сколько осталось до следующей ступени
+                let warm = SKShapeNode(circleOfRadius: cellSize * 0.4)
+                warm.fillColor = UIColor(red: 1, green: 0.62, blue: 0.25, alpha: 0.3)
+                warm.strokeColor = .clear
+                node.addChild(warm)
+                node.addChild(meter(ripeness, color: UIColor(red: 1, green: 0.66, blue: 0.2, alpha: 1)))
+            }
             if highlighted {
                 let glow = SKShapeNode(circleOfRadius: cellSize * 0.42)
                 glow.fillColor = Palette.needed
@@ -214,6 +267,48 @@ final class BoardScene: SKScene {
             let def = catalog.chain(gen.chain)
             node.addChild(icon(key: def?.generator ?? "", fallback: def?.generatorEmoji ?? "?", scale: 0.68))
             node.addChild(stars(gen.tier + 1))
+        case .broken(let item):
+            // сломанная вещь: блеклая, с трещиной и молоточком в углу
+            node.addChild(shadow(width: 0.5))
+            let art = icon(key: catalog.key(for: item), fallback: catalog.emoji(for: item), scale: 0.66)
+            if let sprite = art as? SKSpriteNode {
+                sprite.color = UIColor(red: 0.45, green: 0.42, blue: 0.4, alpha: 1)
+                sprite.colorBlendFactor = 0.55
+            } else {
+                art.alpha = 0.6
+            }
+            node.addChild(art)
+            let crack = CGMutablePath()
+            let k = cellSize
+            crack.move(to: CGPoint(x: -0.05 * k, y: 0.3 * k))
+            crack.addLine(to: CGPoint(x: 0.04 * k, y: 0.12 * k))
+            crack.addLine(to: CGPoint(x: -0.06 * k, y: 0.0))
+            crack.addLine(to: CGPoint(x: 0.06 * k, y: -0.14 * k))
+            crack.addLine(to: CGPoint(x: 0.0, y: -0.28 * k))
+            let line = SKShapeNode(path: crack)
+            line.strokeColor = UIColor(red: 0.18, green: 0.12, blue: 0.1, alpha: 0.9)
+            line.lineWidth = max(2, k * 0.045)
+            line.lineCap = .round
+            line.lineJoin = .round
+            line.zPosition = 2
+            node.addChild(line)
+            let tool = icon(key: "ui_hammer", fallback: "🔨", scale: 0.24)
+            tool.position = CGPoint(x: k * 0.28, y: k * 0.28)
+            tool.zPosition = 3
+            node.addChild(tool)
+            node.addChild(badge("\(item.tier + 1)"))
+        case .hearth(let hearth):
+            let glow = SKShapeNode(circleOfRadius: cellSize * 0.46)
+            glow.fillColor = hearth.isLit ? UIColor(red: 1, green: 0.58, blue: 0.2, alpha: 0.5) : UIColor(white: 0.2, alpha: 0.25)
+            glow.strokeColor = .clear
+            node.addChild(glow)
+            node.addChild(shadow(width: 0.62))
+            let fire = icon(key: hearth.isLit ? "ui_hearth" : "ui_hearth_cold", fallback: hearth.isLit ? "🔥" : "🪨", scale: 0.7)
+            node.addChild(fire)
+            node.addChild(meter(hearth.fuel / Balance.hearthFuelMax, color: UIColor(red: 0.95, green: 0.33, blue: 0.18, alpha: 1)))
+            if hearth.isLit {
+                glow.run(.repeatForever(.sequence([.fadeAlpha(to: 0.6, duration: 0.8), .fadeAlpha(to: 1, duration: 0.8)])))
+            }
         case .debris(let layers):
             let base = SKShapeNode(rectOf: CGSize(width: cellSize - 3, height: cellSize - 3), cornerRadius: cellSize * 0.18)
             base.fillColor = Palette.debris
@@ -508,6 +603,13 @@ final class BoardScene: SKScene {
             pop(at: to)
             leaves(at: to)
             sparkle(at: to)
+        case .fueled:
+            pop(at: to)
+            sparkle(at: to)
+        case .mended:
+            pop(at: to)
+            sparkle(at: to)
+            dust(at: to)
         case .moved:
             slide(to, from: p)
         case .swapped:

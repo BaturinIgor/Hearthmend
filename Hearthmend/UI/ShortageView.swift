@@ -78,7 +78,7 @@ private struct ShortageCard: View {
         .frame(maxWidth: 340)
         .background(PixelSlice(key: "ui_panel", inset: 6))
         .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
-        .sheet(isPresented: $showShop, onDismiss: close) { ShopView(tab: shortage.isGems ? .gems : .resources) }
+        .sheet(isPresented: $showShop, onDismiss: close) { ShopView(tab: shortage.isGems ? .gems : .resources).analyticsScreen("ShopFromShortage") }
     }
 
     private var icon: String {

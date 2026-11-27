@@ -37,6 +37,10 @@ public enum Piece: Codable, Hashable {
     case thicket(Item)
     /// Ящик: сливается с таким же в ящик побольше, открывается двойным тапом.
     case chest(Chest)
+    /// Сломанная вещь (1.2): чинится предметом другой цепочки (Game.mendTool), становится целой.
+    case broken(Item)
+    /// Очаг (1.2): топится предметами леса, пока горит - соседние предметы дозревают.
+    case hearth(Hearth)
 
     public var item: Item? {
         if case .item(let i) = self { return i }
@@ -45,9 +49,29 @@ public enum Piece: Codable, Hashable {
 
     public var isMovable: Bool {
         switch self {
-        case .item, .generator, .chest: return true
+        case .item, .generator, .chest, .broken, .hearth: return true
         case .debris, .bubble, .thicket: return false
         }
+    }
+}
+
+/// Очаг на поле: сколько секунд ему еще гореть.
+public struct Hearth: Codable, Hashable {
+    public var fuel: Double
+
+    public init(fuel: Double = 0) { self.fuel = fuel }
+
+    public var isLit: Bool { fuel > 0 }
+}
+
+/// Тепло, накопленное предметом у очага. Хранится с самим предметом: другой предмет в клетке начинает с нуля.
+public struct Warmth: Codable, Equatable {
+    public var item: Item
+    public var seconds: Double
+
+    public init(item: Item, seconds: Double) {
+        self.item = item
+        self.seconds = seconds
     }
 }
 
@@ -241,6 +265,12 @@ public struct GameState: Codable, Equatable {
     public var adventure: AdventureState?
     /// «Обмен» текущих выходных.
     public var barter: BarterState?
+    /// Живое поле и очаг (1.2): с какого момента считать время, тепло предметов у очага (клетка -> тепло),
+    /// выдан ли очаг.
+    public var lifeUpdatedAt: Date?
+    public var hearthUpdatedAt: Date?
+    public var warmth: [Int: Warmth] = [:]
+    public var hearthGiven = false
 
     public init(cells: [Piece?], energy: Int, energyUpdatedAt: Date, coins: Int, gems: Int, stars: Int, xp: Int,
                 orders: [Order], nextOrderId: Int, basket: [Item], basketSize: Int, bestTier: [String: Int],
@@ -274,6 +304,7 @@ public struct GameState: Codable, Equatable {
         case friendHearts, friendClaimed, merchant, merchantNextAt, merchantsServed, achievementsClaimed
         case petsOwned, petGiftDay
         case thicketRows, pendingChests, chestsOpened, shopGiftDay, adventure, barter
+        case lifeUpdatedAt, hearthUpdatedAt, warmth, hearthGiven
     }
 
     /// Поля, которых не было в старых сохранениях, читаются со значениями по умолчанию.
@@ -348,6 +379,10 @@ public struct GameState: Codable, Equatable {
         shopGiftDay = try c.decodeIfPresent(Int.self, forKey: .shopGiftDay) ?? Int.min
         adventure = try c.decodeIfPresent(AdventureState.self, forKey: .adventure)
         barter = try c.decodeIfPresent(BarterState.self, forKey: .barter)
+        lifeUpdatedAt = try c.decodeIfPresent(Date.self, forKey: .lifeUpdatedAt)
+        hearthUpdatedAt = try c.decodeIfPresent(Date.self, forKey: .hearthUpdatedAt)
+        warmth = try c.decodeIfPresent([Int: Warmth].self, forKey: .warmth) ?? [:]
+        hearthGiven = try c.decodeIfPresent(Bool.self, forKey: .hearthGiven) ?? false
     }
 }
 

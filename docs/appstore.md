@@ -5,7 +5,7 @@
 - Подзаголовок (30 символов): Cozy merge & village restore
 - Категория: Games → Puzzle, дополнительная Games → Casual
 - Возраст: 4+
-- Privacy: Data Not Collected (нет аналитики, рекламы и аккаунтов)
+- Privacy (с 1.2): Identifiers → Device ID; Location → Coarse Location; Purchases → Purchase History; Usage Data → Product Interaction; Diagnostics → Other Diagnostic Data (модель, версия iOS в отзывах); User Content → Customer Support (сообщения разработчику). Везде: не связано с личностью, не для отслеживания. Цели: Analytics, для Customer Support - App Functionality. До 1.1 было Data Not Collected
 - Ссылка на политику: docs/privacy.html (нужно опубликовать, см. ниже)
 
 ## Описание (en)

@@ -410,6 +410,29 @@ struct BuildingView: View {
 
 /// Готовую постройку можно передвинуть: удержать и тащить пальцем. Двойной тап по
 /// поднятой постройке не нужен: отпустил - встала на новое место.
+/// Куда можно поставить постройку при переносе: не в туман, не за край карты и не на другую постройку.
+@MainActor
+enum Placement {
+    /// Площадка под постройкой в клетках: нижняя часть картинки (крыши могут заходить друг за друга).
+    static func footprint(_ task: VillageTask, at spot: (x: Double, y: Double)) -> CGRect {
+        let image = Sprites.image(task.building)
+        let w = Double(image?.size.width ?? 32) / 16, h = Double(image?.size.height ?? 32) / 16
+        let fw = max(1, w * 0.6), fh = max(1, h * 0.35)
+        return CGRect(x: spot.x - fw / 2, y: spot.y - fh, width: fw, height: fh)
+    }
+
+    static func isFree(_ task: VillageTask, at spot: (x: Double, y: Double), game: Game) -> Bool {
+        let rect = footprint(task, at: spot)
+        guard rect.minX >= 0, rect.maxX <= Game.mapSize.width, spot.y <= Game.mapSize.height else { return false }
+        if spot.y < (game.fogRow ?? 0) + Game.buildingFogMargin { return false }
+        for other in game.village.allTasks where other.id != task.id {
+            guard let d = game.village.district(of: other.id), game.isDistrictOpen(d) else { continue }
+            if rect.intersects(footprint(other, at: game.spot(of: other))) { return false }
+        }
+        return true
+    }
+}
+
 private struct BuildingMover: ViewModifier {
     @EnvironmentObject private var store: GameStore
     let task: VillageTask
@@ -418,12 +441,34 @@ private struct BuildingMover: ViewModifier {
     @State private var drag: CGSize = .zero
     @State private var lifted = false
 
+    /// Куда встанет постройка, если отпустить сейчас.
+    private var target: (x: Double, y: Double) {
+        let spot = store.game.spot(of: task)
+        let cell = 16 * scale
+        return (spot.x + Double(drag.width / cell), spot.y + Double(drag.height / cell))
+    }
+
     func body(content: Content) -> some View {
         if enabled {
             content
                 .scaleEffect(lifted ? 1.08 : 1, anchor: .bottom)
                 .shadow(color: .black.opacity(lifted ? 0.35 : 0), radius: 6, y: 4)
                 .offset(drag)
+                .background(alignment: .topLeading) {
+                    if lifted {
+                        // площадка под постройкой: зеленая - можно поставить, красная - нельзя
+                        let free = Placement.isFree(task, at: target, game: store.game)
+                        let rect = Placement.footprint(task, at: target)
+                        let cell = 16 * scale
+                        RoundedRectangle(cornerRadius: 4 * scale)
+                            .fill((free ? Color.green : Color.red).opacity(0.35))
+                            .overlay(RoundedRectangle(cornerRadius: 4 * scale)
+                                .stroke(free ? Color.green : Color.red, lineWidth: 2))
+                            .frame(width: rect.width * cell, height: rect.height * cell)
+                            .offset(x: rect.minX * cell, y: rect.minY * cell)
+                            .allowsHitTesting(false)
+                    }
+                }
                 .zIndex(lifted ? 10 : 0)
                 .gesture(
                     LongPressGesture(minimumDuration: 0.35)
@@ -440,8 +485,13 @@ private struct BuildingMover: ViewModifier {
                             if case .second(true, let d?) = value {
                                 let cell = 16 * scale
                                 let spot = store.game.spot(of: task)
-                                store.moveBuilding(task.id, x: spot.x + Double(d.translation.width / cell),
-                                                   y: spot.y + Double(d.translation.height / cell))
+                                let to = (x: spot.x + Double(d.translation.width / cell), y: spot.y + Double(d.translation.height / cell))
+                                if Placement.isFree(task, at: to, game: store.game) {
+                                    store.moveBuilding(task.id, x: to.x, y: to.y)
+                                } else {
+                                    // на красное не ставим: постройка возвращается на место
+                                    Haptics.warning()
+                                }
                             }
                             drag = .zero
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { lifted = false }

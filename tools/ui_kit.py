@@ -443,6 +443,28 @@ def hammer():
     return outlined(im)
 
 
+def hearth(lit=True):
+    """Очаг на поле: каменное кольцо, внутри поленья и огонь (или угли, когда погас)."""
+    im = canvas(); d = ImageDraw.Draw(im)
+    stone, stone_l, stone_d = (150, 146, 140, 255), (190, 186, 178, 255), (108, 104, 100, 255)
+    d.ellipse((1, 8, 14, 14), fill=stone_d)
+    d.ellipse((1, 7, 14, 13), fill=stone)
+    for x, y in ((2, 9), (5, 8), (9, 8), (12, 9)):
+        d.point((x, y), fill=stone_l)
+    d.ellipse((4, 9, 11, 12), fill=(70, 46, 30, 255))
+    d.line((4, 11, 11, 9), fill=WOOD_L, width=2)
+    d.line((4, 9, 11, 11), fill=WOOD_D, width=1)
+    if lit:
+        d.polygon([(5, 10), (6, 5), (7, 7), (8, 2), (9, 6), (10, 4), (11, 10)], fill=(232, 88, 40, 255))
+        d.polygon([(6, 10), (7, 7), (8, 5), (9, 8), (10, 10)], fill=(250, 170, 50, 255))
+        d.polygon([(7, 10), (8, 7), (9, 10)], fill=(255, 236, 140, 255))
+    else:
+        for x, y in ((6, 10), (8, 9), (10, 10)):
+            d.point((x, y), fill=(200, 90, 50, 255))
+        d.point((7, 6), fill=(170, 170, 176, 200)); d.point((8, 4), fill=(190, 190, 196, 160))
+    return outlined(im)
+
+
 def piggy():
     im = canvas(); d = ImageDraw.Draw(im)
     pink, dark = (250, 160, 180, 255), (220, 110, 140, 255)
@@ -745,7 +767,7 @@ def main():
         "ui_frame": frame_pic(), "ui_basket": basket(), "ui_gift": gift(), "ui_jar": jar(),
         "ui_rosette": rosette(), "ui_question": question(), "ui_lock": lock(), "ui_undo": undo(),
         "ui_pouch": pouch(), "ui_chest": chest(), "ui_bag": bag(), "ui_vault": vault(),
-        "ui_hammer": hammer(), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
+        "ui_hammer": hammer(), "ui_hearth": hearth(), "ui_hearth_cold": hearth(False), "ui_piggy": piggy(), "ui_check": check(), "ui_party": party(),
         "ui_confetti": confetti(), "ui_plant": plant(), "ui_book": book(),
         "ui_trophy": trophy(), "ui_wagon": wagon(),
         "ui_pickaxe": pickaxe(), "ui_lantern": lantern(), "ui_minecart": minecart(),

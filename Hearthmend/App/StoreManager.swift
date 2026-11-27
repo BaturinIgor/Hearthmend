@@ -44,16 +44,21 @@ final class StoreManager: ObservableObject {
         guard let product = products[id], purchasing == nil else { return }
         purchasing = id
         defer { purchasing = nil }
+        Analytics.shared.purchaseStarted(id)
         do {
             switch try await product.purchase() {
             case .success(let result):
+                if case .verified = result { Analytics.shared.purchase(product) } else { Analytics.shared.purchaseFailed(id) }
                 await handle(result)
-            case .userCancelled, .pending:
+            case .userCancelled:
+                Analytics.shared.purchaseCancelled(id)
+            case .pending:
                 break
             @unknown default:
                 break
             }
         } catch {
+            Analytics.shared.purchaseFailed(id)
             lastError = error.localizedDescription
         }
     }

@@ -30,6 +30,12 @@ extension Game {
             }
         }
         placePendingGenerators()
+        // до 1.2 постройки и украшения можно было утащить в туман над закрытыми районами: возвращаем к его краю
+        for (id, spot) in state.buildingSpots where spot.count == 2 {
+            let y = max(2, clampY(spot[1], margin: Self.buildingFogMargin))
+            if y != spot[1] { state.buildingSpots[id] = [spot[0], y] }
+        }
+        for i in state.placedDecor.indices { state.placedDecor[i].y = clampY(state.placedDecor[i].y) }
     }
 
     // MARK: - Перестановка построек
@@ -40,11 +46,14 @@ extension Game {
         return (task.x, Double(task.y))
     }
 
-    /// Двигать можно только готовые постройки, в пределах карты.
+    /// Запас под крышу постройки: основание не ближе этого к туману, чтобы дом не уходил в закрытый район.
+    public static let buildingFogMargin = 4.0
+
+    /// Двигать можно только готовые постройки, в пределах карты и ниже тумана над закрытыми районами.
     @discardableResult
     public func moveBuilding(_ id: String, x: Double, y: Double) -> Bool {
         guard let task = village.task(id), state.completedTasks.contains(task.id) else { return false }
-        state.buildingSpots[id] = [clampX(x), min(max(y, 2), Self.mapSize.height)]
+        state.buildingSpots[id] = [clampX(x), max(2, clampY(y, margin: Self.buildingFogMargin))]
         return true
     }
 

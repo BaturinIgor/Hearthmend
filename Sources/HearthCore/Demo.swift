@@ -53,6 +53,13 @@ extension Game {
         ]
         for i in game.state.cells.indices { game.state.cells[i] = nil }
         for (i, piece) in layout where i < game.state.cells.count { game.state.cells[i] = piece }
+        // очаг (1.2) посреди поля: горит, морковь рядом дозревает
+        game.state.cells[32] = .hearth(Hearth(fuel: 5 * 3600))
+        game.state.cells[39] = .item(Item(chain: "garden", tier: 1))
+        game.state.warmth[39] = Warmth(item: Item(chain: "garden", tier: 1), seconds: Balance.hearthRipenBase * 2 * 0.6)
+        game.state.hearthGiven = true
+        game.state.hearthUpdatedAt = now()
+        game.state.lifeUpdatedAt = now()
         game.state.orders = [
             Order(id: 9001, needs: [Item(chain: "garden", tier: 3)], coins: 24, stars: 1, xp: 8),
             Order(id: 9002, needs: [Item(chain: "quarry", tier: 4), Item(chain: "forest", tier: 2)], coins: 60, stars: 2, xp: 20),
@@ -108,5 +115,12 @@ extension Game {
         let saturday = Date(timeIntervalSince1970: 1_800_100_800)
         let shift = saturday.timeIntervalSince(start)
         return { Date().addingTimeInterval(shift) }
+    }
+
+    /// QA-кадр механик 1.2: сломанная вещь и пара живого поля, которая вот-вот выложит предмет.
+    public func stageMechanicsDemo() {
+        state.cells[37] = .broken(Item(chain: "garden", tier: 4))
+        state.cells[36] = .item(Item(chain: "forest", tier: 2))
+        state.lifeUpdatedAt = now().addingTimeInterval(-Balance.lifeInterval)
     }
 }

@@ -9,12 +9,17 @@ final class GameStore: ObservableObject {
     @Published var selected: Int?
     @Published var toast: String?
     /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
-    @Published var shortage: Shortage?
+    @Published var shortage: Shortage? {
+        didSet { if let shortage, shortage != oldValue { Analytics.shared.shortage(shortage.kind, need: shortage.need) } }
+    }
     /// Последний открытый ящик: сцена поля проигрывает по нему анимацию.
     private var selectedAt = Date.distantPast
     var lastOpenedChest: (index: Int, chest: Chest, reward: ChestReward)?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
-    @Published var celebration: Celebration?
+    @Published var celebration: Celebration? {
+        // праздник закрыли: удачный момент попросить оценку (ReviewPrompt сам решит, можно ли)
+        didSet { if celebration == nil, oldValue != nil { ReviewPrompt.celebrationClosed(game) } }
+    }
     /// Свежие награды события: баннер события их показывает.
     @Published var eventRewards: [EventReward] = []
 
@@ -25,6 +30,9 @@ final class GameStore: ObservableObject {
     /// Сцена перерисовывает поле после изменений, которые сделал не перетаскиванием.
     var onBoardChange: (() -> Void)?
     var onHighlight: (([Int]) -> Void)?
+    /// Что само случилось на поле (живое поле, очаг): сцена забирает и показывает анимацию.
+    var boardEvents: [BoardEvent] = []
+    private var boardRedrawAt = Date.distantPast
     @Published var canUndo = false
     private var undoTask: Task<Void, Never>?
 
@@ -41,6 +49,7 @@ final class GameStore: ObservableObject {
         state = game.state
         game.refreshEnergy()
         game.expireBubbles()
+        _ = tickBoard()
         if !Self.isDemo { game.updateMerchant() }
         commit()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
@@ -67,6 +76,7 @@ final class GameStore: ObservableObject {
         let energy = game.state.energy
         game.refreshEnergy()
         let removed = game.expireBubbles()
+        if tickBoard() { return }
         if !removed.isEmpty || energy != game.state.energy {
             commit()
             if !removed.isEmpty { onBoardChange?() }
@@ -76,8 +86,43 @@ final class GameStore: ObservableObject {
         }
     }
 
+    /// Живое поле и очаг. true - поле изменилось и уже сохранено.
+    private func tickBoard() -> Bool {
+        let hadHearth = game.hearthIndex != nil
+        let events = game.tickBoard()
+        let gotHearth = !hadHearth && game.hearthIndex != nil
+        if gotHearth { introduce("hearth") }
+        if events.contains(where: { if case .grew = $0 { return true } else { return false } }) { introduce("life") }
+        if events.isEmpty, !gotHearth {
+            // полоска огня и дозревания у очага: перерисовать раз в несколько секунд
+            if game.hearth?.isLit == true, Date().timeIntervalSince(boardRedrawAt) > 5 {
+                boardRedrawAt = Date()
+                onBoardChange?()
+            }
+            return false
+        }
+        boardEvents += events
+        if events.contains(where: { if case .ripened = $0 { return true } else { return false } }) {
+            Audio.shared.play(.sparkle)
+        }
+        commit()
+        onBoardChange?()
+        return true
+    }
+
+    /// Первая встреча с механикой поля: подсказка на подольше и событие в статистику.
+    private func introduce(_ mechanic: String, _ args: CVarArg...) {
+        let key = "tip.\(mechanic)"
+        guard !Self.isDemo, !state.storySeen.contains(key), !game.state.storySeen.contains(key) else { return }
+        game.markStorySeen(key)
+        show(String(format: L10n.t(key), arguments: args), seconds: 6)
+        Analytics.shared.mechanicSeen(mechanic)
+    }
+
     private func commit() {
+        let old = state
         state = game.state
+        if !Self.isDemo { Analytics.shared.track(from: old, to: state, game: game) }
         if !Self.isDemo { Persistence.save(game.state) }
     }
 
@@ -86,11 +131,11 @@ final class GameStore: ObservableObject {
         if !Self.isDemo { Persistence.flush() }
     }
 
-    func show(_ text: String) {
+    func show(_ text: String, seconds: Double = 1.8) {
         toast = text
         toastTask?.cancel()
         toastTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 1_800_000_000)
+            try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
             guard !Task.isCancelled else { return }
             self?.toast = nil
         }
@@ -112,9 +157,10 @@ final class GameStore: ObservableObject {
             }
             let result = game.spawn(from: index)
             switch result {
-            case .spawned:
+            case .spawned(let cell, _):
                 Haptics.light()
                 Audio.shared.play(.spawn)
+                if case .broken(let b)? = game.piece(at: cell) { introduce("broken", toolText(for: b)) }
             case .noEnergy:
                 Audio.shared.play(.nope)
                 shortage = .energy
@@ -138,6 +184,13 @@ final class GameStore: ObservableObject {
             selected = selected == index ? nil : index
         case .debris?:
             show(L10n.t("toast.debris"))
+        case .broken(let item)?:
+            Haptics.light()
+            selected = index
+            show(String(format: L10n.t("mend.hint"), toolText(for: item)), seconds: 3)
+        case .hearth?:
+            Haptics.light()
+            selected = selected == index ? nil : index
         case .chest(let chest)?:
             // как генератор: первый тап выбирает, второй открывает. Слишком быстрый второй тап
             // по ресурсу не считается: случайный двойной тап не заберет то, что копили для слияния
@@ -179,8 +232,20 @@ final class GameStore: ObservableObject {
 
     @discardableResult
     func move(from: Int, to: Int) -> Game.MoveResult {
+        let moving = game.piece(at: from)?.item
         let result = game.move(from: from, to: to)
         switch result {
+        case .fueled:
+            Haptics.success()
+            Audio.shared.play(.sparkle)
+            if let moving { Analytics.shared.hearthFueled(moving) }
+            selected = to
+        case .mended(let item):
+            Haptics.success()
+            Audio.shared.play(.merge)
+            Analytics.shared.itemMended(item)
+            show(L10n.t("mend.done"))
+            selected = to
         case .merged, .mergedGenerator, .mergedChest, .unlocked:
             Haptics.success()
             Audio.shared.play(game.lastLuckyEnergy > 0 ? .coins : .merge)
@@ -195,13 +260,27 @@ final class GameStore: ObservableObject {
         return result
     }
 
+    /// QA-кадры: поставить на поле нужное и сразу показать.
+    func stageDemo(_ change: (Game) -> Void) {
+        change(game)
+        commit()
+        onBoardChange?()
+    }
+
+    /// Чем починить сломанную вещь: значок предмета и ступень, например «🪵 ур. 3».
+    func toolText(for broken: Item) -> String {
+        let tool = game.mendTool(for: broken)
+        return String(format: L10n.t("mend.tool"), catalog.emoji(for: tool), tool.tier + 1)
+    }
+
     func sellSelected() {
         guard let index = selected else { return }
         let coins = game.sell(at: index)
         guard coins > 0 else { return }
         selected = nil
         show(String(format: L10n.t("toast.sold"), coins))
-        canUndo = true
+        // сломанную вещь не вернуть: кнопки отмены нет
+        canUndo = game.canUndoSale
         undoTask?.cancel()
         undoTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: 5_000_000_000)
@@ -551,6 +630,7 @@ final class GameStore: ObservableObject {
     }
 
     func skipTutorial() {
+        Analytics.shared.tutorialSkipped(at: state.tutorialStep)
         game.skipTutorial()
         commit()
         onBoardChange?()
@@ -938,6 +1018,22 @@ enum Shortage: Equatable {
     case gems(need: Int)
 
     var isGems: Bool { if case .gems = self { return true } else { return false } }
+
+    /// Для статистики: чего не хватило и сколько.
+    var kind: String {
+        switch self {
+        case .energy: return "energy"
+        case .coins: return "coins"
+        case .gems: return "gems"
+        }
+    }
+
+    var need: Int {
+        switch self {
+        case .energy: return 0
+        case .coins(let n), .gems(let n): return n
+        }
+    }
 }
 
 struct Celebration: Equatable, Identifiable {

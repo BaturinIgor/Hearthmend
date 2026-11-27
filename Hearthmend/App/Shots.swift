@@ -49,6 +49,7 @@ struct QAScreen: View {
         case "qa_achievements": JournalSheet(tab: .achievements)
         case "qa_pets": PetsSheet()
         case "qa_settings": SettingsView()
+        case "qa_feedback": FeedbackView()
         case "qa_daily":
             ZStack { ContentView(); DailyRewardView {} }
         case "qa_basket": BasketSheet()
@@ -67,6 +68,11 @@ struct QAScreen: View {
                 .onAppear {
                     switch name {
                     case "qa_selected": store.selected = 26
+                    case "qa_mechanics":
+                        store.stageDemo { $0.stageMechanicsDemo() }
+                        store.tap(37)
+                    case "qa_hearth":
+                        store.tap(32)
                     case "qa_celebrate":
                         store.celebration = Celebration(icon: "npc:mila",
                                                         title: String(format: L10n.t("resident.arrived"), L10n.t("resident.mila")),
