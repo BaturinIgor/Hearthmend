@@ -22,6 +22,9 @@
 | `screen_view` (`screen_name`: Board, Village, Shop, ShopFromShortage, Settings, Feedback) | показ экрана |
 | `review_prompt_shown` (`level`, `days_played`) | показан системный запрос оценки (`Hearthmend/App/ReviewPrompt.swift`) |
 | `feedback_sent` (`kind`: bug / idea / other, `via`: telegram / mail) | отправлено сообщение разработчику |
+| `item_mended` (`chain`, `tier`) | починена сломанная вещь (механики поля 1.2, `Sources/HearthCore/BoardLife.swift`) |
+| `hearth_fueled` (`tier`) | в очаг брошен предмет леса |
+| `mechanic_seen` (`mechanic`: life / hearth / broken) | игрок впервые встретил механику поля |
 | `daily_state` | раз в день: уровень, звезды, монеты, кристаллы, энергия, район, всего заказов и слияний, стрик, покупки |
 | user properties `build_type`, `first_seen_week`, `level`, `is_vip`, `is_payer` | для разрезов и когорт |
 

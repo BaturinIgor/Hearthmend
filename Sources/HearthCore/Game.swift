@@ -254,10 +254,11 @@ public final class Game {
         if boosted { tier += 1 }
         tier = min(tier, catalog.maxTier(of: gen.chain))
         let item = Item(chain: gen.chain, tier: tier)
-        state.cells[cell] = .item(item)
+        let piece = maybeBroken(item)
+        state.cells[cell] = piece
         advanceTutorial(from: .spawn)
         lastDiscovery = nil
-        discover(item)
+        if case .item = piece { discover(item) }
         progressQuest(.spawn)
         return .spawned(index: cell, item: item)
     }
@@ -273,6 +274,10 @@ public final class Game {
         case mergedChest(Chest)
         /// Предмет положен на такой же в зарослях: клетка расчищена, в ней предмет ступенью выше.
         case unlocked(item: Item)
+        /// Предмет леса брошен в очаг: он горит дольше.
+        case fueled(Hearth)
+        /// Сломанная вещь починена предметом другой цепочки.
+        case mended(item: Item)
         case invalid
     }
 
@@ -282,6 +287,9 @@ public final class Game {
         guard from != to,
               state.cells.indices.contains(from), state.cells.indices.contains(to),
               let a = state.cells[from], a.isMovable else { return .invalid }
+        // тепло очага копится у предмета, пока он лежит на месте: ход его сбрасывает
+        state.warmth[from] = nil
+        state.warmth[to] = nil
         let b = state.cells[to]
         if case .thicket(let hidden)? = b {
             guard case .item(let x) = a, x == hidden, isRevealed(to) else { return .invalid }
@@ -302,6 +310,12 @@ public final class Game {
         if let b, !b.isMovable { return .invalid }
 
         switch (a, b) {
+        case (.item(let x), .hearth?) where fuelValue(x) != nil:
+            guard let h = fuelHearth(item: x, from: from, to: to) else { return .invalid }
+            return .fueled(h)
+        case (.item(let x), .broken(let y)?) where canMend(y, with: x):
+            guard let fixed = mend(tool: x, from: from, to: to) else { return .invalid }
+            return .mended(item: fixed)
         case (.item(let x), .item(let y)?) where x == y:
             guard let next = catalog.next(x) else { return swap(from, to) }
             state.cells[to] = .item(next)
@@ -407,6 +421,15 @@ public final class Game {
 
     /// Продает предмет с поля. Возвращает полученные монеты (0, если продавать нечего).
     public func sell(at index: Int) -> Int {
+        if case .broken(let broken)? = piece(at: index) {
+            // сломанную вещь отдают старьевщику за четверть цены, без отмены: иначе продажа чинила бы ее
+            state.cells[index] = nil
+            let price = max(1, broken.value / 4)
+            state.coins += price
+            lastSale = nil
+            placePendingGenerators()
+            return price
+        }
         guard let item = piece(at: index)?.item else { return 0 }
         state.cells[index] = nil
         let price = sellPrice(item)

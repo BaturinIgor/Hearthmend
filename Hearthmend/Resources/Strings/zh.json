@@ -398,5 +398,13 @@
   "feedback.send": "发送",
   "feedback.sending": "正在发送…",
   "feedback.thanks": "谢谢！消息已发送",
-  "feedback.no_mail": "没有邮件应用。地址已复制：%@"
+  "feedback.no_mail": "没有邮件应用。地址已复制：%@",
+  "tip.life": "邻居互相帮忙：菜园物品放在森林物品（2级以上）旁边，会自己长出种子。每条链都有搭档。",
+  "tip.hearth": "出现了一个火炉！旁边的物品会熟成到下一级。添些树枝和木头让它一直燃烧。",
+  "tip.broken": "坏掉的物品！把%@放上去就能修好。",
+  "mend.hint": "修理：把%@放上去",
+  "mend.tool": "%@ %d级以上",
+  "mend.done": "修好了！",
+  "hearth.burning": "还能燃烧%@。旁边的物品在熟成，添些树枝吧",
+  "hearth.out": "火炉熄灭了。放一根树枝或木头进去"
 }

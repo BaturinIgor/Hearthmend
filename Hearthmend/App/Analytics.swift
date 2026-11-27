@@ -274,6 +274,13 @@ final class Analytics {
     func reviewPromptShown(level: Int, days: Int) { log("review_prompt_shown", ["level": level, "days_played": days]) }
     func feedbackSent(kind: String, via: String) { log("feedback_sent", ["kind": kind, "via": via]) }
 
+    // MARK: Механики поля (1.2)
+
+    func itemMended(_ item: Item) { log("item_mended", ["chain": item.chain, "tier": item.tier + 1]) }
+    func hearthFueled(_ item: Item) { log("hearth_fueled", ["tier": item.tier + 1]) }
+    /// Первый раз за игру: живое поле выложило предмет, очаг появился, выпала сломанная вещь.
+    func mechanicSeen(_ name: String) { log("mechanic_seen", ["mechanic": name]) }
+
     // MARK: Экраны
 
     func screenAppeared(_ screen: String) {

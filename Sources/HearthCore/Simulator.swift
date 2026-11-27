@@ -29,6 +29,8 @@ public struct SimConfig {
     /// Останавливаться, когда вся деревня отстроена.
     public var stopWhenVillageDone = true
     public var balance = Balance()
+    /// Вызывается в начале каждой сессии (игра и день от старта): что видит игрок, вернувшись в игру.
+    public var observe: ((Game, Double) -> Void)?
 
     public init() {}
 }
@@ -111,6 +113,13 @@ public struct SimReport: CustomStringConvertible {
     /// Сессии, в которых поле было забито и боту нечего было сделать с энергией.
     public var stalledSessions = 0
     public var bestTier: [String: Int] = [:]
+    /// Механики поля 1.2: сколько предметов выложило живое поле, сколько дозрело у очага,
+    /// сколько сломанных вещей выпало и починено, сколько раз топили очаг.
+    public var lifeSpawned = 0
+    public var ripened = 0
+    public var brokenMended = 0
+    public var brokenSold = 0
+    public var hearthFueled = 0
     public var villageDone = false
 
     public var description: String {
@@ -150,6 +159,14 @@ public enum Simulator {
             }
             game.refreshEnergy()
             game.expireBubbles()
+            for e in game.tickBoard() {
+                switch e {
+                case .grew: report.lifeSpawned += 1
+                case .ripened: report.ripened += 1
+                case .hearthOut: break
+                }
+            }
+            config.observe?(game, clock.date.timeIntervalSince(start) / 86400)
             if config.serveMerchant { game.updateMerchant() }
             if config.openJar { report.energyFromJar += game.openJar() }
             if config.claimDaily {
@@ -220,6 +237,8 @@ public enum Simulator {
             if completeTask(game, report: &report) { continue }
             if clearThicket(game, report: &report) { continue }
             if handleChests(game, report: &report) { continue }
+            if mendSomething(game, report: &report) { continue }
+            if fuelHearth(game, report: &report) { continue }
             if mergeSomething(game, report: &report) { continue }
             if config.popBubbles, popBubble(game, report: &report) { continue }
             if game.state.energy > 0 {
@@ -843,6 +862,46 @@ public enum Simulator {
         return result
     }
 
+    /// Чинит сломанную вещь самым простым подходящим предметом, если он не нужен заказам.
+    private static func mendSomething(_ game: Game, report: inout SimReport) -> Bool {
+        let need = demand(game)
+        var counts: [Item: Int] = [:]
+        for case .item(let item)? in game.state.cells { counts[item, default: 0] += 1 }
+        for (i, piece) in game.state.cells.enumerated() {
+            guard case .broken(let broken)? = piece else { continue }
+            let tools = game.state.cells.enumerated().compactMap { j, p -> (Int, Item)? in
+                guard case .item(let t)? = p, game.canMend(broken, with: t),
+                      (counts[t] ?? 0) > (need[t] ?? 0) else { return nil }
+                return (j, t)
+            }
+            guard let tool = tools.min(by: { $0.1.tier < $1.1.tier }) else { continue }
+            if case .mended = game.move(from: tool.0, to: i) {
+                report.brokenMended += 1
+                return true
+            }
+        }
+        return false
+    }
+
+    /// Подбрасывает в очаг лишнюю мелочь леса, когда гореть осталось меньше двух часов.
+    private static func fuelHearth(_ game: Game, report: inout SimReport) -> Bool {
+        guard let h = game.hearth, let at = game.hearthIndex, h.fuel < 2 * 3600 else { return false }
+        let need = demand(game)
+        var counts: [Item: Int] = [:]
+        for case .item(let item)? in game.state.cells { counts[item, default: 0] += 1 }
+        let fuel = game.state.cells.enumerated().compactMap { j, p -> (Int, Item)? in
+            guard case .item(let t)? = p, game.fuelValue(t) != nil, t.tier <= 1,
+                  (counts[t] ?? 0) > (need[t] ?? 0) else { return nil }
+            return (j, t)
+        }
+        guard let pick = fuel.min(by: { $0.1.tier < $1.1.tier }) else { return false }
+        if case .fueled = game.move(from: pick.0, to: at) {
+            report.hearthFueled += 1
+            return true
+        }
+        return false
+    }
+
     /// Продает предмет, который меньше всего пригодится. Сначала то, что не ведет к заказам:
     /// цепочки без спроса и ступени не ниже нужной. Заготовки для заказов продаются последними.
     private static func sellJunk(_ game: Game, report: inout SimReport) -> Bool {
@@ -866,6 +925,11 @@ public enum Simulator {
             let pairA = (counts[a.item] ?? 0) >= 2, pairB = (counts[b.item] ?? 0) >= 2
             if pairA != pairB { return !pairA }
             return a.item.tier < b.item.tier
+        }
+        if let broken = game.state.cells.firstIndex(where: { if case .broken? = $0 { return true } else { return false } }) {
+            report.coinsFromSelling += game.sell(at: broken)
+            report.brokenSold += 1
+            return true
         }
         guard let pick = junk.first else { return false }
         report.coinsFromSelling += game.sell(at: pick.index)

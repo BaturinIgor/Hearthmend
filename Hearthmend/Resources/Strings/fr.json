@@ -398,5 +398,13 @@
   "feedback.send": "Envoyer",
   "feedback.sending": "Envoi…",
   "feedback.thanks": "Merci ! Message envoyé",
-  "feedback.no_mail": "Pas d'app Mail. Adresse copiée : %@"
+  "feedback.no_mail": "Pas d'app Mail. Adresse copiée : %@",
+  "tip.life": "Les voisins s'entraident : un objet du potager à côté d'un objet de la forêt (niveau 2+) fait pousser des graines tout seul. Chaque chaîne a un partenaire.",
+  "tip.hearth": "Un foyer est apparu ! Les objets à côté mûrissent jusqu'au niveau suivant. Ajoute des brindilles et des bûches pour qu'il brûle.",
+  "tip.broken": "Un objet cassé ! Répare-le en posant %@ dessus.",
+  "mend.hint": "Répare-le : pose %@ dessus",
+  "mend.tool": "%@ niveau %d+",
+  "mend.done": "Réparé !",
+  "hearth.burning": "Brûle encore %@. Les objets voisins mûrissent, ajoute des brindilles",
+  "hearth.out": "Le foyer s'est éteint. Jette-y une brindille ou une bûche"
 }

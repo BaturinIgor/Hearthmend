@@ -32,3 +32,5 @@
 30-store-north -village -shot north
 31-store-postcard -shot postcard
 32-feedback -shot qa_feedback
+33-board-mechanics -shot qa_mechanics
+34-board-hearth -shot qa_hearth

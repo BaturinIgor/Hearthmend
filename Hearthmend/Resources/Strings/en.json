@@ -398,5 +398,13 @@
   "feedback.send": "Send",
   "feedback.sending": "Sending…",
   "feedback.thanks": "Thank you! Message sent",
-  "feedback.no_mail": "No mail app. The address is copied: %@"
+  "feedback.no_mail": "No mail app. The address is copied: %@",
+  "tip.life": "Neighbors help each other: a garden item next to a forest item (level 2+) grows seeds on its own. Every chain has a partner.",
+  "tip.hearth": "A hearth has appeared! Items next to it ripen to the next level. Feed it twigs and logs to keep it burning.",
+  "tip.broken": "A broken item! Fix it by dropping %@ on top.",
+  "mend.hint": "Fix it: drop %@ on top",
+  "mend.tool": "%@ level %d+",
+  "mend.done": "Fixed!",
+  "hearth.burning": "Burning for %@ more. Items next to it ripen; add twigs to keep it going",
+  "hearth.out": "The hearth went out. Drop a twig or a log in it"
 }

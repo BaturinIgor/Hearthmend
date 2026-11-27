@@ -85,14 +85,33 @@ final class VillageLayoutTests: XCTestCase {
         XCTAssertFalse(g.moveBuilding(task.id, x: 5, y: 50), "недостроенную не двигаем")
         g.state.stars += task.cost
         _ = g.complete(taskId: task.id)
-        XCTAssertTrue(g.moveBuilding(task.id, x: 5, y: 50))
+        let openY = Double(task.y) + 3
+        XCTAssertTrue(g.moveBuilding(task.id, x: 5, y: openY))
         XCTAssertEqual(g.spot(of: task).x, 5)
-        XCTAssertEqual(g.spot(of: task).y, 50)
+        XCTAssertEqual(g.spot(of: task).y, openY)
+        // в туман над закрытыми районами не уходит: встает у его края
+        let fog = try! XCTUnwrap(g.fogRow)
+        g.moveBuilding(task.id, x: 5, y: 20)
+        XCTAssertEqual(g.spot(of: task).y, fog + Game.buildingFogMargin)
         g.moveBuilding(task.id, x: -10, y: 999)
         XCTAssertGreaterThan(g.spot(of: task).x, 0)
         XCTAssertLessThanOrEqual(g.spot(of: task).y, Game.mapSize.height)
         g.resetBuilding(task.id)
         XCTAssertEqual(g.spot(of: task).x, task.x)
+    }
+
+    /// Постройки и украшения, утащенные в туман до 1.2, при загрузке возвращаются к его краю.
+    func testBuildingsInFogMoveBackOnLoad() {
+        let g = game()
+        let task = g.village.allTasks[0]
+        g.state.stars += task.cost
+        _ = g.complete(taskId: task.id)
+        let fog = try! XCTUnwrap(g.fogRow)
+        g.state.buildingSpots[task.id] = [5, 10]
+        g.state.placedDecor = [PlacedDecor(id: 1, key: "decor_torch", x: 3, y: 4)]
+        g.migrateVillage()
+        XCTAssertEqual(g.spot(of: task).y, fog + Game.buildingFogMargin)
+        XCTAssertEqual(g.state.placedDecor[0].y, fog + 1.5)
     }
 
     /// Новые цепочки попадают в заказы, когда открыты.

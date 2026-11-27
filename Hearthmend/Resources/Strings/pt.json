@@ -398,5 +398,13 @@
   "feedback.send": "Enviar",
   "feedback.sending": "Enviando…",
   "feedback.thanks": "Obrigado! Mensagem enviada",
-  "feedback.no_mail": "Sem app de e-mail. Endereço copiado: %@"
+  "feedback.no_mail": "Sem app de e-mail. Endereço copiado: %@",
+  "tip.life": "Vizinhos se ajudam: um item da horta ao lado de um da floresta (nível 2+) solta sementes sozinho. Cada cadeia tem um par.",
+  "tip.hearth": "Apareceu uma lareira! Os itens ao lado amadurecem para o próximo nível. Coloque gravetos e toras para mantê-la acesa.",
+  "tip.broken": "Um item quebrado! Conserte-o soltando %@ em cima.",
+  "mend.hint": "Conserte: solte %@ em cima",
+  "mend.tool": "%@ nível %d+",
+  "mend.done": "Consertado!",
+  "hearth.burning": "Queima por mais %@. Itens ao lado amadurecem; coloque gravetos",
+  "hearth.out": "A lareira apagou. Jogue um graveto ou uma tora"
 }

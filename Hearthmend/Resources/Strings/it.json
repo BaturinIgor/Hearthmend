@@ -398,5 +398,13 @@
   "feedback.send": "Invia",
   "feedback.sending": "Invio…",
   "feedback.thanks": "Grazie! Messaggio inviato",
-  "feedback.no_mail": "Nessuna app di posta. Indirizzo copiato: %@"
+  "feedback.no_mail": "Nessuna app di posta. Indirizzo copiato: %@",
+  "tip.life": "I vicini si aiutano: un oggetto dell'orto accanto a uno del bosco (livello 2+) produce semi da solo. Ogni catena ha un partner.",
+  "tip.hearth": "È apparso un focolare! Gli oggetti accanto maturano al livello successivo. Aggiungi rametti e ceppi per tenerlo acceso.",
+  "tip.broken": "Un oggetto rotto! Riparalo lasciando %@ sopra.",
+  "mend.hint": "Riparalo: lascia %@ sopra",
+  "mend.tool": "%@ livello %d+",
+  "mend.done": "Riparato!",
+  "hearth.burning": "Arde ancora per %@. Gli oggetti accanto maturano, aggiungi rametti",
+  "hearth.out": "Il focolare si è spento. Lanciaci un rametto o un ceppo"
 }

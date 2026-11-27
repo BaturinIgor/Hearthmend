@@ -61,6 +61,12 @@ enum Haptics {
         notify.notificationOccurred(.success)
         notify.prepare()
     }
+
+    static func warning() {
+        guard on else { return }
+        notify.notificationOccurred(.warning)
+        notify.prepare()
+    }
 }
 
 /// Строки интерфейса из Resources/Strings/<язык>.json, как в GameFarm и Sortelier.

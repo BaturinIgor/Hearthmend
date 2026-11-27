@@ -194,5 +194,9 @@ extension Game {
     }
 
     func clampX(_ x: Double) -> Double { min(max(x, 0.5), Self.mapSize.width - 0.5) }
-    func clampY(_ y: Double) -> Double { min(max(y, 1), Self.mapSize.height) }
+    /// Не выше тумана над закрытыми районами: margin - запас под высоту предмета (основание на y).
+    func clampY(_ y: Double, margin: Double = 1.5) -> Double {
+        let top = max(1, (fogRow ?? 0) + margin)
+        return min(max(y, top), Self.mapSize.height)
+    }
 }

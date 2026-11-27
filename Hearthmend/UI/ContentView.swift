@@ -401,6 +401,12 @@ private struct MerchantCard: View {
 private struct SelectedBar: View {
     @EnvironmentObject private var store: GameStore
 
+    /// «1:25» - часы и минуты, «25 мин» не нужно: значок огня рядом объясняет.
+    static func duration(_ seconds: Double) -> String {
+        let m = Int(seconds.rounded(.up) / 60)
+        return String(format: "%d:%02d", m / 60, m % 60)
+    }
+
     var body: some View {
         HStack(spacing: 8) {
             if let index = store.selected, let item = store.game.piece(at: index)?.item {
@@ -415,6 +421,23 @@ private struct SelectedBar: View {
                 let def = store.catalog.chain(gen.chain)
                 PixelIcon(key: def?.generator ?? "ui_crate", size: 30)
                 PixelText(String(format: L10n.t("selected.generator"), store.game.spawnCost(gen)), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            } else if let index = store.selected, case .broken(let item)? = store.game.piece(at: index) {
+                ItemIcon(item: item, size: 30)
+                    .saturation(0.3)
+                    .opacity(0.8)
+                PixelText(String(format: L10n.t("mend.hint"), store.toolText(for: item)), size: 13)
+                    .foregroundColor(Theme.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                ActionButton(title: String(format: L10n.t("selected.sell"), max(1, item.value / 4))) { store.sellSelected() }
+            } else if let index = store.selected, case .hearth(let hearth)? = store.game.piece(at: index) {
+                PixelIcon(key: "ui_hearth", size: 30)
+                PixelText(hearth.isLit
+                          ? String(format: L10n.t("hearth.burning"), Self.duration(hearth.fuel))
+                          : L10n.t("hearth.out"), size: 13)
                     .foregroundColor(Theme.text)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)

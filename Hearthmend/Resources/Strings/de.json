@@ -398,5 +398,13 @@
   "feedback.send": "Senden",
   "feedback.sending": "Wird gesendet…",
   "feedback.thanks": "Danke! Nachricht gesendet",
-  "feedback.no_mail": "Keine Mail-App. Adresse kopiert: %@"
+  "feedback.no_mail": "Keine Mail-App. Adresse kopiert: %@",
+  "tip.life": "Nachbarn helfen einander: Ein Gartenobjekt neben einem Waldobjekt (ab Stufe 2) legt von selbst Samen ab. Jede Kette hat einen Partner.",
+  "tip.hearth": "Eine Feuerstelle ist erschienen! Objekte daneben reifen zur nächsten Stufe. Leg Zweige und Holz nach, damit sie brennt.",
+  "tip.broken": "Ein kaputter Gegenstand! Repariere ihn, indem du %@ darauflegst.",
+  "mend.hint": "Reparieren: lege %@ darauf",
+  "mend.tool": "%@ Stufe %d+",
+  "mend.done": "Repariert!",
+  "hearth.burning": "Brennt noch %@. Objekte daneben reifen, leg Zweige nach",
+  "hearth.out": "Die Feuerstelle ist aus. Wirf einen Zweig oder ein Holzscheit hinein"
 }

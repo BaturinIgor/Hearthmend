@@ -398,5 +398,13 @@
   "feedback.send": "Wyślij",
   "feedback.sending": "Wysyłanie…",
   "feedback.thanks": "Dziękuję! Wiadomość wysłana",
-  "feedback.no_mail": "Brak aplikacji poczty. Skopiowano adres: %@"
+  "feedback.no_mail": "Brak aplikacji poczty. Skopiowano adres: %@",
+  "tip.life": "Sąsiedzi sobie pomagają: przedmiot z ogródka obok przedmiotu z lasu (poziom 2+) sam wyrzuca nasiona. Każdy łańcuch ma parę.",
+  "tip.hearth": "Pojawiło się palenisko! Przedmioty obok dojrzewają do następnego poziomu. Dokładaj gałązki i polana, żeby płonęło.",
+  "tip.broken": "Zepsuty przedmiot! Napraw go, upuszczając na niego %@.",
+  "mend.hint": "Napraw: upuść na niego %@",
+  "mend.tool": "%@ poziom %d+",
+  "mend.done": "Naprawione!",
+  "hearth.burning": "Płonie jeszcze %@. Przedmioty obok dojrzewają, dorzuć gałązek",
+  "hearth.out": "Palenisko zgasło. Wrzuć gałązkę albo polano"
 }

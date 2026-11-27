@@ -9,6 +9,9 @@
 - данные для проверки: заметка для ревьюера;
 - последняя готовая сборка этой версии привязывается к версии.
 
+С переменной SUBMIT=1 (кнопка в workflow) отправляет версию на проверку, если сборка привязана
+и ничего не осталось сделать вручную. Раздел App Privacy в API нет: перед отправкой его обновляет человек.
+
 В конце печатает, что осталось сделать вручную (то, чего нет в API).
 Повторный запуск безопасен.
 """
@@ -182,18 +185,55 @@ def main():
         todo.append("App Review Information: имя, телефон и почта для связи с проверяющим")
 
     # --- сборка
+    attached = False
     builds = get_all(f"/v1/builds?filter[app]={app}&filter[preReleaseVersion.version]={VERSION}"
                      f"&filter[processingState]=VALID&sort=-uploadedDate&limit=5")
     if builds:
         b = builds[0]
         s, d = call("PATCH", f"/v1/appStoreVersions/{vid}/relationships/build", {"data": {"type": "builds", "id": b["id"]}})
         if ok(s, d, "сборка"):
+            attached = True
             print(f"сборка {b['attributes'].get('version')} привязана к версии {VERSION}")
     else:
         todo.append(f"нет готовой сборки {VERSION}: запусти workflow TestFlight и подожди обработку")
 
-    todo.append("App Privacy: Data Not Collected (в API этого нет)")
+    blocking = list(todo)
+    if os.environ.get("SUBMIT") == "1":
+        if not attached:
+            blocking.append("сборка не привязана")
+        if errors or blocking:
+            print("::error::На проверку не отправлено: " + "; ".join(blocking or errors))
+            errors.append("submit")
+        else:
+            submit(app, vid)
+    else:
+        todo.append("App Privacy (с 1.2): Firebase Analytics - см. docs/appstore.md. Потом запуск с SUBMIT=1")
     finish()
+
+
+def submit(app, vid):
+    """Заявка на проверку: открытая или новая, в нее версия, потом отправка."""
+    open_states = {"READY_FOR_REVIEW"}
+    subs = [x for x in get_all(f"/v1/reviewSubmissions?filter[app]={app}&filter[platform]=IOS")
+            if x["attributes"].get("state") in open_states]
+    if subs:
+        sid = subs[0]["id"]
+    else:
+        s, d = call("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions",
+                    "attributes": {"platform": "IOS"}, "relationships": {"app": rel("apps", app)}}})
+        if not ok(s, d, "заявка на проверку"):
+            return
+        sid = d["data"]["id"]
+    items = get_all(f"/v1/reviewSubmissions/{sid}/items?include=appStoreVersion")
+    if not any(i.get("relationships", {}).get("appStoreVersion", {}).get("data", {}).get("id") == vid for i in items):
+        s, d = call("POST", "/v1/reviewSubmissionItems", {"data": {"type": "reviewSubmissionItems", "relationships": {
+            "reviewSubmission": rel("reviewSubmissions", sid), "appStoreVersion": rel("appStoreVersions", vid)}}})
+        if not ok(s, d, "версия в заявке"):
+            return
+    s, d = call("PATCH", f"/v1/reviewSubmissions/{sid}", {"data": {"type": "reviewSubmissions", "id": sid,
+                "attributes": {"submitted": True}}})
+    if ok(s, d, "отправка на проверку"):
+        print(f"версия {VERSION} отправлена на проверку")
 
 
 def finish():

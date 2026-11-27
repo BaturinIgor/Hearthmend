@@ -115,7 +115,7 @@ final class EventTests: XCTestCase {
         XCTAssertNil(game.placeDecor("decor_bench", x: 3, y: 3), "нет в запасе")
         let placed = game.placeDecor("decor_torch", x: 100, y: -5)!
         XCTAssertEqual(placed.x, Game.mapSize.width - 0.5, "не за краем карты")
-        XCTAssertEqual(placed.y, 1)
+        XCTAssertEqual(placed.y, (game.fogRow ?? 0) + 1.5, "не в тумане над закрытыми районами")
         XCTAssertNil(game.state.decorOwned["decor_torch"])
         game.moveDecor(id: placed.id, x: 10, y: 20)
         XCTAssertEqual(game.state.placedDecor.first?.x, 10)

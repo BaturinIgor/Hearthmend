@@ -398,5 +398,13 @@
   "feedback.send": "Gönder",
   "feedback.sending": "Gönderiliyor…",
   "feedback.thanks": "Teşekkürler! Mesaj gönderildi",
-  "feedback.no_mail": "Posta uygulaması yok. Adres kopyalandı: %@"
+  "feedback.no_mail": "Posta uygulaması yok. Adres kopyalandı: %@",
+  "tip.life": "Komşular birbirine yardım eder: bahçe eşyasını orman eşyasının (seviye 2+) yanına koyarsan kendiliğinden tohum verir. Her zincirin bir eşi var.",
+  "tip.hearth": "Bir ocak belirdi! Yanındaki eşyalar bir sonraki seviyeye olgunlaşır. Yanması için dal ve kütük at.",
+  "tip.broken": "Kırık bir eşya! Üstüne %@ bırakarak onar.",
+  "mend.hint": "Onar: üstüne %@ bırak",
+  "mend.tool": "%@ seviye %d+",
+  "mend.done": "Onarıldı!",
+  "hearth.burning": "%@ daha yanacak. Yanındaki eşyalar olgunlaşıyor, dal at",
+  "hearth.out": "Ocak söndü. İçine bir dal ya da kütük at"
 }

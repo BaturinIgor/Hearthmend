@@ -4,6 +4,11 @@ name: "App Store Connect: покупки, страница и версия"
 # (tools/asc_listing.py). Запуск только по кнопке.
 on:
   workflow_dispatch:
+    inputs:
+      submit:
+        description: "Отправить версию на проверку (сначала обнови App Privacy вручную)"
+        type: boolean
+        default: false
 
 jobs:
   iap:
@@ -37,3 +42,11 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: python tools/asc_listing.py
+      - name: Submit for review
+        if: inputs.submit
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          SUBMIT: "1"
+        run: python tools/asc_release.py

@@ -398,5 +398,13 @@
   "feedback.send": "Enviar",
   "feedback.sending": "Enviando…",
   "feedback.thanks": "¡Gracias! Mensaje enviado",
-  "feedback.no_mail": "No hay app de correo. Dirección copiada: %@"
+  "feedback.no_mail": "No hay app de correo. Dirección copiada: %@",
+  "tip.life": "Los vecinos se ayudan: un objeto del huerto junto a uno del bosque (nivel 2+) suelta semillas solo. Cada cadena tiene pareja.",
+  "tip.hearth": "¡Ha aparecido un hogar! Los objetos a su lado maduran al siguiente nivel. Échale ramitas y troncos para que siga ardiendo.",
+  "tip.broken": "¡Un objeto roto! Arréglalo soltando %@ encima.",
+  "mend.hint": "Arréglalo: suelta %@ encima",
+  "mend.tool": "%@ nivel %d+",
+  "mend.done": "¡Arreglado!",
+  "hearth.burning": "Arde %@ más. Los objetos de al lado maduran; échale ramitas",
+  "hearth.out": "El hogar se apagó. Echa una ramita o un tronco"
 }
