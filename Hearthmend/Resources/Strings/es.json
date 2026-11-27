@@ -385,5 +385,18 @@
   "barter.tent": "Trueques generosos: llena la barra y te regalan una tienda de campaña",
   "barter.done": "¡El puesto es tuyo!",
   "barter.done_hint": "Colócalo en tu aldea.",
-  "barter.ends": "El trueque termina en: %@"
+  "barter.ends": "El trueque termina en: %@",
+  "settings.analytics": "Estadísticas anónimas",
+  "feedback.open": "Escribir al desarrollador",
+  "feedback.title": "Comentarios",
+  "feedback.intro": "¿Has encontrado un error o tienes una idea? Leo cada mensaje y respondo por correo.",
+  "feedback.kind.bug": "Error",
+  "feedback.kind.idea": "Idea",
+  "feedback.kind.other": "Otro",
+  "feedback.placeholder": "¿Qué ha pasado o qué te gustaría?",
+  "feedback.details": "Se añaden la versión del juego y de iOS, el modelo del dispositivo y tu nivel. Sin datos personales.",
+  "feedback.send": "Enviar",
+  "feedback.sending": "Enviando…",
+  "feedback.thanks": "¡Gracias! Mensaje enviado",
+  "feedback.no_mail": "No hay app de correo. Dirección copiada: %@"
 }

@@ -385,5 +385,18 @@
   "barter.tent": "Generous trades: fill the bar and you also get a tent",
   "barter.done": "The stall is yours!",
   "barter.done_hint": "Place it in your village.",
-  "barter.ends": "Barter ends in: %@"
+  "barter.ends": "Barter ends in: %@",
+  "settings.analytics": "Send anonymous stats",
+  "feedback.open": "Write to the developer",
+  "feedback.title": "Feedback",
+  "feedback.intro": "Found a bug or have an idea? I read every message and answer by email.",
+  "feedback.kind.bug": "Bug",
+  "feedback.kind.idea": "Idea",
+  "feedback.kind.other": "Other",
+  "feedback.placeholder": "What happened or what would you like?",
+  "feedback.details": "The game version, iOS version, device model and your level are added. No personal data.",
+  "feedback.send": "Send",
+  "feedback.sending": "Sending…",
+  "feedback.thanks": "Thank you! Message sent",
+  "feedback.no_mail": "No mail app. The address is copied: %@"
 }

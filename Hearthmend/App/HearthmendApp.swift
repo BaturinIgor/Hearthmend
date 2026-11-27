@@ -23,12 +23,22 @@ struct HearthmendApp: App {
                 .preferredColorScheme(.light)
                 .font(Pixel.font(16))
                 .onAppear {
+                    Analytics.shared.start(store.state)
+                    // первый переход в active мог случиться до onAppear: оба вызова считают раз в день
+                    if !GameStore.isDemo {
+                        ReviewPrompt.appBecameActive()
+                        Analytics.shared.appBecameActive(store.game)
+                    }
                     shop.attach(store)
                     Audio.shared.startMusic()
                 }
         }
         .onChange(of: phase) { p in
             if p != .active { store.flush() }
+            if p == .active, !GameStore.isDemo {
+                ReviewPrompt.appBecameActive()
+                Analytics.shared.appBecameActive(store.game)
+            }
         }
     }
 }

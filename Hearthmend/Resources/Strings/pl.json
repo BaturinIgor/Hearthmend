@@ -385,5 +385,18 @@
   "barter.tent": "Hojne wymiany: wypełnij pasek, a dostaniesz też namiot",
   "barter.done": "Stragan jest twój!",
   "barter.done_hint": "Postaw go w wiosce.",
-  "barter.ends": "Wymiana kończy się za: %@"
+  "barter.ends": "Wymiana kończy się za: %@",
+  "settings.analytics": "Anonimowe statystyki",
+  "feedback.open": "Napisz do twórcy",
+  "feedback.title": "Opinia",
+  "feedback.intro": "Znalazłeś błąd lub masz pomysł? Czytam każdą wiadomość i odpowiadam mailem.",
+  "feedback.kind.bug": "Błąd",
+  "feedback.kind.idea": "Pomysł",
+  "feedback.kind.other": "Inne",
+  "feedback.placeholder": "Co się stało lub czego chcesz?",
+  "feedback.details": "Dołączamy wersję gry i iOS, model urządzenia i twój poziom. Bez danych osobowych.",
+  "feedback.send": "Wyślij",
+  "feedback.sending": "Wysyłanie…",
+  "feedback.thanks": "Dziękuję! Wiadomość wysłana",
+  "feedback.no_mail": "Brak aplikacji poczty. Skopiowano adres: %@"
 }

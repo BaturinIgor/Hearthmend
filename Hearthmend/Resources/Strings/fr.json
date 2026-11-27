@@ -385,5 +385,18 @@
   "barter.tent": "Trocs généreux : remplis la barre et reçois une tente en plus",
   "barter.done": "L'étal est à toi !",
   "barter.done_hint": "Place-le dans ton village.",
-  "barter.ends": "Fin du troc dans : %@"
+  "barter.ends": "Fin du troc dans : %@",
+  "settings.analytics": "Statistiques anonymes",
+  "feedback.open": "Écrire au développeur",
+  "feedback.title": "Avis",
+  "feedback.intro": "Un bug ou une idée ? Je lis chaque message et réponds par e-mail.",
+  "feedback.kind.bug": "Bug",
+  "feedback.kind.idea": "Idée",
+  "feedback.kind.other": "Autre",
+  "feedback.placeholder": "Que s'est-il passé ou que souhaitez-vous ?",
+  "feedback.details": "La version du jeu et d'iOS, le modèle de l'appareil et votre niveau sont ajoutés. Aucune donnée personnelle.",
+  "feedback.send": "Envoyer",
+  "feedback.sending": "Envoi…",
+  "feedback.thanks": "Merci ! Message envoyé",
+  "feedback.no_mail": "Pas d'app Mail. Adresse copiée : %@"
 }

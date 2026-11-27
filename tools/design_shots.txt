@@ -31,3 +31,4 @@
 29-store-event -shot event
 30-store-north -village -shot north
 31-store-postcard -shot postcard
+32-feedback -shot qa_feedback

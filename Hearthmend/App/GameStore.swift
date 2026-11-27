@@ -9,12 +9,17 @@ final class GameStore: ObservableObject {
     @Published var selected: Int?
     @Published var toast: String?
     /// Чего не хватило игроку: всплывает окно с быстрым способом пополнить.
-    @Published var shortage: Shortage?
+    @Published var shortage: Shortage? {
+        didSet { if let shortage, shortage != oldValue { Analytics.shared.shortage(shortage.kind, need: shortage.need) } }
+    }
     /// Последний открытый ящик: сцена поля проигрывает по нему анимацию.
     private var selectedAt = Date.distantPast
     var lastOpenedChest: (index: Int, chest: Chest, reward: ChestReward)?
     /// Праздник поверх экрана: новый уровень, новый житель, отстроенный район.
-    @Published var celebration: Celebration?
+    @Published var celebration: Celebration? {
+        // праздник закрыли: удачный момент попросить оценку (ReviewPrompt сам решит, можно ли)
+        didSet { if celebration == nil, oldValue != nil { ReviewPrompt.celebrationClosed(game) } }
+    }
     /// Свежие награды события: баннер события их показывает.
     @Published var eventRewards: [EventReward] = []
 
@@ -77,7 +82,9 @@ final class GameStore: ObservableObject {
     }
 
     private func commit() {
+        let old = state
         state = game.state
+        if !Self.isDemo { Analytics.shared.track(from: old, to: state, game: game) }
         if !Self.isDemo { Persistence.save(game.state) }
     }
 
@@ -551,6 +558,7 @@ final class GameStore: ObservableObject {
     }
 
     func skipTutorial() {
+        Analytics.shared.tutorialSkipped(at: state.tutorialStep)
         game.skipTutorial()
         commit()
         onBoardChange?()
@@ -938,6 +946,22 @@ enum Shortage: Equatable {
     case gems(need: Int)
 
     var isGems: Bool { if case .gems = self { return true } else { return false } }
+
+    /// Для статистики: чего не хватило и сколько.
+    var kind: String {
+        switch self {
+        case .energy: return "energy"
+        case .coins: return "coins"
+        case .gems: return "gems"
+        }
+    }
+
+    var need: Int {
+        switch self {
+        case .energy: return 0
+        case .coins(let n), .gems(let n): return n
+        }
+    }
 }
 
 struct Celebration: Equatable, Identifiable {

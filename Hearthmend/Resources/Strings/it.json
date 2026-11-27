@@ -385,5 +385,18 @@
   "barter.tent": "Scambi generosi: riempi la barra e ricevi anche una tenda",
   "barter.done": "La bancarella è tua!",
   "barter.done_hint": "Mettila nel villaggio.",
-  "barter.ends": "Il baratto finisce tra: %@"
+  "barter.ends": "Il baratto finisce tra: %@",
+  "settings.analytics": "Statistiche anonime",
+  "feedback.open": "Scrivi allo sviluppatore",
+  "feedback.title": "Feedback",
+  "feedback.intro": "Hai trovato un errore o hai un'idea? Leggo ogni messaggio e rispondo via email.",
+  "feedback.kind.bug": "Errore",
+  "feedback.kind.idea": "Idea",
+  "feedback.kind.other": "Altro",
+  "feedback.placeholder": "Cosa è successo o cosa vorresti?",
+  "feedback.details": "Vengono aggiunti la versione del gioco e di iOS, il modello del dispositivo e il tuo livello. Nessun dato personale.",
+  "feedback.send": "Invia",
+  "feedback.sending": "Invio…",
+  "feedback.thanks": "Grazie! Messaggio inviato",
+  "feedback.no_mail": "Nessuna app di posta. Indirizzo copiato: %@"
 }

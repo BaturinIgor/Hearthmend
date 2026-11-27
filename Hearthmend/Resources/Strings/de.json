@@ -385,5 +385,18 @@
   "barter.tent": "Großzügige Tausche: Fülle die Leiste und bekomme ein Zelt dazu",
   "barter.done": "Der Stand gehört dir!",
   "barter.done_hint": "Stell ihn ins Dorf.",
-  "barter.ends": "Tausch endet in: %@"
+  "barter.ends": "Tausch endet in: %@",
+  "settings.analytics": "Anonyme Statistik senden",
+  "feedback.open": "Dem Entwickler schreiben",
+  "feedback.title": "Feedback",
+  "feedback.intro": "Fehler gefunden oder eine Idee? Ich lese jede Nachricht und antworte per E-Mail.",
+  "feedback.kind.bug": "Fehler",
+  "feedback.kind.idea": "Idee",
+  "feedback.kind.other": "Sonstiges",
+  "feedback.placeholder": "Was ist passiert oder was wünschst du dir?",
+  "feedback.details": "Spielversion, iOS-Version, Gerätemodell und dein Level werden angehängt. Keine persönlichen Daten.",
+  "feedback.send": "Senden",
+  "feedback.sending": "Wird gesendet…",
+  "feedback.thanks": "Danke! Nachricht gesendet",
+  "feedback.no_mail": "Keine Mail-App. Adresse kopiert: %@"
 }

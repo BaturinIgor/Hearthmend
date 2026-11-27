@@ -385,5 +385,18 @@
   "barter.tent": "気前のいい交換：ゲージをためるとテントももらえる",
   "barter.done": "屋台を手に入れた！",
   "barter.done_hint": "村に飾ろう。",
-  "barter.ends": "交換の終了まで：%@"
+  "barter.ends": "交換の終了まで：%@",
+  "settings.analytics": "匿名の統計を送る",
+  "feedback.open": "開発者に連絡",
+  "feedback.title": "フィードバック",
+  "feedback.intro": "バグやアイデアはありますか？すべてのメッセージを読み、メールで返信します。",
+  "feedback.kind.bug": "バグ",
+  "feedback.kind.idea": "アイデア",
+  "feedback.kind.other": "その他",
+  "feedback.placeholder": "何が起きましたか？何が欲しいですか？",
+  "feedback.details": "ゲームとiOSのバージョン、端末モデル、レベルが添付されます。個人情報は含みません。",
+  "feedback.send": "送信",
+  "feedback.sending": "送信中…",
+  "feedback.thanks": "ありがとう！送信しました",
+  "feedback.no_mail": "メールアプリがありません。アドレスをコピーしました：%@"
 }

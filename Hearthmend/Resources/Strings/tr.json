@@ -385,5 +385,18 @@
   "barter.tent": "Cömert takaslar: çubuğu doldur, bir de çadır kazan",
   "barter.done": "Tezgâh senin!",
   "barter.done_hint": "Onu köyüne yerleştir.",
-  "barter.ends": "Takasın bitmesine: %@"
+  "barter.ends": "Takasın bitmesine: %@",
+  "settings.analytics": "Anonim istatistik gönder",
+  "feedback.open": "Geliştiriciye yaz",
+  "feedback.title": "Geri bildirim",
+  "feedback.intro": "Hata mı buldun ya da bir fikrin mi var? Her mesajı okuyup e-postayla yanıtlıyorum.",
+  "feedback.kind.bug": "Hata",
+  "feedback.kind.idea": "Fikir",
+  "feedback.kind.other": "Diğer",
+  "feedback.placeholder": "Ne oldu ya da ne istersin?",
+  "feedback.details": "Oyun ve iOS sürümü, cihaz modeli ve seviyen eklenir. Kişisel veri yok.",
+  "feedback.send": "Gönder",
+  "feedback.sending": "Gönderiliyor…",
+  "feedback.thanks": "Teşekkürler! Mesaj gönderildi",
+  "feedback.no_mail": "Posta uygulaması yok. Adres kopyalandı: %@"
 }

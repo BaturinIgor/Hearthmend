@@ -9,3 +9,5 @@ Payload/
 # спрайты пака: в git только зашифрованный Art/sprites.enc
 Hearthmend/Resources/Sprites/
 art/
+# Firebase: файл настроек приложения не коммитим (см. tools/analytics/README.md)
+GoogleService-Info.plist

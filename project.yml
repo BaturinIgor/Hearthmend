@@ -9,11 +9,15 @@ options:
 packages:
   HearthCore:
     path: .
+  # Google Analytics for Firebase (анонимная статистика, без IDFA), как в ZenHab.
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: "13.0.0"
 
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.1"
+    MARKETING_VERSION: "1.2"
     CURRENT_PROJECT_VERSION: "1"
     TARGETED_DEVICE_FAMILY: "1"
     CODE_SIGN_STYLE: Manual
@@ -31,6 +35,10 @@ targets:
       - path: Hearthmend
     dependencies:
       - package: HearthCore
+      # FirebaseAnalyticsCore, а не FirebaseAnalytics: без IDFA (AdSupport) и GoogleAdsOnDeviceConversion.
+      # Модуль тот же: import FirebaseAnalytics.
+      - package: Firebase
+        product: FirebaseAnalyticsCore
     info:
       path: Hearthmend/Info.plist
       properties:
@@ -48,12 +56,27 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         UIAppFonts: [HearthPixel-Regular.ttf]
+        # Telegram-бот для отзывов. Значения подставляет tools/feedback/inject_secrets.sh
+        # из секретов FEEDBACK_BOT_TOKEN и FEEDBACK_CHAT_ID; без них отзывы идут через почту.
+        FeedbackBotToken: ""
+        FeedbackChatID: ""
+        # Firebase Analytics: без рекламных сигналов, IDFV и подмены делегата приложения.
+        # GoogleService-Info.plist кладет только сборка для App Store (tools/analytics/add_firebase_config.sh).
+        FirebaseAutomaticScreenReportingEnabled: false
+        FirebaseAppDelegateProxyEnabled: false
+        GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS: false
+        GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED: false
+        GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED: false
+        # Firebase сам ничего не собирает: сбор включает код (Analytics.start), если игрок не выключил статистику.
+        FIREBASE_ANALYTICS_COLLECTION_ENABLED: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.personal.hearthmend
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_NAME: Hearthmend
         TARGETED_DEVICE_FAMILY: "1"
+        # Firebase через Swift Package Manager требует -ObjC.
+        OTHER_LDFLAGS: ["$(inherited)", "-ObjC"]
 
 schemes:
   Hearthmend:

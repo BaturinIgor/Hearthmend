@@ -385,5 +385,18 @@
   "barter.tent": "후한 교환: 게이지를 채우면 텐트도 받아요",
   "barter.done": "노점이 생겼어요!",
   "barter.done_hint": "마을에 놓아 보세요.",
-  "barter.ends": "교환 종료까지: %@"
+  "barter.ends": "교환 종료까지: %@",
+  "settings.analytics": "익명 통계 보내기",
+  "feedback.open": "개발자에게 문의",
+  "feedback.title": "의견 보내기",
+  "feedback.intro": "버그를 찾았거나 아이디어가 있나요? 모든 메시지를 읽고 이메일로 답장해요.",
+  "feedback.kind.bug": "버그",
+  "feedback.kind.idea": "아이디어",
+  "feedback.kind.other": "기타",
+  "feedback.placeholder": "무슨 일이 있었나요? 무엇을 원하시나요?",
+  "feedback.details": "게임과 iOS 버전, 기기 모델, 레벨이 함께 전송돼요. 개인정보는 없어요.",
+  "feedback.send": "보내기",
+  "feedback.sending": "보내는 중…",
+  "feedback.thanks": "감사합니다! 메시지를 보냈어요",
+  "feedback.no_mail": "메일 앱이 없어요. 주소를 복사했어요: %@"
 }

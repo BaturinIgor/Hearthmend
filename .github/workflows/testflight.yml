@@ -62,8 +62,19 @@ jobs:
           pip3 install --quiet --break-system-packages "pyjwt[crypto]==2.9.0" || pip3 install --quiet "pyjwt[crypto]==2.9.0"
           if [ "${{ inputs.revoke_ci_certs }}" = "true" ]; then python3 tools/asc_certs.py --revoke; else python3 tools/asc_certs.py; fi
 
+      - name: Add Firebase config (analytics)
+        env:
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
+        run: tools/analytics/add_firebase_config.sh com.personal.hearthmend
+
       - name: Generate Xcode project
         run: xcodegen generate
+
+      - name: Feedback bot (Telegram)
+        env:
+          FEEDBACK_BOT_TOKEN: ${{ secrets.FEEDBACK_BOT_TOKEN }}
+          FEEDBACK_CHAT_ID: ${{ secrets.FEEDBACK_CHAT_ID }}
+        run: tools/feedback/inject_secrets.sh Hearthmend/Info.plist
 
       - name: Archive
         env:

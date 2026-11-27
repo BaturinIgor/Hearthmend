@@ -16,6 +16,7 @@ struct ContentView: View {
             board
             if screen == .village {
                 VillageView(screen: $screen)
+                    .analyticsScreen("Village")
                     .transition(.move(edge: .trailing))
                     .zIndex(1)
             }
@@ -43,7 +44,7 @@ struct ContentView: View {
         }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: screen)
         .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showDaily)
-        .sheet(isPresented: $showShop) { ShopView() }
+        .sheet(isPresented: $showShop) { ShopView().analyticsScreen("Shop") }
         .background(EmptyView().sheet(isPresented: $showSettings) { SettingsView() })
         .onAppear {
             if store.game.dailyRewardReady, store.game.tutorial == .done, !Shot.isActive {
@@ -56,6 +57,7 @@ struct ContentView: View {
         .onChange(of: store.state.completedTasks.count) { _ in checkStory() }
         .onChange(of: store.state.tutorialStep) { _ in checkStory() }
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: store.celebration)
+        .analyticsScreen("Board")
     }
 
     /// Сцена истории всплывает, когда ничего другого на экране нет.
